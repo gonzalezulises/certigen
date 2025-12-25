@@ -100,6 +100,20 @@ export function LayoutPanel({
           </div>
 
           <div>
+            <Label className="text-xs">{t('radius')}</Label>
+            <Select
+              value={borderConfig.radius ?? 'none'}
+              onChange={(e) => onBorderChange({ radius: e.target.value as 'none' | 'small' | 'medium' | 'large' })}
+              className="dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+            >
+              <option value="none">{t('radiusOptions.none')}</option>
+              <option value="small">{t('radiusOptions.small')}</option>
+              <option value="medium">{t('radiusOptions.medium')}</option>
+              <option value="large">{t('radiusOptions.large')}</option>
+            </Select>
+          </div>
+
+          <div>
             <Label className="text-xs">{t('padding')}</Label>
             <Select
               value={borderConfig.padding}

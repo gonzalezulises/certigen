@@ -442,6 +442,13 @@
         "ornate": "Ornamentado",
         "flourish": "Flourish"
       },
+      "radius": "Radio de borde",
+      "radiusOptions": {
+        "none": "Ninguno",
+        "small": "Pequeño",
+        "medium": "Mediano",
+        "large": "Grande"
+      },
       "paddingOptions": {
         "compact": "Compacto",
         "normal": "Normal",

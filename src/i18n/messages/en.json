@@ -442,6 +442,13 @@
         "ornate": "Ornate",
         "flourish": "Flourish"
       },
+      "radius": "Border radius",
+      "radiusOptions": {
+        "none": "None",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
       "paddingOptions": {
         "compact": "Compact",
         "normal": "Normal",

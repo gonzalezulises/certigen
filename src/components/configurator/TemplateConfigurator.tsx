@@ -280,86 +280,238 @@ export function TemplateConfigurator({
             </Button>
           </div>
           <div className="flex-1 p-4 bg-gray-100 dark:bg-gray-800 overflow-auto">
-            {/* Preview placeholder - in real implementation, render PDF preview */}
+            {/* Certificate Preview */}
             <div
-              className="mx-auto shadow-lg rounded-lg overflow-hidden"
+              className="mx-auto shadow-lg overflow-hidden relative"
               style={{
                 backgroundColor: config.colors?.background ?? '#ffffff',
                 aspectRatio: config.layout?.orientation === 'landscape' ? '1.414' : '0.707',
                 maxWidth: config.layout?.orientation === 'landscape' ? '100%' : '70%',
-                padding: '40px',
-                border: config.border?.style !== 'none' ? `2px solid ${config.colors?.border ?? '#1a365d'}` : 'none',
+                padding: config.border?.padding === 'compact' ? '24px' : config.border?.padding === 'spacious' ? '48px' : '36px',
+                border: config.border?.style !== 'none'
+                  ? `${config.border?.width === 'thin' ? '1px' : config.border?.width === 'thick' ? '4px' : '2px'} solid ${config.colors?.border ?? '#1a365d'}`
+                  : 'none',
                 borderRadius: config.border?.radius === 'large' ? '16px' : config.border?.radius === 'medium' ? '8px' : config.border?.radius === 'small' ? '4px' : '0',
               }}
             >
-              <div className="h-full flex flex-col items-center justify-between text-center">
+              {/* Corner Ornaments */}
+              {config.border?.cornerStyle && config.border.cornerStyle !== 'none' && (
+                <>
+                  <div style={{ position: 'absolute', top: 8, left: 8, color: config.colors?.border ?? '#1a365d', fontSize: config.border.cornerStyle === 'simple' ? '16px' : '24px' }}>
+                    {config.border.cornerStyle === 'flourish' ? '❧' : config.border.cornerStyle === 'ornate' ? '◆' : '┌'}
+                  </div>
+                  <div style={{ position: 'absolute', top: 8, right: 8, color: config.colors?.border ?? '#1a365d', fontSize: config.border.cornerStyle === 'simple' ? '16px' : '24px', transform: 'scaleX(-1)' }}>
+                    {config.border.cornerStyle === 'flourish' ? '❧' : config.border.cornerStyle === 'ornate' ? '◆' : '┐'}
+                  </div>
+                  <div style={{ position: 'absolute', bottom: 8, left: 8, color: config.colors?.border ?? '#1a365d', fontSize: config.border.cornerStyle === 'simple' ? '16px' : '24px', transform: 'scaleY(-1)' }}>
+                    {config.border.cornerStyle === 'flourish' ? '❧' : config.border.cornerStyle === 'ornate' ? '◆' : '└'}
+                  </div>
+                  <div style={{ position: 'absolute', bottom: 8, right: 8, color: config.colors?.border ?? '#1a365d', fontSize: config.border.cornerStyle === 'simple' ? '16px' : '24px', transform: 'scale(-1)' }}>
+                    {config.border.cornerStyle === 'flourish' ? '❧' : config.border.cornerStyle === 'ornate' ? '◆' : '┘'}
+                  </div>
+                </>
+              )}
+
+              <div className="h-full flex flex-col items-center justify-between text-center relative">
                 {/* Header */}
                 <div className="w-full">
+                  {config.branding?.logoUrl && (
+                    <div className="mb-2 flex justify-center">
+                      <img
+                        src={config.branding.logoUrl}
+                        alt="Logo"
+                        style={{
+                          height: config.layout?.logoSize === 'small' ? '40px' : config.layout?.logoSize === 'large' ? '80px' : '60px',
+                          objectFit: 'contain'
+                        }}
+                      />
+                    </div>
+                  )}
                   {config.content?.showOrganizationName && config.branding?.organizationName && (
-                    <p style={{ color: config.colors?.text ?? '#1a202c' }} className="text-sm font-medium mb-2">
+                    <p
+                      style={{
+                        color: config.colors?.text ?? '#1a202c',
+                        fontFamily: config.typography?.bodyFont === 'serif' ? 'Georgia, serif' : config.typography?.bodyFont === 'script' ? 'cursive' : 'system-ui, sans-serif',
+                      }}
+                      className="text-sm font-medium mb-2"
+                    >
                       {config.branding.organizationName}
                     </p>
                   )}
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col items-center justify-center">
+                <div className="flex-1 flex flex-col items-center justify-center w-full">
                   <h2
                     style={{
                       color: config.colors?.primary ?? '#1a365d',
                       textTransform: config.typography?.titleTransform ?? 'none',
-                      letterSpacing: config.typography?.titleTransform === 'uppercase' ? '2px' : '0',
+                      letterSpacing: config.typography?.titleTransform === 'uppercase' ? '3px' : '0',
+                      fontFamily: config.typography?.titleFont === 'serif' ? 'Georgia, serif' : config.typography?.titleFont === 'script' ? 'cursive' : config.typography?.titleFont === 'display' ? 'cursive' : 'system-ui, sans-serif',
+                      fontWeight: config.typography?.titleWeight === 'bold' ? 700 : config.typography?.titleWeight === 'medium' ? 500 : 400,
+                      fontSize: config.typography?.scale === 'compact' ? '1.25rem' : config.typography?.scale === 'spacious' ? '1.75rem' : '1.5rem',
                     }}
-                    className="text-2xl font-bold mb-4"
+                    className="mb-3"
                   >
                     {config.content?.headerText ?? 'Certificado'}
                   </h2>
                   {config.content?.showSubtitle && config.content?.subtitleTemplate && (
-                    <p style={{ color: config.colors?.textMuted ?? '#6b7280' }} className="text-sm mb-2">
+                    <p
+                      style={{
+                        color: config.colors?.textMuted ?? '#6b7280',
+                        fontFamily: config.typography?.bodyFont === 'serif' ? 'Georgia, serif' : 'system-ui, sans-serif',
+                      }}
+                      className="text-sm mb-3"
+                    >
                       {config.content.subtitleTemplate}
                     </p>
                   )}
                   <h3
-                    style={{ color: config.colors?.text ?? '#1a202c' }}
-                    className="text-3xl font-bold mb-4"
+                    style={{
+                      color: config.colors?.text ?? '#1a202c',
+                      fontFamily: config.typography?.accentFont === 'script' ? 'cursive' : config.typography?.accentFont === 'serif' ? 'Georgia, serif' : 'system-ui, sans-serif',
+                      fontWeight: config.typography?.nameWeight === 'black' ? 900 : config.typography?.nameWeight === 'bold' ? 700 : config.typography?.nameWeight === 'medium' ? 500 : 400,
+                      fontSize: config.typography?.scale === 'compact' ? '1.5rem' : config.typography?.scale === 'spacious' ? '2.25rem' : '1.875rem',
+                    }}
+                    className="mb-3"
                   >
                     {sampleData.student_name}
                   </h3>
-                  <div
-                    style={{ backgroundColor: config.colors?.accent ?? '#c9a227' }}
-                    className="w-24 h-0.5 mb-4"
-                  />
-                  <p style={{ color: config.colors?.secondary ?? '#2d3748' }} className="text-lg mb-6">
+
+                  {/* Divider */}
+                  <div className="my-3 flex items-center justify-center" style={{ width: '150px' }}>
+                    {config.ornaments?.dividerStyle === 'none' ? null :
+                     config.ornaments?.dividerStyle === 'dots' ? (
+                      <div className="flex gap-1 items-center">
+                        <span style={{ color: config.colors?.accent ?? '#c9a227', fontSize: '8px' }}>●</span>
+                        <span style={{ color: config.colors?.accent ?? '#c9a227', fontSize: '10px' }}>●</span>
+                        <span style={{ color: config.colors?.accent ?? '#c9a227', fontSize: '12px' }}>●</span>
+                        <span style={{ color: config.colors?.accent ?? '#c9a227', fontSize: '10px' }}>●</span>
+                        <span style={{ color: config.colors?.accent ?? '#c9a227', fontSize: '8px' }}>●</span>
+                      </div>
+                    ) : config.ornaments?.dividerStyle === 'ornate' ? (
+                      <div className="flex items-center gap-2">
+                        <div style={{ width: '40px', height: '1px', backgroundColor: config.colors?.accent ?? '#c9a227' }} />
+                        <span style={{ color: config.colors?.accent ?? '#c9a227' }}>◆</span>
+                        <div style={{ width: '40px', height: '1px', backgroundColor: config.colors?.accent ?? '#c9a227' }} />
+                      </div>
+                    ) : (
+                      <div style={{ width: '100px', height: '2px', backgroundColor: config.colors?.accent ?? '#c9a227' }} />
+                    )}
+                  </div>
+
+                  <p
+                    style={{
+                      color: config.colors?.secondary ?? '#2d3748',
+                      fontFamily: config.typography?.bodyFont === 'serif' ? 'Georgia, serif' : 'system-ui, sans-serif',
+                      fontSize: config.typography?.scale === 'compact' ? '0.875rem' : config.typography?.scale === 'spacious' ? '1.125rem' : '1rem',
+                    }}
+                    className="mb-4 max-w-[80%]"
+                  >
                     {sampleData.course_name}
                   </p>
-                  <div className="flex gap-8 text-sm" style={{ color: config.colors?.textMuted ?? '#6b7280' }}>
-                    {config.content?.showDate && <span>{new Date().toLocaleDateString()}</span>}
-                    {config.content?.showHours && sampleData.hours && <span>{sampleData.hours} horas</span>}
-                    {config.content?.showGrade && sampleData.grade && <span>{sampleData.grade}%</span>}
+
+                  <div
+                    className="flex gap-6 text-sm"
+                    style={{
+                      color: config.colors?.textMuted ?? '#6b7280',
+                      fontFamily: config.typography?.bodyFont === 'serif' ? 'Georgia, serif' : 'system-ui, sans-serif',
+                    }}
+                  >
+                    {config.content?.showDate && <span>📅 {new Date().toLocaleDateString()}</span>}
+                    {config.content?.showHours && sampleData.hours && <span>⏱ {sampleData.hours} horas</span>}
+                    {config.content?.showGrade && sampleData.grade && <span>📊 {sampleData.grade}%</span>}
                   </div>
+
+                  {/* Instructor / Signature */}
+                  {config.content?.showInstructor && sampleData.instructor_name && (
+                    <div className="mt-6 text-center">
+                      {config.layout?.showSignatureLine && (
+                        <div
+                          style={{
+                            width: '120px',
+                            height: '1px',
+                            backgroundColor: config.colors?.border ?? '#1a365d',
+                            margin: '0 auto 8px'
+                          }}
+                        />
+                      )}
+                      <p style={{ color: config.colors?.text ?? '#1a202c', fontSize: '0.75rem' }}>
+                        {sampleData.instructor_name}
+                      </p>
+                      {config.branding?.signatureLabel && (
+                        <p style={{ color: config.colors?.textMuted ?? '#6b7280', fontSize: '0.625rem' }}>
+                          {config.branding.signatureLabel}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Seal */}
+                  {config.ornaments?.showSeal && (
+                    <div
+                      className="absolute"
+                      style={{
+                        bottom: config.ornaments?.sealPosition === 'bottom-center' ? '60px' : '40px',
+                        right: config.ornaments?.sealPosition === 'bottom-right' ? '40px' : config.ornaments?.sealPosition === 'top-right' ? '40px' : 'auto',
+                        top: config.ornaments?.sealPosition === 'top-right' ? '40px' : 'auto',
+                        left: config.ornaments?.sealPosition === 'bottom-center' ? '50%' : 'auto',
+                        transform: config.ornaments?.sealPosition === 'bottom-center' ? 'translateX(-50%)' : 'none',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '50px',
+                          height: '50px',
+                          borderRadius: config.ornaments?.sealStyle === 'badge' ? '8px' : '50%',
+                          backgroundColor: config.colors?.primary ?? '#1a365d',
+                          border: `2px solid ${config.colors?.accent ?? '#c9a227'}`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: config.colors?.accent ?? '#c9a227',
+                          fontSize: '20px',
+                        }}
+                      >
+                        ★
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Footer with QR */}
+                {/* Footer */}
                 <div className="w-full flex justify-between items-end mt-4">
                   <div>
                     {config.content?.showCertificateNumber && (
-                      <p style={{ color: config.colors?.textMuted ?? '#6b7280' }} className="text-xs">
-                        {sampleData.certificate_number}
+                      <p
+                        style={{
+                          color: config.colors?.textMuted ?? '#6b7280',
+                          fontFamily: 'monospace',
+                        }}
+                        className="text-xs"
+                      >
+                        N° {sampleData.certificate_number}
                       </p>
                     )}
                   </div>
                   <div>
                     {config.content?.showQR && qrDataUrl && (
-                      <img
-                        src={qrDataUrl}
-                        alt="QR Code"
-                        className="w-12 h-12"
-                        style={{
-                          backgroundColor: config.colors?.background ?? '#ffffff',
-                          padding: '2px',
-                          borderRadius: '4px'
-                        }}
-                      />
+                      <div className="text-center">
+                        <img
+                          src={qrDataUrl}
+                          alt="QR Code"
+                          style={{
+                            width: config.layout?.qrSize === 'small' ? '40px' : config.layout?.qrSize === 'large' ? '70px' : '55px',
+                            height: config.layout?.qrSize === 'small' ? '40px' : config.layout?.qrSize === 'large' ? '70px' : '55px',
+                            backgroundColor: config.colors?.background ?? '#ffffff',
+                            padding: '2px',
+                            borderRadius: '4px'
+                          }}
+                        />
+                        <p style={{ color: config.colors?.textMuted ?? '#6b7280', fontSize: '6px', marginTop: '2px' }}>
+                          Escanea para verificar
+                        </p>
+                      </div>
                     )}
                   </div>
                 </div>

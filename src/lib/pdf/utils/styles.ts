@@ -62,17 +62,37 @@ const DEFAULT_LOGO_POSITION = 'center' as const;
 const DEFAULT_SIGNATURE_POSITION = 'center' as const;
 const DEFAULT_VERTICAL_BALANCE = 'centered' as const;
 
+// Helper para obtener valor de radius de forma segura
+const getRadiusValue = (radius: string | undefined | null): number => {
+  if (!radius || radius === '') {
+    return radiusMap[DEFAULT_RADIUS];
+  }
+  const validKeys: Array<'none' | 'small' | 'medium' | 'large'> = ['none', 'small', 'medium', 'large'];
+  if (validKeys.includes(radius as 'none' | 'small' | 'medium' | 'large')) {
+    return radiusMap[radius as 'none' | 'small' | 'medium' | 'large'];
+  }
+  return radiusMap[DEFAULT_RADIUS];
+};
+
 // Generador de estilos dinámicos
 export const generateStyles = (config: TemplateConfig) => {
+  // Garantizar que config.border existe
+  const borderConfig = config.border ?? {
+    style: 'none',
+    width: DEFAULT_BORDER_WIDTH,
+    radius: DEFAULT_RADIUS,
+    padding: DEFAULT_PADDING,
+    cornerStyle: 'none',
+  };
+
   // Aplicar valores por defecto para evitar undefined
   const scale = scaleMap[config.typography?.scale ?? DEFAULT_SCALE] ?? scaleMap[DEFAULT_SCALE];
-  const padding = paddingMap[config.border?.padding ?? DEFAULT_PADDING] ?? paddingMap[DEFAULT_PADDING];
-  const borderWidth = (config.border?.style ?? 'none') !== 'none'
-    ? (borderWidthMap[config.border?.width ?? DEFAULT_BORDER_WIDTH] ?? borderWidthMap[DEFAULT_BORDER_WIDTH])
+  const padding = paddingMap[borderConfig.padding ?? DEFAULT_PADDING] ?? paddingMap[DEFAULT_PADDING];
+  const borderWidth = (borderConfig.style ?? 'none') !== 'none'
+    ? (borderWidthMap[borderConfig.width ?? DEFAULT_BORDER_WIDTH] ?? borderWidthMap[DEFAULT_BORDER_WIDTH])
     : 0;
-  // Asegurar que borderRadius siempre tenga un valor válido
-  const radiusValue = config.border?.radius;
-  const borderRadius = (radiusValue && radiusMap[radiusValue]) ?? radiusMap[DEFAULT_RADIUS];
+  // Asegurar que borderRadius siempre tenga un valor numérico válido
+  const borderRadius = getRadiusValue(borderConfig.radius);
 
   // Valores de tipografía con defaults
   const bodyFont = fontFamilyMap[config.typography?.bodyFont ?? DEFAULT_FONT] ?? fontFamilyMap[DEFAULT_FONT];
@@ -113,7 +133,7 @@ export const generateStyles = (config: TemplateConfig) => {
       flex: 1,
       borderWidth: borderWidth,
       borderColor: colors.border,
-      borderRadius: borderRadius || 0,
+      borderRadius: borderRadius,
       borderStyle: 'solid',
       padding: padding * 0.6,
       position: 'relative',
