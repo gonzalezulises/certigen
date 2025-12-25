@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Button } from '@/components/ui/button';
@@ -15,98 +15,6 @@ interface CertificatePDFProps {
   onError?: (error: string) => void;
 }
 
-export function useCertificatePDF() {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const generatePDF = useCallback(async (
-    elementId: string,
-    fileName: string = 'certificado.pdf',
-    paperSize: PaperSize = 'a4'
-  ): Promise<Blob | null> => {
-    setIsGenerating(true);
-    setError(null);
-
-    try {
-      const element = document.getElementById(elementId);
-      if (!element) {
-        throw new Error('No se encontro el elemento del certificado');
-      }
-
-      // Get paper dimensions
-      const paper = PAPER_SIZES[paperSize];
-
-      // Clone the element for rendering
-      const clone = element.cloneNode(true) as HTMLElement;
-      clone.style.width = `${paper.width * 4}px`; // 4x for high resolution
-      clone.style.height = `${paper.height * 4}px`;
-      clone.style.position = 'absolute';
-      clone.style.left = '-9999px';
-      clone.style.top = '-9999px';
-      document.body.appendChild(clone);
-
-      // Wait for fonts and images to load
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Create canvas from element with high quality settings
-      const canvas = await html2canvas(clone, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: null,
-        width: paper.width * 4,
-        height: paper.height * 4,
-      });
-
-      // Remove clone
-      document.body.removeChild(clone);
-
-      // Create PDF with correct paper size
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: paperSize === 'legal' ? 'legal' : 'a4',
-      });
-
-      // Add image to PDF
-      const imgData = canvas.toDataURL('image/png', 1.0);
-      pdf.addImage(imgData, 'PNG', 0, 0, paper.width, paper.height);
-
-      // Get blob
-      const blob = pdf.output('blob');
-
-      // Create download link
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-
-      // Trigger download
-      link.click();
-
-      // Cleanup
-      setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }, 100);
-
-      return blob;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al generar el PDF';
-      console.error('Error generating PDF:', err);
-      setError(errorMessage);
-      return null;
-    } finally {
-      setIsGenerating(false);
-    }
-  }, []);
-
-  return { generatePDF, isGenerating, error };
-}
-
 export function CertificatePDFButton({
   elementId,
   fileName = 'certificado.pdf',
@@ -114,24 +22,82 @@ export function CertificatePDFButton({
   onGenerated,
   onError,
 }: CertificatePDFProps) {
-  const { generatePDF, isGenerating, error } = useCertificatePDF();
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleClick = async () => {
-    const blob = await generatePDF(elementId, fileName, paperSize);
-    if (blob && onGenerated) {
-      onGenerated(blob);
-    }
-    if (!blob && onError && error) {
-      onError(error);
+  const handleDownload = async () => {
+    setIsGenerating(true);
+
+    try {
+      const element = document.getElementById(elementId);
+      if (!element) {
+        throw new Error('No se encontro el elemento del certificado');
+      }
+
+      const paper = PAPER_SIZES[paperSize];
+
+      // Store original styles
+      const originalStyle = element.getAttribute('style') || '';
+
+      // Set fixed dimensions for rendering
+      const renderWidth = 1200;
+      const renderHeight = Math.round(renderWidth / paper.aspectRatio);
+
+      element.style.width = `${renderWidth}px`;
+      element.style.height = `${renderHeight}px`;
+      element.style.maxWidth = 'none';
+
+      // Wait for styles to apply
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      // Create canvas
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: renderWidth,
+        height: renderHeight,
+      });
+
+      // Restore original styles
+      element.setAttribute('style', originalStyle);
+
+      // Create PDF
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: paperSize === 'legal' ? [355.6, 215.9] : 'a4',
+      });
+
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      pdf.addImage(imgData, 'PNG', 0, 0, paper.width, paper.height);
+
+      // Download
+      pdf.save(fileName);
+
+      if (onGenerated) {
+        onGenerated(pdf.output('blob'));
+      }
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Error al generar el PDF';
+      if (onError) {
+        onError(errorMessage);
+      }
+      alert('Error al generar el PDF: ' + errorMessage);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
   return (
     <Button
-      onClick={handleClick}
+      onClick={handleDownload}
       disabled={isGenerating}
       className="gap-2"
       size="lg"
+      type="button"
     >
       {isGenerating ? (
         <>
@@ -148,53 +114,69 @@ export function CertificatePDFButton({
   );
 }
 
-export async function GeneratePDFBlob(
-  elementId: string,
-  paperSize: PaperSize = 'a4'
-): Promise<Blob | null> {
-  try {
-    const element = document.getElementById(elementId);
-    if (!element) {
+// Hook for programmatic usage
+export function useCertificatePDF() {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const generatePDF = async (
+    elementId: string,
+    fileName: string = 'certificado.pdf',
+    paperSize: PaperSize = 'a4'
+  ): Promise<Blob | null> => {
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      const element = document.getElementById(elementId);
+      if (!element) {
+        throw new Error('No se encontro el elemento del certificado');
+      }
+
+      const paper = PAPER_SIZES[paperSize];
+      const originalStyle = element.getAttribute('style') || '';
+
+      const renderWidth = 1200;
+      const renderHeight = Math.round(renderWidth / paper.aspectRatio);
+
+      element.style.width = `${renderWidth}px`;
+      element.style.height = `${renderHeight}px`;
+      element.style.maxWidth = 'none';
+
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: renderWidth,
+        height: renderHeight,
+      });
+
+      element.setAttribute('style', originalStyle);
+
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: paperSize === 'legal' ? [355.6, 215.9] : 'a4',
+      });
+
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      pdf.addImage(imgData, 'PNG', 0, 0, paper.width, paper.height);
+
+      pdf.save(fileName);
+      return pdf.output('blob');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al generar el PDF';
+      console.error('Error generating PDF:', err);
+      setError(errorMessage);
       return null;
+    } finally {
+      setIsGenerating(false);
     }
+  };
 
-    const paper = PAPER_SIZES[paperSize];
-
-    // Clone for high-res rendering
-    const clone = element.cloneNode(true) as HTMLElement;
-    clone.style.width = `${paper.width * 4}px`;
-    clone.style.height = `${paper.height * 4}px`;
-    clone.style.position = 'absolute';
-    clone.style.left = '-9999px';
-    clone.style.top = '-9999px';
-    document.body.appendChild(clone);
-
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    const canvas = await html2canvas(clone, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      backgroundColor: null,
-      width: paper.width * 4,
-      height: paper.height * 4,
-    });
-
-    document.body.removeChild(clone);
-
-    const pdf = new jsPDF({
-      orientation: 'landscape',
-      unit: 'mm',
-      format: paperSize === 'legal' ? 'legal' : 'a4',
-    });
-
-    const imgData = canvas.toDataURL('image/png', 1.0);
-    pdf.addImage(imgData, 'PNG', 0, 0, paper.width, paper.height);
-
-    return pdf.output('blob');
-  } catch (error) {
-    console.error('Error generating PDF blob:', error);
-    return null;
-  }
+  return { generatePDF, isGenerating, error };
 }

@@ -1,4 +1,4 @@
 export { CertificatePreview } from './CertificatePreview';
-export { CertificatePDFButton, useCertificatePDF, GeneratePDFBlob } from './CertificatePDF';
+export { CertificatePDFButton, useCertificatePDF } from './CertificatePDF';
 export { CertificateForm } from './CertificateForm';
 export { CertificateValidator } from './CertificateValidator';
