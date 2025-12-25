@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle, Button, Alert, AlertDescription } from '@/components/ui';
 import { Settings, Award, Users, BarChart3, AlertCircle, LogOut } from 'lucide-react';
 import { formatShortDate, getCertificateTypeLabel } from '@/lib/utils';
@@ -10,6 +11,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 
 export default function AdminPage() {
+  const t = useTranslations();
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,13 +33,11 @@ export default function AdminPage() {
   }, [user, authLoading, router]);
 
   useEffect(() => {
-    // Only fetch if user is authenticated
     if (!user) return;
 
     const fetchCertificates = async () => {
       try {
         const supabase = createClient();
-        // Fetch only user's certificates
         const { data, error } = await supabase
           .from('certificates')
           .select('*')
@@ -50,7 +50,6 @@ export default function AdminPage() {
         const certificatesData = (data as Certificate[]) || [];
         setCertificates(certificatesData);
 
-        // Calculate stats
         const thisMonthStart = new Date();
         thisMonthStart.setDate(1);
         thisMonthStart.setHours(0, 0, 0, 0);
@@ -72,7 +71,7 @@ export default function AdminPage() {
           participations: participations.length,
         });
       } catch (err) {
-        setError('Error al cargar los certificados');
+        setError(t('errors.serverError'));
         console.error(err);
       } finally {
         setIsLoading(false);
@@ -80,23 +79,21 @@ export default function AdminPage() {
     };
 
     fetchCertificates();
-  }, [user]);
+  }, [user, t]);
 
   const handleSignOut = async () => {
     await signOut();
     router.push('/admin/auth');
   };
 
-  // Show loading while checking auth
   if (authLoading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
+      <div className="min-h-[80vh] flex items-center justify-center" role="status" aria-label={t('common.loading')}>
         <div className="h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  // Don't render if not authenticated (will redirect)
   if (!user) {
     return null;
   }
@@ -105,25 +102,25 @@ export default function AdminPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Settings className="h-8 w-8" />
-            Panel de Administracion
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <Settings className="h-8 w-8" aria-hidden="true" />
+            {t('admin.title')}
           </h1>
-          <p className="text-gray-600 mt-2">
-            Gestiona y monitorea los certificados generados.
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            {t('admin.subtitle')}
           </p>
-          <p className="text-sm text-gray-500 mt-1">
-            Sesion: {user.email}
+          <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
+            {t('admin.session')}: {user.email}
           </p>
         </div>
         <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
-          <LogOut className="h-4 w-4" />
-          Cerrar Sesion
+          <LogOut className="h-4 w-4" aria-hidden="true" />
+          {t('admin.logout')}
         </Button>
       </div>
 
       {error && (
-        <Alert variant="error" className="mb-6">
+        <Alert variant="error" className="mb-6" role="alert">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -131,26 +128,26 @@ export default function AdminPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <StatCard
-          icon={<Award className="h-6 w-6 text-blue-600" />}
-          label="Total Certificados"
+          icon={<Award className="h-6 w-6 text-blue-600 dark:text-blue-400" />}
+          label={t('admin.stats.total')}
           value={stats.total}
           color="blue"
         />
         <StatCard
-          icon={<BarChart3 className="h-6 w-6 text-green-600" />}
-          label="Este Mes"
+          icon={<BarChart3 className="h-6 w-6 text-green-600 dark:text-green-400" />}
+          label={t('admin.stats.thisMonth')}
           value={stats.thisMonth}
           color="green"
         />
         <StatCard
-          icon={<Users className="h-6 w-6 text-purple-600" />}
-          label="Aprobaciones"
+          icon={<Users className="h-6 w-6 text-purple-600 dark:text-purple-400" />}
+          label={t('admin.stats.completions')}
           value={stats.completions}
           color="purple"
         />
         <StatCard
-          icon={<Users className="h-6 w-6 text-orange-600" />}
-          label="Participaciones"
+          icon={<Users className="h-6 w-6 text-orange-600 dark:text-orange-400" />}
+          label={t('admin.stats.participations')}
           value={stats.participations}
           color="orange"
         />
@@ -159,46 +156,46 @@ export default function AdminPage() {
       {/* Recent Certificates */}
       <Card>
         <CardHeader>
-          <CardTitle>Certificados Recientes</CardTitle>
+          <CardTitle>{t('admin.recent.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8 text-gray-500">
-              Cargando certificados...
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400" role="status">
+              {t('common.loading')}
             </div>
           ) : certificates.length === 0 ? (
             <div className="text-center py-8">
-              <AlertCircle className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">No hay certificados generados aun.</p>
+              <AlertCircle className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" aria-hidden="true" />
+              <p className="text-gray-500 dark:text-gray-400">{t('admin.recent.empty')}</p>
               <Button
                 className="mt-4"
-                onClick={() => (window.location.href = '/generate')}
+                onClick={() => router.push('/generate')}
               >
-                Generar Primer Certificado
+                {t('admin.recent.generateFirst')}
               </Button>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full" role="table">
                 <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-                      Numero
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {t('admin.recent.number')}
                     </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-                      Estudiante
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {t('admin.recent.student')}
                     </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-                      Curso
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {t('admin.recent.course')}
                     </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-                      Tipo
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {t('admin.recent.type')}
                     </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-                      Fecha
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {t('admin.recent.date')}
                     </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
-                      Estado
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {t('admin.recent.status')}
                     </th>
                   </tr>
                 </thead>
@@ -206,45 +203,45 @@ export default function AdminPage() {
                   {certificates.map((cert) => (
                     <tr
                       key={cert.id}
-                      className="border-b border-gray-100 hover:bg-gray-50"
+                      className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
                       <td className="py-3 px-4">
-                        <span className="font-mono text-sm">
+                        <span className="font-mono text-sm text-gray-900 dark:text-white">
                           {cert.certificate_number}
                         </span>
                       </td>
                       <td className="py-3 px-4">
                         <div>
-                          <p className="font-medium">{cert.student_name}</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="font-medium text-gray-900 dark:text-white">{cert.student_name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
                             {cert.student_email}
                           </p>
                         </div>
                       </td>
-                      <td className="py-3 px-4">{cert.course_name}</td>
+                      <td className="py-3 px-4 text-gray-900 dark:text-white">{cert.course_name}</td>
                       <td className="py-3 px-4">
                         <span
                           className={`inline-flex px-2 py-1 text-xs rounded-full ${
                             cert.certificate_type === 'completion'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-blue-100 text-blue-700'
+                              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                              : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                           }`}
                         >
                           {getCertificateTypeLabel(cert.certificate_type)}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-500">
+                      <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
                         {formatShortDate(cert.issue_date)}
                       </td>
                       <td className="py-3 px-4">
                         <span
                           className={`inline-flex px-2 py-1 text-xs rounded-full ${
                             cert.is_active
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-red-100 text-red-700'
+                              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                              : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                           }`}
                         >
-                          {cert.is_active ? 'Activo' : 'Revocado'}
+                          {cert.is_active ? t('admin.recent.active') : t('admin.recent.inactive')}
                         </span>
                       </td>
                     </tr>
@@ -259,11 +256,11 @@ export default function AdminPage() {
       {/* API Integration Info */}
       <Card className="mt-8">
         <CardHeader>
-          <CardTitle>Integracion API</CardTitle>
+          <CardTitle>{t('admin.api.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600 mb-4">
-            Usa la API de CertiGen para generar certificados automaticamente desde tu plataforma.
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            {t('admin.api.description')}
           </p>
           <div className="bg-gray-900 rounded-lg p-4 text-sm font-mono text-green-400 overflow-x-auto">
             <pre>{`POST /api/integration
@@ -271,9 +268,9 @@ Authorization: Bearer YOUR_API_KEY
 Content-Type: application/json
 
 {
-  "student_name": "Nombre del Estudiante",
-  "student_email": "email@ejemplo.com",
-  "course_name": "Nombre del Curso",
+  "student_name": "Student Name",
+  "student_email": "email@example.com",
+  "course_name": "Course Name",
   "certificate_type": "completion",
   "hours": 40,
   "grade": 95
@@ -297,20 +294,20 @@ function StatCard({
   color: 'blue' | 'green' | 'purple' | 'orange';
 }) {
   const bgColors = {
-    blue: 'bg-blue-50',
-    green: 'bg-green-50',
-    purple: 'bg-purple-50',
-    orange: 'bg-orange-50',
+    blue: 'bg-blue-50 dark:bg-blue-900/20',
+    green: 'bg-green-50 dark:bg-green-900/20',
+    purple: 'bg-purple-50 dark:bg-purple-900/20',
+    orange: 'bg-orange-50 dark:bg-orange-900/20',
   };
 
   return (
     <Card>
       <CardContent className="p-6">
         <div className="flex items-center gap-4">
-          <div className={`p-3 rounded-lg ${bgColors[color]}`}>{icon}</div>
+          <div className={`p-3 rounded-lg ${bgColors[color]}`} aria-hidden="true">{icon}</div>
           <div>
-            <p className="text-sm text-gray-500">{label}</p>
-            <p className="text-2xl font-bold">{value}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
           </div>
         </div>
       </CardContent>

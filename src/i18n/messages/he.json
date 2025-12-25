@@ -1,0 +1,320 @@
+{
+  "common": {
+    "appName": "CertiGen",
+    "tagline": "מערכת תעודות מאומתות",
+    "loading": "טוען...",
+    "error": "אירעה שגיאה",
+    "success": "הצלחה",
+    "cancel": "ביטול",
+    "save": "שמור",
+    "download": "הורד",
+    "send": "שלח",
+    "submit": "שלח",
+    "close": "סגור",
+    "optional": "אופציונלי",
+    "required": "נדרש"
+  },
+  "navigation": {
+    "home": "דף הבית",
+    "generate": "צור",
+    "batch": "אצווה",
+    "validate": "אמת",
+    "admin": "ניהול",
+    "login": "התחברות",
+    "logout": "התנתקות",
+    "main": "ניווט ראשי"
+  },
+  "home": {
+    "hero": {
+      "title": "צור תעודות מקצועיות",
+      "subtitle": "צור תעודות מאומתות עם קודי QR בשניות",
+      "cta": "התחל ליצור"
+    },
+    "features": {
+      "title": "תכונות",
+      "qrVerification": {
+        "title": "אימות QR",
+        "description": "כל תעודה כוללת קוד QR ייחודי לאימות מיידי"
+      },
+      "templates": {
+        "title": "תבניות מקצועיות",
+        "description": "בחר מעיצובים אלגנטיים, מינימליסטיים או ארגוניים"
+      },
+      "batch": {
+        "title": "יצירה באצווה",
+        "description": "צור מאות תעודות מקבצי CSV"
+      },
+      "email": {
+        "title": "משלוח בדוא״ל",
+        "description": "שלח תעודות ישירות לנמענים"
+      }
+    }
+  },
+  "generate": {
+    "title": "צור תעודה",
+    "subtitle": "מלא את הטופס ליצירת תעודה מאומתת עם קוד QR",
+    "batchLink": "יצירה באצווה (CSV)",
+    "organization": {
+      "title": "ארגון",
+      "name": "שם הארגון",
+      "namePlaceholder": "החברה שלי / אוניברסיטה",
+      "logo": "לוגו",
+      "logoOptional": "לוגו (אופציונלי)",
+      "logoHint": "PNG, JPG עד 2MB",
+      "uploadLogo": "העלה לוגו"
+    },
+    "student": {
+      "title": "פרטי המשתתף",
+      "name": "שם מלא",
+      "namePlaceholder": "ישראל ישראלי",
+      "nameRequired": "השם חייב להכיל לפחות 2 תווים",
+      "email": "דוא״ל",
+      "emailPlaceholder": "israel@example.co.il",
+      "emailInvalid": "פורמט דוא״ל לא תקין",
+      "emailHint": "נדרש רק אם תרצה לשלוח את התעודה בדוא״ל"
+    },
+    "course": {
+      "title": "פרטי הקורס",
+      "name": "שם הקורס",
+      "namePlaceholder": "React מתקדם: Hooks ותבניות",
+      "nameRequired": "שם הקורס חייב להכיל לפחות 2 תווים",
+      "type": "סוג תעודה",
+      "typeParticipation": "השתתפות",
+      "typeCompletion": "סיום",
+      "hours": "שעות קורס",
+      "hoursPlaceholder": "40",
+      "grade": "ציון (0-100)",
+      "gradePlaceholder": "85",
+      "instructor": "שם המדריך",
+      "instructorPlaceholder": "שרה כהן",
+      "issueDate": "תאריך הנפקה"
+    },
+    "template": {
+      "title": "תבנית תעודה",
+      "elegant": "אלגנטי",
+      "elegantDesc": "עיצוב מקצועי עם גרדיאנט כחול ומסגרות זהב",
+      "minimal": "מינימליסטי",
+      "minimalDesc": "עיצוב נקי ומודרני עם קווים פשוטים",
+      "corporate": "ארגוני",
+      "corporateDesc": "עיצוב רשמי עם מקום ללוגו מוסדי"
+    },
+    "preview": {
+      "title": "תצוגה מקדימה",
+      "paperSize": "גודל נייר"
+    },
+    "actions": {
+      "generate": "צור תעודה",
+      "downloadPdf": "הורד PDF",
+      "sendEmail": "שלח בדוא״ל",
+      "sending": "שולח...",
+      "sent": "נשלח"
+    },
+    "success": {
+      "title": "התעודה נוצרה בהצלחה",
+      "number": "מספר תעודה",
+      "persisted": "התעודה נשמרה בחשבון שלך וניתנת לאימות.",
+      "anonymous": "מצב אנונימי: התעודה לא נשמרת. הורד את ה-PDF או התחבר לשמירה."
+    }
+  },
+  "validate": {
+    "title": "אמת תעודה",
+    "subtitle": "הזן את מספר התעודה לאימות האותנטיות",
+    "placeholder": "הזן מספר תעודה (לדוגמה CER-20240115-847362)",
+    "button": "אמת",
+    "validating": "מאמת...",
+    "results": {
+      "valid": "תעודה תקפה",
+      "invalid": "תעודה לא תקפה",
+      "notFound": "התעודה לא נמצאה",
+      "notFoundHint": "אם נוצרה במצב אנונימי, לא ניתן לאמת אותה באינטרנט.",
+      "studentName": "משתתף",
+      "courseName": "קורס",
+      "type": "סוג",
+      "issueDate": "תאריך הנפקה",
+      "instructor": "מדריך",
+      "hours": "שעות",
+      "grade": "ציון",
+      "validationCount": "מספר אימותים"
+    },
+    "scan": {
+      "title": "או סרוק קוד QR",
+      "description": "השתמש במצלמת המכשיר שלך לסריקת קוד ה-QR של התעודה"
+    }
+  },
+  "batch": {
+    "title": "יצירה באצווה",
+    "subtitle": "צור מספר תעודות בבת אחת מקובץ CSV",
+    "requiresAuth": "עליך להתחבר ליצירת תעודות באצווה",
+    "login": "התחברות",
+    "register": "הרשמה",
+    "upload": {
+      "title": "העלה קובץ CSV",
+      "dragDrop": "לחץ להעלאה או גרור ושחרר",
+      "hint": "קובץ CSV עם עמודות: שם, דוא״ל, ציון (אופציונלי), שעות (אופציונלי)",
+      "selected": "קובץ נבחר"
+    },
+    "settings": {
+      "title": "הגדרות יצירה",
+      "courseName": "שם הקורס",
+      "courseNamePlaceholder": "בוטקאמפ פיתוח אתרים",
+      "instructor": "מדריך",
+      "instructorPlaceholder": "שרה כהן",
+      "type": "סוג תעודה",
+      "template": "תבנית",
+      "issueDate": "תאריך הנפקה"
+    },
+    "preview": {
+      "title": "תצוגה מקדימה של נתונים",
+      "rows": "נמצאו {count} שורות",
+      "name": "שם",
+      "email": "דוא״ל",
+      "grade": "ציון",
+      "hours": "שעות"
+    },
+    "progress": {
+      "generating": "יוצר תעודות...",
+      "processing": "מעבד {current} מתוך {total}",
+      "complete": "היצירה הושלמה",
+      "success": "{count} תעודות נוצרו בהצלחה",
+      "errors": "אירעו {count} שגיאות"
+    },
+    "actions": {
+      "generate": "צור {count} תעודות",
+      "downloadAll": "הורד הכל (ZIP)",
+      "sendEmails": "שלח הכל בדוא״ל",
+      "clear": "נקה"
+    },
+    "csvFormat": {
+      "title": "פורמט CSV",
+      "required": "עמודות נדרשות",
+      "optional": "עמודות אופציונליות",
+      "example": "דוגמה"
+    }
+  },
+  "admin": {
+    "title": "לוח ניהול",
+    "subtitle": "נהל ועקוב אחר תעודות שנוצרו",
+    "session": "הפעלה",
+    "logout": "התנתקות",
+    "stats": {
+      "total": "סה״כ תעודות",
+      "thisMonth": "החודש",
+      "completions": "סיום",
+      "participations": "השתתפות"
+    },
+    "recent": {
+      "title": "תעודות אחרונות",
+      "empty": "עדיין לא נוצרו תעודות",
+      "generateFirst": "צור תעודה ראשונה",
+      "number": "מספר",
+      "student": "משתתף",
+      "course": "קורס",
+      "type": "סוג",
+      "date": "תאריך",
+      "status": "סטטוס",
+      "active": "פעיל",
+      "inactive": "לא פעיל"
+    },
+    "api": {
+      "title": "אינטגרציית API",
+      "description": "השתמש ב-API של CertiGen ליצירת תעודות אוטומטית מהפלטפורמה שלך"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "התחברות",
+      "subtitle": "גש ללוח הניהול שלך",
+      "email": "דוא״ל",
+      "emailPlaceholder": "you@email.co.il",
+      "password": "סיסמה",
+      "passwordPlaceholder": "••••••••",
+      "submit": "התחבר",
+      "noAccount": "אין לך חשבון?",
+      "register": "הרשמה"
+    },
+    "register": {
+      "title": "הרשמה",
+      "subtitle": "צור חשבון לשמירת תעודות",
+      "email": "דוא״ל",
+      "emailPlaceholder": "you@email.co.il",
+      "password": "סיסמה",
+      "passwordPlaceholder": "לפחות 6 תווים",
+      "confirmPassword": "אשר סיסמה",
+      "confirmPasswordPlaceholder": "חזור על הסיסמה",
+      "submit": "הרשם",
+      "hasAccount": "כבר יש לך חשבון?",
+      "login": "התחברות",
+      "success": "החשבון נוצר בהצלחה. בדוק את הדוא״ל שלך לאישור."
+    },
+    "anonymous": {
+      "title": "המשך ללא חשבון",
+      "button": "צור תעודה אנונימית",
+      "hint": "תעודות אנונימיות לא נשמרות ודורשות דוא״ל של הנמען לשליחה."
+    },
+    "errors": {
+      "invalidCredentials": "דוא״ל או סיסמה לא תקינים",
+      "emailNotConfirmed": "הדוא״ל לא אושר. בדוק את תיבת הדואר.",
+      "userExists": "חשבון עם דוא״ל זה כבר קיים",
+      "weakPassword": "הסיסמה חייבת להכיל לפחות 6 תווים",
+      "passwordMismatch": "הסיסמאות לא תואמות",
+      "generic": "אירעה שגיאה. נסה שוב."
+    }
+  },
+  "footer": {
+    "tagline": "מערכת תעודות מאומתות",
+    "validate": "אמת תעודה",
+    "github": "GitHub",
+    "developedBy": "פותח על ידי",
+    "rights": "רישיון MIT"
+  },
+  "accessibility": {
+    "skipToContent": "דלג לתוכן הראשי",
+    "openMenu": "פתח תפריט ניווט",
+    "closeMenu": "סגור תפריט ניווט",
+    "toggleTheme": "החלף ערכת נושא בהיר/כהה",
+    "currentTheme": "ערכת נושא נוכחית: {theme}",
+    "selectLanguage": "בחר שפה",
+    "currentLanguage": "שפה נוכחית: {language}",
+    "certificatePreview": "תצוגה מקדימה של תעודה עבור {name}",
+    "qrCode": "קוד QR לאימות תעודה",
+    "logoPreview": "תצוגה מקדימה של לוגו",
+    "removeLogo": "הסר לוגו",
+    "loading": "טוען תוכן",
+    "error": "הודעת שגיאה",
+    "success": "הודעת הצלחה",
+    "formError": "הטופס מכיל {count} שגיאות"
+  },
+  "errors": {
+    "required": "שדה זה נדרש",
+    "minLength": "חייב להכיל לפחות {min} תווים",
+    "maxLength": "חייב להכיל לכל היותר {max} תווים",
+    "email": "פורמט דוא״ל לא תקין",
+    "number": "חייב להיות מספר תקין",
+    "min": "חייב להיות לפחות {min}",
+    "max": "חייב להיות לכל היותר {max}",
+    "fileTooLarge": "הקובץ חורג מהגודל המקסימלי של {max}",
+    "invalidFormat": "פורמט קובץ לא תקין. מותר: {formats}",
+    "networkError": "שגיאת רשת. נסה שוב.",
+    "serverError": "שגיאת שרת. נסה מאוחר יותר.",
+    "notFound": "לא נמצא",
+    "unauthorized": "התחבר להמשך"
+  },
+  "theme": {
+    "light": "בהיר",
+    "dark": "כהה",
+    "system": "מערכת"
+  },
+  "certificate": {
+    "title": "תעודה",
+    "ofParticipation": "על השתתפות",
+    "ofCompletion": "על סיום",
+    "certifies": "בזאת מאושר כי",
+    "hasParticipated": "השתתף בהצלחה בקורס",
+    "hasCompleted": "סיים בהצלחה את הקורס",
+    "issueDate": "תאריך הנפקה",
+    "certificateNumber": "מספר תעודה",
+    "hours": "שעות",
+    "grade": "ציון",
+    "verify": "אמת"
+  }
+}

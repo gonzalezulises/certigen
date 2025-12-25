@@ -1,26 +1,192 @@
 @import "tailwindcss";
 
+/* Light theme (default) */
 :root {
+  /* Background colors */
   --background: #ffffff;
-  --foreground: #171717;
+  --background-secondary: #f9fafb;
+  --background-tertiary: #f3f4f6;
+
+  /* Text colors */
+  --foreground: #111827;
+  --foreground-secondary: #4b5563;
+  --foreground-muted: #9ca3af;
+
+  /* Primary colors */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #dbeafe;
+
+  /* Secondary colors */
+  --secondary: #64748b;
+  --secondary-hover: #475569;
+
+  /* Border colors */
+  --border: #e5e7eb;
+  --border-focus: #2563eb;
+
+  /* Surface colors */
+  --surface: #ffffff;
+  --surface-hover: #f9fafb;
+
+  /* Status colors */
+  --success: #22c55e;
+  --success-light: #dcfce7;
+  --error: #ef4444;
+  --error-light: #fee2e2;
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --info: #3b82f6;
+  --info-light: #dbeafe;
+
+  /* Certificate colors */
+  --certificate-gold: #d4af37;
+  --certificate-blue: #1e3a8a;
+  --certificate-border: #d4af37;
+}
+
+/* Dark theme */
+.dark {
+  /* Background colors */
+  --background: #0f172a;
+  --background-secondary: #1e293b;
+  --background-tertiary: #334155;
+
+  /* Text colors */
+  --foreground: #f8fafc;
+  --foreground-secondary: #cbd5e1;
+  --foreground-muted: #64748b;
+
+  /* Primary colors */
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-light: #1e3a8a;
+
+  /* Secondary colors */
+  --secondary: #94a3b8;
+  --secondary-hover: #cbd5e1;
+
+  /* Border colors */
+  --border: #334155;
+  --border-focus: #3b82f6;
+
+  /* Surface colors */
+  --surface: #1e293b;
+  --surface-hover: #334155;
+
+  /* Status colors */
+  --success: #22c55e;
+  --success-light: #14532d;
+  --error: #ef4444;
+  --error-light: #7f1d1d;
+  --warning: #f59e0b;
+  --warning-light: #78350f;
+  --info: #3b82f6;
+  --info-light: #1e3a8a;
+
+  /* Certificate colors */
+  --certificate-gold: #fbbf24;
+  --certificate-blue: #60a5fa;
+  --certificate-border: #fbbf24;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base styles */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Skip link styles */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only.focus\:not-sr-only:focus {
+  position: absolute;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Smooth theme transitions */
+html {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Print styles - ensure certificates print correctly */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* RTL support for Hebrew */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* Custom scrollbar for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground-muted);
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

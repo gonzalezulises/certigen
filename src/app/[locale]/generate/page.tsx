@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { CertificateForm, CertificatePreview, CertificatePDFButton } from '@/components/certificate';
@@ -11,6 +12,7 @@ import { CheckCircle2, Eye, FileText, FileSpreadsheet, Mail, Loader2, Info } fro
 import { useAuth } from '@/context/AuthContext';
 
 export default function GeneratePage() {
+  const t = useTranslations();
   const { user, loading: authLoading } = useAuth();
   const [formData, setFormData] = useState<Partial<CertificateFormData>>({
     certificate_type: 'participation',
@@ -66,7 +68,6 @@ export default function GeneratePage() {
       const imgData = canvas.toDataURL('image/png');
       pdf.addImage(imgData, 'PNG', 0, 0, paper.width, paper.height);
 
-      // Get base64 without the data:application/pdf prefix
       const pdfBase64 = pdf.output('datauristring').split(',')[1];
       return pdfBase64;
     } catch {
@@ -105,12 +106,12 @@ export default function GeneratePage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Error al enviar el correo');
+        throw new Error(result.error || t('errors.serverError'));
       }
 
       setEmailSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al enviar el correo');
+      setError(err instanceof Error ? err.message : t('errors.serverError'));
     } finally {
       setIsSendingEmail(false);
     }
@@ -136,62 +137,64 @@ export default function GeneratePage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Error al generar el certificado');
+        throw new Error(result.error || t('errors.serverError'));
       }
 
       setGeneratedCertificate(result.certificate);
       setIsPersisted(result.persisted || false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      setError(err instanceof Error ? err.message : t('errors.serverError'));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Generar Certificado</h1>
-            <p className="text-gray-600 mt-2 text-sm sm:text-base">
-              Completa el formulario para generar un certificado verificable con codigo QR.
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+              {t('generate.title')}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">
+              {t('generate.subtitle')}
             </p>
           </div>
           <Link href="/batch">
             <Button variant="outline" className="gap-2">
-              <FileSpreadsheet className="h-4 w-4" />
-              Generar en lote (CSV)
+              <FileSpreadsheet className="h-4 w-4" aria-hidden="true" />
+              {t('generate.batchLink')}
             </Button>
           </Link>
         </div>
 
         {/* Alerts */}
         {error && (
-          <Alert variant="error" className="mb-6">
-            <AlertTitle>Error</AlertTitle>
+          <Alert variant="error" className="mb-6" role="alert">
+            <AlertTitle>{t('common.error')}</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
         {generatedCertificate && (
-          <Alert variant="success" className="mb-6">
+          <Alert variant="success" className="mb-6" role="status">
             <AlertTitle className="flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5" />
-              Certificado Generado Exitosamente
+              <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
+              {t('generate.success.title')}
             </AlertTitle>
             <AlertDescription>
               <div className="space-y-1">
-                <p>Numero de certificado: <span className="font-mono font-bold">{generatedCertificate.certificate_number}</span></p>
+                <p>{t('generate.success.number')}: <span className="font-mono font-bold">{generatedCertificate.certificate_number}</span></p>
                 {isPersisted ? (
-                  <p className="text-sm text-green-700">
-                    El certificado ha sido guardado en tu cuenta y puede ser validado.
+                  <p className="text-sm text-green-700 dark:text-green-400">
+                    {t('generate.success.persisted')}
                   </p>
                 ) : (
-                  <p className="text-sm text-amber-700 flex items-center gap-1">
-                    <Info className="h-4 w-4" />
-                    Modo anonimo: El certificado no se guarda. Descarga el PDF o inicia sesion para guardar.
+                  <p className="text-sm text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                    <Info className="h-4 w-4" aria-hidden="true" />
+                    {t('generate.success.anonymous')}
                   </p>
                 )}
               </div>
@@ -219,16 +222,18 @@ export default function GeneratePage() {
             <Card>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <Eye className="h-5 w-5" />
-                  Vista Previa
+                  <Eye className="h-5 w-5" aria-hidden="true" />
+                  {t('generate.preview.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Paper Size Selector */}
-                <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                  <FileText className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                <div className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <FileText className="h-5 w-5 text-gray-500 dark:text-gray-400 flex-shrink-0" aria-hidden="true" />
                   <div className="flex-1">
-                    <Label htmlFor="paper-size" className="text-sm font-medium">Tamano de papel</Label>
+                    <Label htmlFor="paper-size" className="text-sm font-medium">
+                      {t('generate.preview.paperSize')}
+                    </Label>
                     <Select
                       id="paper-size"
                       value={paperSize}
@@ -245,7 +250,11 @@ export default function GeneratePage() {
                 </div>
 
                 {/* Certificate Preview */}
-                <div className="bg-gray-100 rounded-lg p-2 sm:p-4 overflow-hidden">
+                <div
+                  className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 sm:p-4 overflow-hidden"
+                  role="img"
+                  aria-label={t('accessibility.certificatePreview', { name: formData.student_name || '' })}
+                >
                   <div className="w-full max-w-full overflow-auto">
                     <CertificatePreview
                       data={formData}
@@ -272,28 +281,29 @@ export default function GeneratePage() {
                         disabled={isSendingEmail || emailSent}
                         variant={emailSent ? 'outline' : 'default'}
                         className="gap-2"
+                        aria-busy={isSendingEmail}
                       >
                         {isSendingEmail ? (
                           <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Enviando...
+                            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                            {t('generate.actions.sending')}
                           </>
                         ) : emailSent ? (
                           <>
-                            <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            Enviado
+                            <CheckCircle2 className="h-4 w-4 text-green-600" aria-hidden="true" />
+                            {t('generate.actions.sent')}
                           </>
                         ) : (
                           <>
-                            <Mail className="h-4 w-4" />
-                            Enviar por Email
+                            <Mail className="h-4 w-4" aria-hidden="true" />
+                            {t('generate.actions.sendEmail')}
                           </>
                         )}
                       </Button>
                     </div>
                     {emailSent && (
-                      <p className="text-center text-sm text-green-600">
-                        Certificado enviado a {formData.student_email}
+                      <p className="text-center text-sm text-green-600 dark:text-green-400" role="status">
+                        {t('generate.actions.sent')} - {formData.student_email}
                       </p>
                     )}
                   </div>

@@ -1,0 +1,320 @@
+{
+  "common": {
+    "appName": "CertiGen",
+    "tagline": "Verifizierbares Zertifikatsystem",
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "download": "Herunterladen",
+    "send": "Senden",
+    "submit": "Absenden",
+    "close": "Schliessen",
+    "optional": "optional",
+    "required": "erforderlich"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "generate": "Erstellen",
+    "batch": "Stapel",
+    "validate": "Validieren",
+    "admin": "Admin",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "main": "Hauptnavigation"
+  },
+  "home": {
+    "hero": {
+      "title": "Professionelle Zertifikate erstellen",
+      "subtitle": "Erstellen Sie verifizierbare Zertifikate mit QR-Codes in Sekunden",
+      "cta": "Jetzt erstellen"
+    },
+    "features": {
+      "title": "Funktionen",
+      "qrVerification": {
+        "title": "QR-Verifizierung",
+        "description": "Jedes Zertifikat enthalt einen einzigartigen QR-Code zur sofortigen Verifizierung"
+      },
+      "templates": {
+        "title": "Professionelle Vorlagen",
+        "description": "Wahlen Sie aus eleganten, minimalistischen oder Corporate-Designs"
+      },
+      "batch": {
+        "title": "Stapelverarbeitung",
+        "description": "Erstellen Sie Hunderte von Zertifikaten aus CSV-Dateien"
+      },
+      "email": {
+        "title": "E-Mail-Versand",
+        "description": "Senden Sie Zertifikate direkt an die Empfanger"
+      }
+    }
+  },
+  "generate": {
+    "title": "Zertifikat erstellen",
+    "subtitle": "Fullen Sie das Formular aus, um ein verifizierbares Zertifikat mit QR-Code zu erstellen",
+    "batchLink": "Stapelverarbeitung (CSV)",
+    "organization": {
+      "title": "Organisation",
+      "name": "Organisationsname",
+      "namePlaceholder": "Mein Unternehmen / Universitat",
+      "logo": "Logo",
+      "logoOptional": "Logo (optional)",
+      "logoHint": "PNG, JPG bis 2MB",
+      "uploadLogo": "Logo hochladen"
+    },
+    "student": {
+      "title": "Teilnehmerinformationen",
+      "name": "Vollstandiger Name",
+      "namePlaceholder": "Max Mustermann",
+      "nameRequired": "Der Name muss mindestens 2 Zeichen haben",
+      "email": "E-Mail",
+      "emailPlaceholder": "max@beispiel.de",
+      "emailInvalid": "Ungultiges E-Mail-Format",
+      "emailHint": "Nur erforderlich, wenn Sie das Zertifikat per E-Mail senden mochten"
+    },
+    "course": {
+      "title": "Kursinformationen",
+      "name": "Kursname",
+      "namePlaceholder": "Fortgeschrittenes React: Hooks und Patterns",
+      "nameRequired": "Der Kursname muss mindestens 2 Zeichen haben",
+      "type": "Zertifikatstyp",
+      "typeParticipation": "Teilnahme",
+      "typeCompletion": "Abschluss",
+      "hours": "Kursstunden",
+      "hoursPlaceholder": "40",
+      "grade": "Note (0-100)",
+      "gradePlaceholder": "85",
+      "instructor": "Dozent",
+      "instructorPlaceholder": "Maria Muller",
+      "issueDate": "Ausstellungsdatum"
+    },
+    "template": {
+      "title": "Zertifikatsvorlage",
+      "elegant": "Elegant",
+      "elegantDesc": "Professionelles Design mit blauem Farbverlauf und goldenen Randern",
+      "minimal": "Minimalistisch",
+      "minimalDesc": "Klares und modernes Design mit einfachen Linien",
+      "corporate": "Corporate",
+      "corporateDesc": "Formelles Design mit Platz fur institutionelles Logo"
+    },
+    "preview": {
+      "title": "Vorschau",
+      "paperSize": "Papiergrosse"
+    },
+    "actions": {
+      "generate": "Zertifikat erstellen",
+      "downloadPdf": "PDF herunterladen",
+      "sendEmail": "Per E-Mail senden",
+      "sending": "Senden...",
+      "sent": "Gesendet"
+    },
+    "success": {
+      "title": "Zertifikat erfolgreich erstellt",
+      "number": "Zertifikatsnummer",
+      "persisted": "Das Zertifikat wurde in Ihrem Konto gespeichert und kann validiert werden.",
+      "anonymous": "Anonymer Modus: Das Zertifikat wird nicht gespeichert. Laden Sie das PDF herunter oder melden Sie sich an."
+    }
+  },
+  "validate": {
+    "title": "Zertifikat validieren",
+    "subtitle": "Geben Sie die Zertifikatsnummer ein, um die Echtheit zu uberprufen",
+    "placeholder": "Zertifikatsnummer eingeben (z.B. CER-20240115-847362)",
+    "button": "Validieren",
+    "validating": "Validiere...",
+    "results": {
+      "valid": "Gultiges Zertifikat",
+      "invalid": "Ungultiges Zertifikat",
+      "notFound": "Zertifikat nicht gefunden",
+      "notFoundHint": "Wenn es im anonymen Modus erstellt wurde, kann es nicht online validiert werden.",
+      "studentName": "Teilnehmer",
+      "courseName": "Kurs",
+      "type": "Typ",
+      "issueDate": "Ausstellungsdatum",
+      "instructor": "Dozent",
+      "hours": "Stunden",
+      "grade": "Note",
+      "validationCount": "Validierungsanzahl"
+    },
+    "scan": {
+      "title": "Oder QR-Code scannen",
+      "description": "Verwenden Sie die Kamera Ihres Gerats, um den QR-Code des Zertifikats zu scannen"
+    }
+  },
+  "batch": {
+    "title": "Stapelverarbeitung",
+    "subtitle": "Erstellen Sie mehrere Zertifikate gleichzeitig aus einer CSV-Datei",
+    "requiresAuth": "Sie mussen sich anmelden, um Zertifikate stapelweise zu erstellen",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "upload": {
+      "title": "CSV-Datei hochladen",
+      "dragDrop": "Klicken Sie zum Hochladen oder ziehen Sie die Datei hierher",
+      "hint": "CSV-Datei mit Spalten: name, email, note (optional), stunden (optional)",
+      "selected": "Ausgewahlte Datei"
+    },
+    "settings": {
+      "title": "Erstellungseinstellungen",
+      "courseName": "Kursname",
+      "courseNamePlaceholder": "Webentwicklung Bootcamp",
+      "instructor": "Dozent",
+      "instructorPlaceholder": "Maria Muller",
+      "type": "Zertifikatstyp",
+      "template": "Vorlage",
+      "issueDate": "Ausstellungsdatum"
+    },
+    "preview": {
+      "title": "Datenvorschau",
+      "rows": "{count} Zeilen gefunden",
+      "name": "Name",
+      "email": "E-Mail",
+      "grade": "Note",
+      "hours": "Stunden"
+    },
+    "progress": {
+      "generating": "Zertifikate werden erstellt...",
+      "processing": "Verarbeite {current} von {total}",
+      "complete": "Erstellung abgeschlossen",
+      "success": "{count} Zertifikate erfolgreich erstellt",
+      "errors": "{count} Fehler aufgetreten"
+    },
+    "actions": {
+      "generate": "{count} Zertifikate erstellen",
+      "downloadAll": "Alle herunterladen (ZIP)",
+      "sendEmails": "Alle per E-Mail senden",
+      "clear": "Loschen"
+    },
+    "csvFormat": {
+      "title": "CSV-Format",
+      "required": "Erforderliche Spalten",
+      "optional": "Optionale Spalten",
+      "example": "Beispiel"
+    }
+  },
+  "admin": {
+    "title": "Admin-Bereich",
+    "subtitle": "Verwalten und uberwachen Sie erstellte Zertifikate",
+    "session": "Sitzung",
+    "logout": "Abmelden",
+    "stats": {
+      "total": "Gesamtzertifikate",
+      "thisMonth": "Diesen Monat",
+      "completions": "Abschlusse",
+      "participations": "Teilnahmen"
+    },
+    "recent": {
+      "title": "Aktuelle Zertifikate",
+      "empty": "Noch keine Zertifikate erstellt",
+      "generateFirst": "Erstes Zertifikat erstellen",
+      "number": "Nummer",
+      "student": "Teilnehmer",
+      "course": "Kurs",
+      "type": "Typ",
+      "date": "Datum",
+      "status": "Status",
+      "active": "Aktiv",
+      "inactive": "Inaktiv"
+    },
+    "api": {
+      "title": "API-Integration",
+      "description": "Verwenden Sie die CertiGen-API, um Zertifikate automatisch von Ihrer Plattform zu erstellen"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "subtitle": "Zugang zu Ihrem Admin-Bereich",
+      "email": "E-Mail",
+      "emailPlaceholder": "ihre@email.de",
+      "password": "Passwort",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Anmelden",
+      "noAccount": "Noch kein Konto?",
+      "register": "Registrieren"
+    },
+    "register": {
+      "title": "Registrieren",
+      "subtitle": "Erstellen Sie Ihr Konto zum Speichern von Zertifikaten",
+      "email": "E-Mail",
+      "emailPlaceholder": "ihre@email.de",
+      "password": "Passwort",
+      "passwordPlaceholder": "Mindestens 6 Zeichen",
+      "confirmPassword": "Passwort bestatigen",
+      "confirmPasswordPlaceholder": "Passwort wiederholen",
+      "submit": "Registrieren",
+      "hasAccount": "Bereits ein Konto?",
+      "login": "Anmelden",
+      "success": "Konto erfolgreich erstellt. Bitte uberprufen Sie Ihre E-Mail zur Bestatigung."
+    },
+    "anonymous": {
+      "title": "Ohne Konto fortfahren",
+      "button": "Anonymes Zertifikat erstellen",
+      "hint": "Anonyme Zertifikate werden nicht gespeichert und erfordern eine Empfanger-E-Mail fur den Versand."
+    },
+    "errors": {
+      "invalidCredentials": "Ungultige E-Mail oder Passwort",
+      "emailNotConfirmed": "E-Mail nicht bestatigt. Bitte uberprufen Sie Ihren Posteingang.",
+      "userExists": "Ein Konto mit dieser E-Mail existiert bereits",
+      "weakPassword": "Das Passwort muss mindestens 6 Zeichen haben",
+      "passwordMismatch": "Passworter stimmen nicht uberein",
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    }
+  },
+  "footer": {
+    "tagline": "Verifizierbares Zertifikatsystem",
+    "validate": "Zertifikat validieren",
+    "github": "GitHub",
+    "developedBy": "Entwickelt von",
+    "rights": "MIT-Lizenz"
+  },
+  "accessibility": {
+    "skipToContent": "Zum Hauptinhalt springen",
+    "openMenu": "Navigationsmenu offnen",
+    "closeMenu": "Navigationsmenu schliessen",
+    "toggleTheme": "Hell/Dunkel-Modus umschalten",
+    "currentTheme": "Aktuelles Theme: {theme}",
+    "selectLanguage": "Sprache auswahlen",
+    "currentLanguage": "Aktuelle Sprache: {language}",
+    "certificatePreview": "Zertifikatsvorschau fur {name}",
+    "qrCode": "QR-Code zur Zertifikatsvalidierung",
+    "logoPreview": "Logo-Vorschau",
+    "removeLogo": "Logo entfernen",
+    "loading": "Inhalt wird geladen",
+    "error": "Fehlermeldung",
+    "success": "Erfolgsmeldung",
+    "formError": "Das Formular hat {count} Fehler"
+  },
+  "errors": {
+    "required": "Dieses Feld ist erforderlich",
+    "minLength": "Muss mindestens {min} Zeichen haben",
+    "maxLength": "Darf hochstens {max} Zeichen haben",
+    "email": "Ungultiges E-Mail-Format",
+    "number": "Muss eine gultige Zahl sein",
+    "min": "Muss mindestens {min} sein",
+    "max": "Darf hochstens {max} sein",
+    "fileTooLarge": "Datei uberschreitet die maximale Grosse von {max}",
+    "invalidFormat": "Ungultiges Dateiformat. Erlaubt: {formats}",
+    "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+    "serverError": "Serverfehler. Bitte versuchen Sie es spater erneut.",
+    "notFound": "Nicht gefunden",
+    "unauthorized": "Bitte melden Sie sich an, um fortzufahren"
+  },
+  "theme": {
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  },
+  "certificate": {
+    "title": "ZERTIFIKAT",
+    "ofParticipation": "DER TEILNAHME",
+    "ofCompletion": "DES ABSCHLUSSES",
+    "certifies": "Hiermit wird bestatigt, dass",
+    "hasParticipated": "erfolgreich am Kurs teilgenommen hat",
+    "hasCompleted": "den Kurs erfolgreich abgeschlossen hat",
+    "issueDate": "Ausstellungsdatum",
+    "certificateNumber": "Zertifikatsnummer",
+    "hours": "Stunden",
+    "grade": "Note",
+    "verify": "Verifizieren"
+  }
+}

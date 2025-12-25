@@ -1,0 +1,320 @@
+{
+  "common": {
+    "appName": "CertiGen",
+    "tagline": "Sistema di Certificati Verificabili",
+    "loading": "Caricamento...",
+    "error": "Si e verificato un errore",
+    "success": "Successo",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "download": "Scarica",
+    "send": "Invia",
+    "submit": "Invia",
+    "close": "Chiudi",
+    "optional": "opzionale",
+    "required": "richiesto"
+  },
+  "navigation": {
+    "home": "Home",
+    "generate": "Genera",
+    "batch": "Batch",
+    "validate": "Valida",
+    "admin": "Admin",
+    "login": "Accedi",
+    "logout": "Esci",
+    "main": "Navigazione principale"
+  },
+  "home": {
+    "hero": {
+      "title": "Genera Certificati Professionali",
+      "subtitle": "Crea certificati verificabili con codici QR in pochi secondi",
+      "cta": "Inizia a Generare"
+    },
+    "features": {
+      "title": "Funzionalita",
+      "qrVerification": {
+        "title": "Verifica QR",
+        "description": "Ogni certificato include un codice QR unico per la verifica istantanea"
+      },
+      "templates": {
+        "title": "Template Professionali",
+        "description": "Scegli tra design eleganti, minimalisti o aziendali"
+      },
+      "batch": {
+        "title": "Generazione Batch",
+        "description": "Genera centinaia di certificati da file CSV"
+      },
+      "email": {
+        "title": "Invio Email",
+        "description": "Invia certificati direttamente ai destinatari"
+      }
+    }
+  },
+  "generate": {
+    "title": "Genera Certificato",
+    "subtitle": "Compila il modulo per generare un certificato verificabile con codice QR",
+    "batchLink": "Genera in batch (CSV)",
+    "organization": {
+      "title": "Organizzazione",
+      "name": "Nome Organizzazione",
+      "namePlaceholder": "La Mia Azienda / Universita",
+      "logo": "Logo",
+      "logoOptional": "Logo (opzionale)",
+      "logoHint": "PNG, JPG fino a 2MB",
+      "uploadLogo": "Carica logo"
+    },
+    "student": {
+      "title": "Informazioni Studente",
+      "name": "Nome Completo",
+      "namePlaceholder": "Mario Rossi",
+      "nameRequired": "Il nome deve avere almeno 2 caratteri",
+      "email": "Email",
+      "emailPlaceholder": "mario@esempio.it",
+      "emailInvalid": "Formato email non valido",
+      "emailHint": "Necessario solo se vuoi inviare il certificato via email"
+    },
+    "course": {
+      "title": "Informazioni Corso",
+      "name": "Nome Corso",
+      "namePlaceholder": "React Avanzato: Hooks e Pattern",
+      "nameRequired": "Il nome del corso deve avere almeno 2 caratteri",
+      "type": "Tipo Certificato",
+      "typeParticipation": "Partecipazione",
+      "typeCompletion": "Completamento",
+      "hours": "Ore Corso",
+      "hoursPlaceholder": "40",
+      "grade": "Voto (0-100)",
+      "gradePlaceholder": "85",
+      "instructor": "Nome Istruttore",
+      "instructorPlaceholder": "Maria Bianchi",
+      "issueDate": "Data Emissione"
+    },
+    "template": {
+      "title": "Template Certificato",
+      "elegant": "Elegante",
+      "elegantDesc": "Design professionale con gradiente blu e bordi dorati",
+      "minimal": "Minimalista",
+      "minimalDesc": "Design pulito e moderno con linee semplici",
+      "corporate": "Aziendale",
+      "corporateDesc": "Design formale con spazio per logo istituzionale"
+    },
+    "preview": {
+      "title": "Anteprima",
+      "paperSize": "Formato Carta"
+    },
+    "actions": {
+      "generate": "Genera Certificato",
+      "downloadPdf": "Scarica PDF",
+      "sendEmail": "Invia via Email",
+      "sending": "Invio...",
+      "sent": "Inviato"
+    },
+    "success": {
+      "title": "Certificato Generato con Successo",
+      "number": "Numero certificato",
+      "persisted": "Il certificato e stato salvato nel tuo account e puo essere validato.",
+      "anonymous": "Modalita anonima: Il certificato non viene salvato. Scarica il PDF o accedi per salvare."
+    }
+  },
+  "validate": {
+    "title": "Valida Certificato",
+    "subtitle": "Inserisci il numero del certificato per verificarne l'autenticita",
+    "placeholder": "Inserisci numero certificato (es. CER-20240115-847362)",
+    "button": "Valida",
+    "validating": "Validazione...",
+    "results": {
+      "valid": "Certificato Valido",
+      "invalid": "Certificato Non Valido",
+      "notFound": "Certificato non trovato",
+      "notFoundHint": "Se e stato generato in modalita anonima, non puo essere validato online.",
+      "studentName": "Studente",
+      "courseName": "Corso",
+      "type": "Tipo",
+      "issueDate": "Data Emissione",
+      "instructor": "Istruttore",
+      "hours": "Ore",
+      "grade": "Voto",
+      "validationCount": "Conteggio validazioni"
+    },
+    "scan": {
+      "title": "Oppure Scansiona il Codice QR",
+      "description": "Usa la fotocamera del tuo dispositivo per scansionare il codice QR del certificato"
+    }
+  },
+  "batch": {
+    "title": "Generazione Batch",
+    "subtitle": "Genera piu certificati contemporaneamente da un file CSV",
+    "requiresAuth": "Devi accedere per generare certificati in batch",
+    "login": "Accedi",
+    "register": "Registrati",
+    "upload": {
+      "title": "Carica File CSV",
+      "dragDrop": "Clicca per caricare o trascina e rilascia",
+      "hint": "File CSV con colonne: nome, email, voto (opzionale), ore (opzionale)",
+      "selected": "File selezionato"
+    },
+    "settings": {
+      "title": "Impostazioni Generazione",
+      "courseName": "Nome Corso",
+      "courseNamePlaceholder": "Bootcamp Sviluppo Web",
+      "instructor": "Istruttore",
+      "instructorPlaceholder": "Maria Bianchi",
+      "type": "Tipo Certificato",
+      "template": "Template",
+      "issueDate": "Data Emissione"
+    },
+    "preview": {
+      "title": "Anteprima Dati",
+      "rows": "{count} righe trovate",
+      "name": "Nome",
+      "email": "Email",
+      "grade": "Voto",
+      "hours": "Ore"
+    },
+    "progress": {
+      "generating": "Generazione certificati...",
+      "processing": "Elaborazione {current} di {total}",
+      "complete": "Generazione completata",
+      "success": "{count} certificati generati con successo",
+      "errors": "{count} errori verificati"
+    },
+    "actions": {
+      "generate": "Genera {count} Certificati",
+      "downloadAll": "Scarica Tutti (ZIP)",
+      "sendEmails": "Invia Tutti via Email",
+      "clear": "Cancella"
+    },
+    "csvFormat": {
+      "title": "Formato CSV",
+      "required": "Colonne richieste",
+      "optional": "Colonne opzionali",
+      "example": "Esempio"
+    }
+  },
+  "admin": {
+    "title": "Pannello Admin",
+    "subtitle": "Gestisci e monitora i certificati generati",
+    "session": "Sessione",
+    "logout": "Esci",
+    "stats": {
+      "total": "Certificati Totali",
+      "thisMonth": "Questo Mese",
+      "completions": "Completamenti",
+      "participations": "Partecipazioni"
+    },
+    "recent": {
+      "title": "Certificati Recenti",
+      "empty": "Nessun certificato generato ancora",
+      "generateFirst": "Genera Primo Certificato",
+      "number": "Numero",
+      "student": "Studente",
+      "course": "Corso",
+      "type": "Tipo",
+      "date": "Data",
+      "status": "Stato",
+      "active": "Attivo",
+      "inactive": "Inattivo"
+    },
+    "api": {
+      "title": "Integrazione API",
+      "description": "Usa l'API CertiGen per generare certificati automaticamente dalla tua piattaforma"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Accedi",
+      "subtitle": "Accedi al tuo pannello di amministrazione",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.it",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Accedi",
+      "noAccount": "Non hai un account?",
+      "register": "Registrati"
+    },
+    "register": {
+      "title": "Registrati",
+      "subtitle": "Crea il tuo account per salvare i certificati",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.it",
+      "password": "Password",
+      "passwordPlaceholder": "Minimo 6 caratteri",
+      "confirmPassword": "Conferma Password",
+      "confirmPasswordPlaceholder": "Ripeti password",
+      "submit": "Registrati",
+      "hasAccount": "Hai gia un account?",
+      "login": "Accedi",
+      "success": "Account creato con successo. Controlla la tua email per confermare."
+    },
+    "anonymous": {
+      "title": "Continua senza account",
+      "button": "Genera Certificato Anonimo",
+      "hint": "I certificati anonimi non vengono salvati e richiedono l'email del destinatario per l'invio."
+    },
+    "errors": {
+      "invalidCredentials": "Email o password non validi",
+      "emailNotConfirmed": "Email non confermata. Controlla la tua casella di posta.",
+      "userExists": "Esiste gia un account con questa email",
+      "weakPassword": "La password deve avere almeno 6 caratteri",
+      "passwordMismatch": "Le password non corrispondono",
+      "generic": "Si e verificato un errore. Riprova."
+    }
+  },
+  "footer": {
+    "tagline": "Sistema di Certificati Verificabili",
+    "validate": "Valida Certificato",
+    "github": "GitHub",
+    "developedBy": "Sviluppato da",
+    "rights": "Licenza MIT"
+  },
+  "accessibility": {
+    "skipToContent": "Vai al contenuto principale",
+    "openMenu": "Apri menu di navigazione",
+    "closeMenu": "Chiudi menu di navigazione",
+    "toggleTheme": "Cambia tema chiaro/scuro",
+    "currentTheme": "Tema corrente: {theme}",
+    "selectLanguage": "Seleziona lingua",
+    "currentLanguage": "Lingua corrente: {language}",
+    "certificatePreview": "Anteprima certificato per {name}",
+    "qrCode": "Codice QR per validazione certificato",
+    "logoPreview": "Anteprima logo",
+    "removeLogo": "Rimuovi logo",
+    "loading": "Caricamento contenuto",
+    "error": "Messaggio di errore",
+    "success": "Messaggio di successo",
+    "formError": "Il modulo ha {count} errori"
+  },
+  "errors": {
+    "required": "Questo campo e richiesto",
+    "minLength": "Deve avere almeno {min} caratteri",
+    "maxLength": "Deve avere al massimo {max} caratteri",
+    "email": "Formato email non valido",
+    "number": "Deve essere un numero valido",
+    "min": "Deve essere almeno {min}",
+    "max": "Deve essere al massimo {max}",
+    "fileTooLarge": "Il file supera la dimensione massima di {max}",
+    "invalidFormat": "Formato file non valido. Consentiti: {formats}",
+    "networkError": "Errore di rete. Riprova.",
+    "serverError": "Errore del server. Riprova piu tardi.",
+    "notFound": "Non trovato",
+    "unauthorized": "Accedi per continuare"
+  },
+  "theme": {
+    "light": "Chiaro",
+    "dark": "Scuro",
+    "system": "Sistema"
+  },
+  "certificate": {
+    "title": "CERTIFICATO",
+    "ofParticipation": "DI PARTECIPAZIONE",
+    "ofCompletion": "DI COMPLETAMENTO",
+    "certifies": "Si certifica che",
+    "hasParticipated": "ha partecipato con successo al corso",
+    "hasCompleted": "ha completato con successo il corso",
+    "issueDate": "Data di emissione",
+    "certificateNumber": "Numero certificato",
+    "hours": "ore",
+    "grade": "Voto",
+    "verify": "Verifica"
+  }
+}

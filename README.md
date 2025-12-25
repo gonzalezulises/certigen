@@ -2,9 +2,6 @@
 
 Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verificable.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/gonzalezulises/certigen)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
 ## Demo
 
 **Produccion:** https://certigen-sandy.vercel.app
@@ -14,6 +11,8 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 ## Tabla de Contenidos
 
 - [Caracteristicas](#caracteristicas)
+- [Internacionalizacion](#internacionalizacion)
+- [Tema y Accesibilidad](#tema-y-accesibilidad)
 - [Arquitectura](#arquitectura)
 - [Stack Tecnologico](#stack-tecnologico)
 - [Estructura del Proyecto](#estructura-del-proyecto)
@@ -44,12 +43,68 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 | **Envio por Email** | Envia certificados automaticamente por correo con PDF adjunto |
 | **API REST** | Integracion con plataformas externas |
 | **Panel Admin** | Gestion y monitoreo de certificados |
+| **9 Idiomas** | Soporte multilingue completo |
+| **Modo Oscuro** | Tema claro/oscuro/sistema |
+| **Accesibilidad WCAG 2.1** | Cumple estandares de accesibilidad |
 
 ### Modos de Operacion
 
 1. **Individual**: Genera certificados uno por uno con vista previa en tiempo real
 2. **Lote (CSV)**: Sube un archivo CSV para generar multiples certificados
 3. **API**: Genera certificados automaticamente desde otras plataformas
+
+---
+
+## Internacionalizacion
+
+CertiGen soporta **9 idiomas** con deteccion automatica del navegador:
+
+| Idioma | Codigo | Direccion |
+|--------|--------|-----------|
+| English | `en` | LTR |
+| Deutsch (German) | `de` | LTR |
+| Polski (Polish) | `pl` | LTR |
+| Русский (Russian) | `ru` | LTR |
+| Espanol | `es` | LTR |
+| עברית (Hebrew) | `he` | **RTL** |
+| Magyar (Hungarian) | `hu` | LTR |
+| Italiano | `it` | LTR |
+| ไทย (Thai) | `th` | LTR |
+
+### Caracteristicas i18n
+
+- **Deteccion automatica**: El idioma se detecta del navegador del usuario
+- **URLs localizadas**: Cada idioma tiene su propio prefijo de URL (`/en/`, `/es/`, `/he/`)
+- **Soporte RTL**: Hebreo se muestra correctamente de derecha a izquierda
+- **Fuentes especiales**: Noto Sans Thai y Noto Sans Hebrew para mejor legibilidad
+- **Selector de idioma**: Cambio de idioma en tiempo real desde cualquier pagina
+
+---
+
+## Tema y Accesibilidad
+
+### Sistema de Temas
+
+CertiGen incluye un sistema completo de temas:
+
+| Modo | Descripcion |
+|------|-------------|
+| **Claro** | Tema predeterminado con colores claros |
+| **Oscuro** | Tema oscuro para reducir fatiga visual |
+| **Sistema** | Sigue la preferencia del sistema operativo |
+
+### Accesibilidad (WCAG 2.1 AA)
+
+| Caracteristica | Implementacion |
+|----------------|----------------|
+| **Skip Link** | Enlace para saltar al contenido principal |
+| **ARIA Labels** | Etiquetas descriptivas en todos los elementos interactivos |
+| **Navegacion por teclado** | Soporte completo para Tab, Enter, Escape |
+| **Contraste de colores** | Cumple ratio minimo de 4.5:1 |
+| **Focus visible** | Indicadores claros de foco para navegacion |
+| **Reduccion de movimiento** | Respeta `prefers-reduced-motion` |
+| **Semantica HTML** | Uso correcto de landmarks (`main`, `nav`, `header`, `footer`) |
+| **Roles ARIA** | `role="navigation"`, `aria-current="page"`, `aria-expanded` |
 
 ---
 
@@ -62,15 +117,16 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 │                         FRONTEND                                 │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────┐ │
 │  │   Inicio    │  │  Generador  │  │    Lote     │  │Validador│ │
-│  │     /       │  │  /generate  │  │   /batch    │  │/validate│ │
+│  │ /[locale]   │  │  /generate  │  │   /batch    │  │/validate│ │
 │  └─────────────┘  └─────────────┘  └─────────────┘  └─────────┘ │
 │         │                │                │              │       │
 │         └────────────────┴────────────────┴──────────────┘       │
 │                                   ▼                              │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │              Next.js App Router (React 19)                │   │
+│  │              Next.js 16 App Router (React 19)             │   │
 │  │  ┌────────────┐  ┌────────────┐  ┌────────────┐          │   │
-│  │  │ Components │  │   Hooks    │  │   Utils    │          │   │
+│  │  │ next-intl  │  │next-themes │  │   WCAG     │          │   │
+│  │  │    i18n    │  │ Dark Mode  │  │Accessibility│         │   │
 │  │  └────────────┘  └────────────┘  └────────────┘          │   │
 │  └──────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
@@ -85,7 +141,7 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 │                              │                                   │
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │                    MIDDLEWARE                             │   │
-│  │  • Security Headers  • Rate Limiting  • Auth Validation   │   │
+│  │  • Security Headers  • Rate Limiting  • i18n Routing      │   │
 │  └──────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                               │
@@ -145,6 +201,8 @@ Usuario                    Frontend                    API                     S
 | **Framework** | Next.js | 16.x | App Router, SSR, API Routes |
 | **Lenguaje** | TypeScript | 5.x | Tipado estatico |
 | **Estilos** | Tailwind CSS | 4.x | Utility-first CSS |
+| **i18n** | next-intl | 4.x | Internacionalizacion |
+| **Temas** | next-themes | 0.4.x | Dark/Light mode |
 | **Base de Datos** | Supabase (PostgreSQL) | - | Almacenamiento, Auth, RLS |
 | **Email** | Resend | - | Envio de correos transaccionales |
 | **Email Templates** | React Email | - | Plantillas de correo en React |
@@ -165,18 +223,20 @@ certigen/
 ├── public/                     # Assets estaticos
 │   └── templates/              # Imagenes de plantillas
 ├── src/
-│   ├── app/                    # App Router (Next.js 14+)
-│   │   ├── (standalone)/       # Grupo de rutas standalone
+│   ├── app/                    # App Router (Next.js 16+)
+│   │   ├── [locale]/           # Rutas internacionalizadas
+│   │   │   ├── layout.tsx      # Layout con i18n + temas
+│   │   │   ├── page.tsx        # Home page
 │   │   │   ├── admin/          # Panel de administracion
-│   │   │   │   └── page.tsx
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── auth/
+│   │   │   │       └── page.tsx
 │   │   │   ├── batch/          # Generacion en lote (CSV)
 │   │   │   │   └── page.tsx
 │   │   │   ├── generate/       # Generador de certificados
 │   │   │   │   └── page.tsx
 │   │   │   └── validate/       # Validador de certificados
-│   │   │       ├── page.tsx
-│   │   │       └── [number]/
-│   │   │           └── page.tsx
+│   │   │       └── page.tsx
 │   │   ├── api/                # API Routes
 │   │   │   ├── certificates/
 │   │   │   │   ├── generate/
@@ -188,9 +248,9 @@ certigen/
 │   │   │   │           └── route.ts
 │   │   │   └── integration/
 │   │   │       └── route.ts
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── globals.css
+│   │   ├── layout.tsx          # Root layout
+│   │   ├── page.tsx            # Redirect to default locale
+│   │   └── globals.css         # CSS variables + themes
 │   ├── components/
 │   │   ├── certificate/        # Componentes de certificados
 │   │   │   ├── CertificateForm.tsx
@@ -198,8 +258,10 @@ certigen/
 │   │   │   ├── CertificatePDF.tsx
 │   │   │   ├── CertificateValidator.tsx
 │   │   │   └── index.ts
+│   │   ├── providers/
+│   │   │   └── Providers.tsx   # ThemeProvider + AuthProvider
 │   │   ├── shared/
-│   │   │   ├── header.tsx
+│   │   │   ├── header.tsx      # Header con LanguageSelector + ThemeToggle
 │   │   │   └── footer.tsx
 │   │   └── ui/                 # Componentes UI base
 │   │       ├── alert.tsx
@@ -208,11 +270,28 @@ certigen/
 │   │       ├── input.tsx
 │   │       ├── label.tsx
 │   │       ├── select.tsx
+│   │       ├── LanguageSelector.tsx
+│   │       ├── ThemeToggle.tsx
 │   │       └── index.ts
+│   ├── context/
+│   │   └── AuthContext.tsx
+│   ├── i18n/                   # Internacionalizacion
+│   │   ├── config.ts           # Configuracion de locales
+│   │   ├── request.ts          # next-intl server config
+│   │   └── messages/           # Traducciones
+│   │       ├── en.json
+│   │       ├── de.json
+│   │       ├── pl.json
+│   │       ├── ru.json
+│   │       ├── es.json
+│   │       ├── he.json
+│   │       ├── hu.json
+│   │       ├── it.json
+│   │       └── th.json
 │   ├── lib/
 │   │   ├── email/              # Configuracion de email
-│   │   │   ├── certificate-email.tsx  # Plantilla de email
-│   │   │   ├── resend.ts       # Cliente Resend
+│   │   │   ├── certificate-email.tsx
+│   │   │   ├── resend.ts
 │   │   │   └── index.ts
 │   │   ├── supabase/           # Cliente Supabase
 │   │   │   ├── client.ts
@@ -221,9 +300,9 @@ certigen/
 │   │   └── utils/
 │   │       └── index.ts
 │   ├── types/
-│   │   ├── certificate.ts      # Tipos de certificados
+│   │   ├── certificate.ts
 │   │   └── database.ts
-│   └── middleware.ts
+│   └── middleware.ts           # i18n + Security middleware
 ├── supabase/
 │   └── migrations/
 │       └── 001_initial.sql
@@ -233,7 +312,6 @@ certigen/
 ├── next.config.ts
 ├── package.json
 ├── README.md
-├── tailwind.config.ts
 └── tsconfig.json
 ```
 
@@ -314,7 +392,7 @@ FROM_EMAIL=CertiGen <onboarding@resend.dev>
 
 ### Generacion Individual
 
-1. Ir a `/generate`
+1. Ir a `/{locale}/generate` (ej: `/en/generate`, `/es/generate`)
 2. Completar el formulario:
    - Nombre de la organizacion (opcional)
    - Logo (opcional, PNG/JPG hasta 2MB)
@@ -326,7 +404,7 @@ FROM_EMAIL=CertiGen <onboarding@resend.dev>
 
 ### Generacion en Lote (CSV)
 
-1. Ir a `/batch` o click en "Generar en lote (CSV)" desde `/generate`
+1. Ir a `/{locale}/batch` o click en "Generar en lote (CSV)" desde `/generate`
 2. Preparar archivo CSV con columnas:
    ```csv
    nombre,email,calificacion,horas
@@ -339,12 +417,17 @@ FROM_EMAIL=CertiGen <onboarding@resend.dev>
 5. Click en "Generar Certificados"
 6. Descargar ZIP con todos los PDFs o Enviar por Email
 
-### Tamanos de Papel
+### Cambiar Idioma
 
-| Formato | Dimensiones | Uso Recomendado |
-|---------|-------------|-----------------|
-| **A4 Horizontal** | 297mm x 210mm | Estandar internacional |
-| **Legal Horizontal** | 355.6mm x 215.9mm | Estados Unidos |
+- Usar el selector de idioma en el header (icono de globo)
+- La URL cambiara automaticamente al nuevo idioma
+- Todas las traducciones se actualizan en tiempo real
+
+### Cambiar Tema
+
+- Usar el boton de tema en el header (icono de sol/luna)
+- Cicla entre: Claro → Oscuro → Sistema
+- La preferencia se guarda en el navegador
 
 ---
 
@@ -410,14 +493,6 @@ Content-Type: application/json
 }
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "messageId": "msg_xxxxxx"
-}
-```
-
 ### Validar Certificado
 
 ```http
@@ -469,9 +544,9 @@ Content-Type: application/json
 │ grade               │       ├─────────────────────────┤
 │ qr_code_url         │       │ id (PK)                 │
 │ is_active           │◀──────│ certificate_id (FK)     │
-│ created_at          │       │ validated_at            │
-└─────────────────────┘       │ validated_by_ip         │
-                              │ is_valid                │
+│ user_id             │       │ validated_at            │
+│ created_at          │       │ validated_by_ip         │
+└─────────────────────┘       │ is_valid                │
                               │ validation_method       │
                               └─────────────────────────┘
 ```
@@ -562,6 +637,21 @@ MIT License - ver [LICENSE](LICENSE)
 ---
 
 ## Changelog
+
+### v2.0.0 (2024-12-25)
+- **Internacionalizacion completa** con 9 idiomas (EN, DE, PL, RU, ES, HE, HU, IT, TH)
+- **Soporte RTL** para Hebreo
+- **Sistema de temas** con modo claro/oscuro/sistema
+- **Accesibilidad WCAG 2.1 AA**:
+  - Skip link para navegacion por teclado
+  - ARIA labels y roles
+  - Focus visible mejorado
+  - Soporte para `prefers-reduced-motion`
+- **Selector de idioma** con banderas y nombres nativos
+- **Toggle de tema** con ciclo claro/oscuro/sistema
+- Fuentes especiales para Thai y Hebreo
+- Header y Footer con soporte completo de i18n y dark mode
+- Todas las paginas migradas a routing `[locale]`
 
 ### v1.2.0 (2024-12-25)
 - Envio de certificados por email con PDF adjunto

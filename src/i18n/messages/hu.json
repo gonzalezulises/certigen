@@ -1,0 +1,320 @@
+{
+  "common": {
+    "appName": "CertiGen",
+    "tagline": "Ellenorizheto Tanusitvany Rendszer",
+    "loading": "Betoltes...",
+    "error": "Hiba tortent",
+    "success": "Sikeres",
+    "cancel": "Megse",
+    "save": "Mentes",
+    "download": "Letoltes",
+    "send": "Kuldes",
+    "submit": "Bekuldeni",
+    "close": "Bezaras",
+    "optional": "nem kotelezo",
+    "required": "kotelezo"
+  },
+  "navigation": {
+    "home": "Fooldal",
+    "generate": "Letrehozas",
+    "batch": "Kotegelt",
+    "validate": "Ellenorzes",
+    "admin": "Admin",
+    "login": "Bejelentkezes",
+    "logout": "Kijelentkezes",
+    "main": "Fo navigacio"
+  },
+  "home": {
+    "hero": {
+      "title": "Professzionalis Tanusitvanyok Letrehozasa",
+      "subtitle": "Keszitsen ellenorizheto tanusitvanyokat QR-kodokkal masodpercek alatt",
+      "cta": "Letrehozas Kezdese"
+    },
+    "features": {
+      "title": "Funkciok",
+      "qrVerification": {
+        "title": "QR Ellenorzes",
+        "description": "Minden tanusitvany egyedi QR-kodot tartalmaz az azonnali ellenorzeshez"
+      },
+      "templates": {
+        "title": "Professzionalis Sablonok",
+        "description": "Valasszon elegans, minimalista vagy vallalati dizajnok kozul"
+      },
+      "batch": {
+        "title": "Kotegelt Generalas",
+        "description": "Generaljon szaznal tanusitvanyt CSV fajlokbol"
+      },
+      "email": {
+        "title": "Email Kuldes",
+        "description": "Kuldje el a tanusitvanyokat kozvetlenul a cimzetteknek"
+      }
+    }
+  },
+  "generate": {
+    "title": "Tanusitvany Letrehozasa",
+    "subtitle": "Toltse ki az urlapot egy ellenorizheto, QR-kodos tanusitvany letrehozasahoz",
+    "batchLink": "Kotegelt generalas (CSV)",
+    "organization": {
+      "title": "Szervezet",
+      "name": "Szervezet Neve",
+      "namePlaceholder": "Cegem / Egyetem",
+      "logo": "Logo",
+      "logoOptional": "Logo (nem kotelezo)",
+      "logoHint": "PNG, JPG max 2MB",
+      "uploadLogo": "Logo feltoltese"
+    },
+    "student": {
+      "title": "Resztvevo Adatai",
+      "name": "Teljes Nev",
+      "namePlaceholder": "Kovacs Janos",
+      "nameRequired": "A nev legalabb 2 karakter kell legyen",
+      "email": "Email",
+      "emailPlaceholder": "janos@pelda.hu",
+      "emailInvalid": "Ervenytelen email formatum",
+      "emailHint": "Csak akkor szukseges, ha emailben szeretne kuldeni a tanusitvanyt"
+    },
+    "course": {
+      "title": "Kurzus Adatai",
+      "name": "Kurzus Neve",
+      "namePlaceholder": "Halado React: Hooks es Mintak",
+      "nameRequired": "A kurzus nev legalabb 2 karakter kell legyen",
+      "type": "Tanusitvany Tipusa",
+      "typeParticipation": "Reszvetel",
+      "typeCompletion": "Elvegezes",
+      "hours": "Kurzus Orak",
+      "hoursPlaceholder": "40",
+      "grade": "Osztalyzat (0-100)",
+      "gradePlaceholder": "85",
+      "instructor": "Oktato Neve",
+      "instructorPlaceholder": "Nagy Maria",
+      "issueDate": "Kiallitas Datuma"
+    },
+    "template": {
+      "title": "Tanusitvany Sablon",
+      "elegant": "Elegans",
+      "elegantDesc": "Professzionalis dizajn kek attunessel es arany kerettel",
+      "minimal": "Minimalista",
+      "minimalDesc": "Tiszta es modern dizajn egyszer vonalakkal",
+      "corporate": "Vallalati",
+      "corporateDesc": "Hivatalos dizajn intezmeny logoja szamara"
+    },
+    "preview": {
+      "title": "Elonezet",
+      "paperSize": "Papir Meret"
+    },
+    "actions": {
+      "generate": "Tanusitvany Letrehozasa",
+      "downloadPdf": "PDF Letoltese",
+      "sendEmail": "Kuldes Emailben",
+      "sending": "Kuldes...",
+      "sent": "Elkuldve"
+    },
+    "success": {
+      "title": "Tanusitvany Sikeresen Letrehozva",
+      "number": "Tanusitvany szam",
+      "persisted": "A tanusitvany mentesre kerult a fiokjaba es ellenorizheto.",
+      "anonymous": "Anonim mod: A tanusitvany nincs mentve. Toltse le a PDF-et vagy jelentkezzen be a menteshez."
+    }
+  },
+  "validate": {
+    "title": "Tanusitvany Ellenorzese",
+    "subtitle": "Adja meg a tanusitvany szamot a hitelesites ellenorzesere",
+    "placeholder": "Adja meg a tanusitvany szamot (pl. CER-20240115-847362)",
+    "button": "Ellenorzes",
+    "validating": "Ellenorzes...",
+    "results": {
+      "valid": "Ervenyes Tanusitvany",
+      "invalid": "Ervenytelen Tanusitvany",
+      "notFound": "Tanusitvany nem talalhato",
+      "notFoundHint": "Ha anonim modban lett letrehozva, nem ellenorizheto online.",
+      "studentName": "Resztvevo",
+      "courseName": "Kurzus",
+      "type": "Tipus",
+      "issueDate": "Kiallitas Datuma",
+      "instructor": "Oktato",
+      "hours": "Orak",
+      "grade": "Osztalyzat",
+      "validationCount": "Ellenorzesek szama"
+    },
+    "scan": {
+      "title": "Vagy Szkennelje a QR-Kodot",
+      "description": "Hasznaljon eszkoze kamerajat a tanusitvany QR-kodjanak beolvasasahoz"
+    }
+  },
+  "batch": {
+    "title": "Kotegelt Generalas",
+    "subtitle": "Genereljon tobb tanusitvanyt egyszerre CSV fajlbol",
+    "requiresAuth": "Be kell jelentkeznie a kotegelt tanusitvany generalashoz",
+    "login": "Bejelentkezes",
+    "register": "Regisztracio",
+    "upload": {
+      "title": "CSV Fajl Feltoltese",
+      "dragDrop": "Kattintson a feltolteshez vagy huzza ide",
+      "hint": "CSV fajl oszlopokkal: nev, email, osztalyzat (nem kotelezo), orak (nem kotelezo)",
+      "selected": "Kivalasztott fajl"
+    },
+    "settings": {
+      "title": "Generalasi Beallitasok",
+      "courseName": "Kurzus Neve",
+      "courseNamePlaceholder": "Webfejlesztes Bootcamp",
+      "instructor": "Oktato",
+      "instructorPlaceholder": "Nagy Maria",
+      "type": "Tanusitvany Tipusa",
+      "template": "Sablon",
+      "issueDate": "Kiallitas Datuma"
+    },
+    "preview": {
+      "title": "Adat Elonezet",
+      "rows": "{count} sor talalhato",
+      "name": "Nev",
+      "email": "Email",
+      "grade": "Osztalyzat",
+      "hours": "Orak"
+    },
+    "progress": {
+      "generating": "Tanusitvanyok generalasa...",
+      "processing": "Feldolgozas {current} / {total}",
+      "complete": "Generalas befejezve",
+      "success": "{count} tanusitvany sikeresen generalva",
+      "errors": "{count} hiba tortent"
+    },
+    "actions": {
+      "generate": "{count} Tanusitvany Generalasa",
+      "downloadAll": "Osszes Letoltese (ZIP)",
+      "sendEmails": "Osszes Kuldese Emailben",
+      "clear": "Torles"
+    },
+    "csvFormat": {
+      "title": "CSV Formatum",
+      "required": "Kotelezo oszlopok",
+      "optional": "Nem kotelezo oszlopok",
+      "example": "Pelda"
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "subtitle": "Kezelje es kovesse a letrehozott tanusitvanyokat",
+    "session": "Munkamenet",
+    "logout": "Kijelentkezes",
+    "stats": {
+      "total": "Osszes Tanusitvany",
+      "thisMonth": "Ez a Honap",
+      "completions": "Elvegezes",
+      "participations": "Reszvetel"
+    },
+    "recent": {
+      "title": "Legutobbi Tanusitvanyok",
+      "empty": "Meg nincs tanusitvany letrehozva",
+      "generateFirst": "Elso Tanusitvany Letrehozasa",
+      "number": "Szam",
+      "student": "Resztvevo",
+      "course": "Kurzus",
+      "type": "Tipus",
+      "date": "Datum",
+      "status": "Allapot",
+      "active": "Aktiv",
+      "inactive": "Inaktiv"
+    },
+    "api": {
+      "title": "API Integracio",
+      "description": "Hasznlja a CertiGen API-t tanusitvanyok automatikus generelasahoz platformjarol"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Bejelentkezes",
+      "subtitle": "Hozzaferes az admin panelhez",
+      "email": "Email",
+      "emailPlaceholder": "on@email.hu",
+      "password": "Jelszo",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Bejelentkezes",
+      "noAccount": "Nincs fiokja?",
+      "register": "Regisztracio"
+    },
+    "register": {
+      "title": "Regisztracio",
+      "subtitle": "Hozzon letre fiokot a tanusitvanyok mentesehez",
+      "email": "Email",
+      "emailPlaceholder": "on@email.hu",
+      "password": "Jelszo",
+      "passwordPlaceholder": "Minimum 6 karakter",
+      "confirmPassword": "Jelszo Megerositese",
+      "confirmPasswordPlaceholder": "Jelszo ismetlese",
+      "submit": "Regisztracio",
+      "hasAccount": "Mar van fiokja?",
+      "login": "Bejelentkezes",
+      "success": "Fiok sikeresen letrehozva. Kerj ellenorizze emailjet a megerositeshez."
+    },
+    "anonymous": {
+      "title": "Folytatas fiok nelkul",
+      "button": "Anonim Tanusitvany Letrehozasa",
+      "hint": "Az anonim tanusitvanyok nem kerulnek mentesre es a cimzett emailjet igenylik a kuldeshez."
+    },
+    "errors": {
+      "invalidCredentials": "Ervenytelen email vagy jelszo",
+      "emailNotConfirmed": "Email nincs megerositve. Kerj ellenorizze bejovo leveleit.",
+      "userExists": "Mar letezik fiok ezzel az emaillel",
+      "weakPassword": "A jelszonak legalabb 6 karakternek kell lennie",
+      "passwordMismatch": "A jelszavak nem egyeznek",
+      "generic": "Hiba tortent. Kerj problalja ujra."
+    }
+  },
+  "footer": {
+    "tagline": "Ellenorizheto Tanusitvany Rendszer",
+    "validate": "Tanusitvany Ellenorzese",
+    "github": "GitHub",
+    "developedBy": "Fejlesztette",
+    "rights": "MIT Licenc"
+  },
+  "accessibility": {
+    "skipToContent": "Ugras a fo tartalomra",
+    "openMenu": "Navigacio megnyitasa",
+    "closeMenu": "Navigacio bezarasa",
+    "toggleTheme": "Vilagos/sotet tema valtasa",
+    "currentTheme": "Jelenlegi tema: {theme}",
+    "selectLanguage": "Nyelv kivalasztasa",
+    "currentLanguage": "Jelenlegi nyelv: {language}",
+    "certificatePreview": "Tanusitvany elonezet: {name}",
+    "qrCode": "QR-kod a tanusitvany ellenorzesere",
+    "logoPreview": "Logo elonezet",
+    "removeLogo": "Logo eltavolitasa",
+    "loading": "Tartalom betoltese",
+    "error": "Hibauzenet",
+    "success": "Sikeres uzenet",
+    "formError": "Az urlap {count} hibat tartalmaz"
+  },
+  "errors": {
+    "required": "Ez a mezo kotelezo",
+    "minLength": "Legalabb {min} karakter szukseges",
+    "maxLength": "Maximum {max} karakter megengedett",
+    "email": "Ervenytelen email formatum",
+    "number": "Ervenyes szamnak kell lennie",
+    "min": "Legalabb {min} kell legyen",
+    "max": "Maximum {max} lehet",
+    "fileTooLarge": "A fajl meghaladja a {max} maximalis meretet",
+    "invalidFormat": "Ervenytelen fajlformatum. Engedelyezett: {formats}",
+    "networkError": "Halozati hiba. Kerj problalja ujra.",
+    "serverError": "Szerverhiba. Kerj problalja kesobb.",
+    "notFound": "Nem talalhato",
+    "unauthorized": "Kerj jelentkezzen be a folytatashoz"
+  },
+  "theme": {
+    "light": "Vilagos",
+    "dark": "Sotet",
+    "system": "Rendszer"
+  },
+  "certificate": {
+    "title": "TANUSITVANY",
+    "ofParticipation": "RESZVETELROL",
+    "ofCompletion": "ELVEGEZESEROL",
+    "certifies": "Ezennel igazoljuk, hogy",
+    "hasParticipated": "sikeresen reszt vett a kurzuson",
+    "hasCompleted": "sikeresen elvegezte a kurzust",
+    "issueDate": "Kiallitas datuma",
+    "certificateNumber": "Tanusitvany szama",
+    "hours": "ora",
+    "grade": "Osztalyzat",
+    "verify": "Ellenorzes"
+  }
+}

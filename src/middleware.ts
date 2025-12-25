@@ -1,5 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import createIntlMiddleware from 'next-intl/middleware';
+import { locales, defaultLocale } from './i18n/config';
+
+// Create the internationalization middleware
+const intlMiddleware = createIntlMiddleware({
+  locales,
+  defaultLocale,
+  localeDetection: true,
+  localePrefix: 'always'
+});
 
 // Rate limiting store (in production, use Redis or similar)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -30,10 +40,7 @@ function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
   return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - record.count };
 }
 
-export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
-
-  // Security Headers
+function addSecurityHeaders(response: NextResponse): NextResponse {
   response.headers.set('X-DNS-Prefetch-Control', 'on');
   response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
@@ -44,9 +51,22 @@ export function middleware(request: NextRequest) {
     'Content-Security-Policy',
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'self';"
   );
+  return response;
+}
 
-  // Rate limiting for API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // Skip i18n for API routes and static files
+  const shouldSkipIntl = pathname.startsWith('/api/') ||
+                         pathname.startsWith('/_next/') ||
+                         pathname.includes('.');
+
+  // Handle API routes with rate limiting and security
+  if (pathname.startsWith('/api/')) {
+    const response = NextResponse.next();
+    addSecurityHeaders(response);
+
     const rateLimitKey = getRateLimitKey(request);
     const { allowed, remaining } = checkRateLimit(rateLimitKey);
 
@@ -65,24 +85,35 @@ export function middleware(request: NextRequest) {
         }
       );
     }
-  }
 
-  // Validate API key for integration endpoints
-  if (request.nextUrl.pathname.startsWith('/api/integration')) {
-    const authHeader = request.headers.get('authorization');
+    // Validate API key for integration endpoints
+    if (pathname.startsWith('/api/integration')) {
+      const authHeader = request.headers.get('authorization');
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return new NextResponse(
-        JSON.stringify({ error: 'Authorization header required' }),
-        {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return new NextResponse(
+          JSON.stringify({ error: 'Authorization header required' }),
+          {
+            status: 401,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
     }
+
+    return response;
   }
 
-  return response;
+  // For non-API routes, apply i18n middleware
+  if (!shouldSkipIntl) {
+    const response = intlMiddleware(request);
+    addSecurityHeaders(response);
+    return response;
+  }
+
+  // For static files and other routes, just add security headers
+  const response = NextResponse.next();
+  return addSecurityHeaders(response);
 }
 
 export const config = {

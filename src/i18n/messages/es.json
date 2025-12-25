@@ -1,0 +1,320 @@
+{
+  "common": {
+    "appName": "CertiGen",
+    "tagline": "Sistema de Certificados Verificables",
+    "loading": "Cargando...",
+    "error": "Ocurrio un error",
+    "success": "Exito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "download": "Descargar",
+    "send": "Enviar",
+    "submit": "Enviar",
+    "close": "Cerrar",
+    "optional": "opcional",
+    "required": "requerido"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "generate": "Generar",
+    "batch": "Lote",
+    "validate": "Validar",
+    "admin": "Admin",
+    "login": "Iniciar Sesion",
+    "logout": "Cerrar Sesion",
+    "main": "Navegacion principal"
+  },
+  "home": {
+    "hero": {
+      "title": "Genera Certificados Profesionales",
+      "subtitle": "Crea certificados verificables con codigos QR en segundos",
+      "cta": "Comenzar a Generar"
+    },
+    "features": {
+      "title": "Caracteristicas",
+      "qrVerification": {
+        "title": "Verificacion QR",
+        "description": "Cada certificado incluye un codigo QR unico para verificacion instantanea"
+      },
+      "templates": {
+        "title": "Plantillas Profesionales",
+        "description": "Elige entre disenos elegantes, minimalistas o corporativos"
+      },
+      "batch": {
+        "title": "Generacion en Lote",
+        "description": "Genera cientos de certificados desde archivos CSV"
+      },
+      "email": {
+        "title": "Envio por Email",
+        "description": "Envia certificados directamente a los destinatarios"
+      }
+    }
+  },
+  "generate": {
+    "title": "Generar Certificado",
+    "subtitle": "Completa el formulario para generar un certificado verificable con codigo QR",
+    "batchLink": "Generar en lote (CSV)",
+    "organization": {
+      "title": "Organizacion",
+      "name": "Nombre de la Organizacion",
+      "namePlaceholder": "Mi Empresa / Universidad",
+      "logo": "Logo",
+      "logoOptional": "Logo (opcional)",
+      "logoHint": "PNG, JPG hasta 2MB",
+      "uploadLogo": "Subir logo"
+    },
+    "student": {
+      "title": "Datos del Estudiante",
+      "name": "Nombre Completo",
+      "namePlaceholder": "Juan Perez Garcia",
+      "nameRequired": "El nombre debe tener al menos 2 caracteres",
+      "email": "Correo Electronico",
+      "emailPlaceholder": "juan@ejemplo.com",
+      "emailInvalid": "Formato de email invalido",
+      "emailHint": "Solo necesario si deseas enviar el certificado por email"
+    },
+    "course": {
+      "title": "Datos del Curso",
+      "name": "Nombre del Curso",
+      "namePlaceholder": "React Avanzado: Hooks y Patrones",
+      "nameRequired": "El nombre del curso debe tener al menos 2 caracteres",
+      "type": "Tipo de Certificado",
+      "typeParticipation": "Participacion",
+      "typeCompletion": "Aprobacion",
+      "hours": "Horas del Curso",
+      "hoursPlaceholder": "40",
+      "grade": "Calificacion (0-100)",
+      "gradePlaceholder": "85",
+      "instructor": "Nombre del Instructor",
+      "instructorPlaceholder": "Maria Rodriguez",
+      "issueDate": "Fecha de Emision"
+    },
+    "template": {
+      "title": "Plantilla del Certificado",
+      "elegant": "Elegante",
+      "elegantDesc": "Diseno profesional con degradado azul y bordes dorados",
+      "minimal": "Minimalista",
+      "minimalDesc": "Diseno limpio y moderno con lineas simples",
+      "corporate": "Corporativo",
+      "corporateDesc": "Diseno formal con espacio para logo institucional"
+    },
+    "preview": {
+      "title": "Vista Previa",
+      "paperSize": "Tamano de Papel"
+    },
+    "actions": {
+      "generate": "Generar Certificado",
+      "downloadPdf": "Descargar PDF",
+      "sendEmail": "Enviar por Email",
+      "sending": "Enviando...",
+      "sent": "Enviado"
+    },
+    "success": {
+      "title": "Certificado Generado Exitosamente",
+      "number": "Numero de certificado",
+      "persisted": "El certificado ha sido guardado en tu cuenta y puede ser validado.",
+      "anonymous": "Modo anonimo: El certificado no se guarda. Descarga el PDF o inicia sesion para guardar."
+    }
+  },
+  "validate": {
+    "title": "Validar Certificado",
+    "subtitle": "Ingresa el numero de certificado para verificar su autenticidad",
+    "placeholder": "Ingresa numero de certificado (ej. CER-20240115-847362)",
+    "button": "Validar",
+    "validating": "Validando...",
+    "results": {
+      "valid": "Certificado Valido",
+      "invalid": "Certificado Invalido",
+      "notFound": "Certificado no encontrado",
+      "notFoundHint": "Si fue generado en modo anonimo, no puede ser validado en linea.",
+      "studentName": "Estudiante",
+      "courseName": "Curso",
+      "type": "Tipo",
+      "issueDate": "Fecha de Emision",
+      "instructor": "Instructor",
+      "hours": "Horas",
+      "grade": "Calificacion",
+      "validationCount": "Veces validado"
+    },
+    "scan": {
+      "title": "O Escanea el Codigo QR",
+      "description": "Usa la camara de tu dispositivo para escanear el codigo QR del certificado"
+    }
+  },
+  "batch": {
+    "title": "Generacion en Lote",
+    "subtitle": "Genera multiples certificados a la vez desde un archivo CSV",
+    "requiresAuth": "Debes iniciar sesion para generar certificados en lote",
+    "login": "Iniciar Sesion",
+    "register": "Registrarse",
+    "upload": {
+      "title": "Subir Archivo CSV",
+      "dragDrop": "Haz clic para subir o arrastra y suelta",
+      "hint": "Archivo CSV con columnas: nombre, email, calificacion (opcional), horas (opcional)",
+      "selected": "Archivo seleccionado"
+    },
+    "settings": {
+      "title": "Configuracion de Generacion",
+      "courseName": "Nombre del Curso",
+      "courseNamePlaceholder": "Bootcamp de Desarrollo Web",
+      "instructor": "Instructor",
+      "instructorPlaceholder": "Maria Rodriguez",
+      "type": "Tipo de Certificado",
+      "template": "Plantilla",
+      "issueDate": "Fecha de Emision"
+    },
+    "preview": {
+      "title": "Vista Previa de Datos",
+      "rows": "{count} filas encontradas",
+      "name": "Nombre",
+      "email": "Email",
+      "grade": "Calificacion",
+      "hours": "Horas"
+    },
+    "progress": {
+      "generating": "Generando certificados...",
+      "processing": "Procesando {current} de {total}",
+      "complete": "Generacion completada",
+      "success": "{count} certificados generados exitosamente",
+      "errors": "{count} errores ocurrieron"
+    },
+    "actions": {
+      "generate": "Generar {count} Certificados",
+      "downloadAll": "Descargar Todos (ZIP)",
+      "sendEmails": "Enviar Todos por Email",
+      "clear": "Limpiar"
+    },
+    "csvFormat": {
+      "title": "Formato CSV",
+      "required": "Columnas requeridas",
+      "optional": "Columnas opcionales",
+      "example": "Ejemplo"
+    }
+  },
+  "admin": {
+    "title": "Panel de Administracion",
+    "subtitle": "Gestiona y monitorea los certificados generados",
+    "session": "Sesion",
+    "logout": "Cerrar Sesion",
+    "stats": {
+      "total": "Total Certificados",
+      "thisMonth": "Este Mes",
+      "completions": "Aprobaciones",
+      "participations": "Participaciones"
+    },
+    "recent": {
+      "title": "Certificados Recientes",
+      "empty": "No hay certificados generados aun",
+      "generateFirst": "Generar Primer Certificado",
+      "number": "Numero",
+      "student": "Estudiante",
+      "course": "Curso",
+      "type": "Tipo",
+      "date": "Fecha",
+      "status": "Estado",
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "api": {
+      "title": "Integracion API",
+      "description": "Usa la API de CertiGen para generar certificados automaticamente desde tu plataforma"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesion",
+      "subtitle": "Accede a tu panel de administracion",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "password": "Contrasena",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Iniciar Sesion",
+      "noAccount": "No tienes cuenta?",
+      "register": "Registrarse"
+    },
+    "register": {
+      "title": "Registrarse",
+      "subtitle": "Crea tu cuenta para guardar certificados",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "password": "Contrasena",
+      "passwordPlaceholder": "Minimo 6 caracteres",
+      "confirmPassword": "Confirmar Contrasena",
+      "confirmPasswordPlaceholder": "Repetir contrasena",
+      "submit": "Registrarse",
+      "hasAccount": "Ya tienes cuenta?",
+      "login": "Iniciar Sesion",
+      "success": "Cuenta creada exitosamente. Revisa tu email para confirmar."
+    },
+    "anonymous": {
+      "title": "Continuar sin cuenta",
+      "button": "Generar Certificado Anonimo",
+      "hint": "Los certificados anonimos no se guardan y requieren email del destinatario para envio."
+    },
+    "errors": {
+      "invalidCredentials": "Email o contrasena invalidos",
+      "emailNotConfirmed": "Email no confirmado. Por favor revisa tu bandeja de entrada.",
+      "userExists": "Ya existe una cuenta con este email",
+      "weakPassword": "La contrasena debe tener al menos 6 caracteres",
+      "passwordMismatch": "Las contrasenas no coinciden",
+      "generic": "Ocurrio un error. Por favor intenta de nuevo."
+    }
+  },
+  "footer": {
+    "tagline": "Sistema de Certificados Verificables",
+    "validate": "Validar Certificado",
+    "github": "GitHub",
+    "developedBy": "Desarrollado por",
+    "rights": "Licencia MIT"
+  },
+  "accessibility": {
+    "skipToContent": "Saltar al contenido principal",
+    "openMenu": "Abrir menu de navegacion",
+    "closeMenu": "Cerrar menu de navegacion",
+    "toggleTheme": "Cambiar tema claro/oscuro",
+    "currentTheme": "Tema actual: {theme}",
+    "selectLanguage": "Seleccionar idioma",
+    "currentLanguage": "Idioma actual: {language}",
+    "certificatePreview": "Vista previa del certificado para {name}",
+    "qrCode": "Codigo QR para validacion del certificado",
+    "logoPreview": "Vista previa del logo",
+    "removeLogo": "Eliminar logo",
+    "loading": "Cargando contenido",
+    "error": "Mensaje de error",
+    "success": "Mensaje de exito",
+    "formError": "El formulario tiene {count} errores"
+  },
+  "errors": {
+    "required": "Este campo es requerido",
+    "minLength": "Debe tener al menos {min} caracteres",
+    "maxLength": "Debe tener maximo {max} caracteres",
+    "email": "Formato de email invalido",
+    "number": "Debe ser un numero valido",
+    "min": "Debe ser al menos {min}",
+    "max": "Debe ser maximo {max}",
+    "fileTooLarge": "El archivo excede el tamano maximo de {max}",
+    "invalidFormat": "Formato de archivo invalido. Permitidos: {formats}",
+    "networkError": "Error de red. Por favor intenta de nuevo.",
+    "serverError": "Error del servidor. Por favor intenta mas tarde.",
+    "notFound": "No encontrado",
+    "unauthorized": "Por favor inicia sesion para continuar"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "certificate": {
+    "title": "CERTIFICADO",
+    "ofParticipation": "DE PARTICIPACION",
+    "ofCompletion": "DE APROBACION",
+    "certifies": "Se certifica que",
+    "hasParticipated": "ha participado satisfactoriamente en el curso",
+    "hasCompleted": "ha completado exitosamente el curso",
+    "issueDate": "Fecha de emision",
+    "certificateNumber": "Numero de certificado",
+    "hours": "horas",
+    "grade": "Calificacion",
+    "verify": "Verificar"
+  }
+}

@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Button, Input, Label, Select, Card, CardContent, CardHeader, CardTitle, Alert, AlertTitle, AlertDescription } from '@/components/ui';
 import { CertificatePreview } from '@/components/certificate';
 import { TemplateStyle, PaperSize, PAPER_SIZES, TEMPLATES, Certificate } from '@/types/certificate';
@@ -19,6 +20,7 @@ interface CSVStudent {
 }
 
 export default function BatchPage() {
+  const t = useTranslations();
   const { user } = useAuth();
 
   const [csvData, setCsvData] = useState<CSVStudent[]>([]);
@@ -56,7 +58,7 @@ export default function BatchPage() {
     const hoursIndex = headers.findIndex(h => h.includes('horas') || h.includes('hours'));
 
     if (nameIndex === -1 || emailIndex === -1) {
-      throw new Error('El CSV debe tener columnas "nombre" y "email"');
+      throw new Error(t('batch.csvFormat.required'));
     }
 
     return lines.slice(1).map(line => {
@@ -75,7 +77,7 @@ export default function BatchPage() {
     if (!file) return;
 
     if (!file.name.endsWith('.csv')) {
-      alert('Por favor selecciona un archivo CSV');
+      alert(t('errors.invalidFormat', { formats: 'CSV' }));
       return;
     }
 
@@ -88,7 +90,7 @@ export default function BatchPage() {
         setCsvData(data);
         setErrors([]);
       } catch (err) {
-        alert(err instanceof Error ? err.message : 'Error al leer el CSV');
+        alert(err instanceof Error ? err.message : t('errors.serverError'));
         setCsvData([]);
       }
     };
@@ -99,11 +101,11 @@ export default function BatchPage() {
     const file = event.target.files?.[0];
     if (file) {
       if (!file.type.startsWith('image/')) {
-        alert('Por favor selecciona un archivo de imagen');
+        alert(t('errors.invalidFormat', { formats: 'PNG, JPG' }));
         return;
       }
       if (file.size > 2 * 1024 * 1024) {
-        alert('El archivo debe ser menor a 2MB');
+        alert(t('errors.fileTooLarge', { max: '2MB' }));
         return;
       }
 
@@ -117,7 +119,7 @@ export default function BatchPage() {
 
   const generateCertificates = async () => {
     if (!courseName.trim()) {
-      alert('Por favor ingresa el nombre del curso');
+      alert(t('errors.required'));
       return;
     }
 
@@ -154,18 +156,16 @@ export default function BatchPage() {
 
         if (response.ok && result.certificate) {
           generated.push(result.certificate);
-          // Capture persistence status from first successful response
           if (generated.length === 1 && result.persisted !== undefined) {
             setIsPersisted(result.persisted);
           }
         } else {
-          errorList.push(`Fila ${i + 2}: ${result.error || 'Error desconocido'}`);
+          errorList.push(`${i + 2}: ${result.error || t('errors.serverError')}`);
         }
       } catch {
-        errorList.push(`Fila ${i + 2}: Error de conexion`);
+        errorList.push(`${i + 2}: ${t('errors.networkError')}`);
       }
 
-      // Small delay to avoid rate limiting
       await new Promise(r => setTimeout(r, 100));
     }
 
@@ -185,14 +185,12 @@ export default function BatchPage() {
       const cert = generatedCertificates[i];
       setProgress({ current: i + 1, total: generatedCertificates.length });
 
-      // Create a temporary container
       const container = document.createElement('div');
       container.style.position = 'absolute';
       container.style.left = '-9999px';
       container.style.width = '1200px';
       document.body.appendChild(container);
 
-      // Render the certificate
       const { createRoot } = await import('react-dom/client');
       const root = createRoot(container);
 
@@ -272,7 +270,6 @@ export default function BatchPage() {
       setProgress({ current: i + 1, total: generatedCertificates.length });
 
       try {
-        // Generate PDF for this certificate
         const container = document.createElement('div');
         container.style.position = 'absolute';
         container.style.left = '-9999px';
@@ -330,7 +327,6 @@ export default function BatchPage() {
         root.unmount();
         document.body.removeChild(container);
 
-        // Send email
         const response = await fetch('/api/certificates/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -354,13 +350,12 @@ export default function BatchPage() {
           setEmailsSent(sentCount);
         } else {
           const result = await response.json();
-          errorList.push(`${cert.student_email}: ${result.error || 'Error desconocido'}`);
+          errorList.push(`${cert.student_email}: ${result.error || t('errors.serverError')}`);
         }
       } catch {
-        errorList.push(`${cert.student_email}: Error de conexion`);
+        errorList.push(`${cert.student_email}: ${t('errors.networkError')}`);
       }
 
-      // Delay to avoid rate limiting
       await new Promise(r => setTimeout(r, 500));
     }
 
@@ -368,41 +363,53 @@ export default function BatchPage() {
     setIsSendingEmails(false);
   };
 
+  // Show login prompt if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <Card className="max-w-md w-full mx-4">
+          <CardContent className="p-8 text-center">
+            <FileSpreadsheet className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {t('batch.title')}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              {t('batch.requiresAuth')}
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Link href="/admin/auth">
+                <Button>{t('batch.login')}</Button>
+              </Link>
+              <Link href="/admin/auth">
+                <Button variant="outline">{t('batch.register')}</Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <Link href="/generate">
             <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver
+              <ArrowLeft className="h-4 w-4 mr-2" aria-hidden="true" />
+              {t('common.cancel')}
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Generacion en Lote</h1>
-            <p className="text-gray-600 mt-1 text-sm">
-              Sube un CSV con los datos de los estudiantes para generar multiples certificados.
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+              {t('batch.title')}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+              {t('batch.subtitle')}
             </p>
           </div>
         </div>
-
-        {/* Auth Status Banner */}
-        {!user && (
-          <Alert className="mb-6 bg-amber-50 border-amber-200">
-            <AlertTitle className="flex items-center gap-2 text-amber-800">
-              <Info className="h-4 w-4" />
-              Modo Anonimo
-            </AlertTitle>
-            <AlertDescription className="text-amber-700">
-              Los certificados generados no se guardaran en base de datos.{' '}
-              <Link href="/admin/auth" className="underline font-medium hover:text-amber-900">
-                Inicia sesion
-              </Link>{' '}
-              para guardar y validar certificados.
-            </AlertDescription>
-          </Alert>
-        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* CSV Upload & Settings */}
@@ -411,15 +418,19 @@ export default function BatchPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <FileSpreadsheet className="h-5 w-5" />
-                  Archivo CSV
+                  <FileSpreadsheet className="h-5 w-5" aria-hidden="true" />
+                  {t('batch.upload.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
+                    onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={t('batch.upload.dragDrop')}
+                    className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <input
                       ref={fileInputRef}
@@ -427,21 +438,22 @@ export default function BatchPage() {
                       accept=".csv"
                       onChange={handleFileUpload}
                       className="hidden"
+                      aria-describedby="csv-hint"
                     />
-                    <Upload className="h-10 w-10 mx-auto text-gray-400 mb-3" />
-                    <p className="text-gray-600">
-                      {fileName || 'Haz clic para subir un archivo CSV'}
+                    <Upload className="h-10 w-10 mx-auto text-gray-400 mb-3" aria-hidden="true" />
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {fileName || t('batch.upload.dragDrop')}
                     </p>
-                    <p className="text-xs text-gray-400 mt-2">
-                      Columnas requeridas: nombre, email. Opcionales: calificacion, horas
+                    <p id="csv-hint" className="text-xs text-gray-400 mt-2">
+                      {t('batch.upload.hint')}
                     </p>
                   </div>
 
                   {csvData.length > 0 && (
                     <Alert variant="success">
-                      <AlertTitle>CSV cargado correctamente</AlertTitle>
+                      <AlertTitle>{t('batch.upload.selected')}</AlertTitle>
                       <AlertDescription>
-                        {csvData.length} estudiantes encontrados
+                        {t('batch.preview.rows', { count: csvData.length })}
                       </AlertDescription>
                     </Alert>
                   )}
@@ -452,36 +464,37 @@ export default function BatchPage() {
             {/* Course Settings */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Configuracion del Certificado</CardTitle>
+                <CardTitle className="text-lg">{t('batch.settings.title')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Organization & Logo */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="org-name">Nombre de la organizacion</Label>
+                    <Label htmlFor="org-name">{t('generate.organization.name')}</Label>
                     <Input
                       id="org-name"
                       value={organizationName}
                       onChange={(e) => setOrganizationName(e.target.value)}
-                      placeholder="Mi Empresa / Universidad"
+                      placeholder={t('generate.organization.namePlaceholder')}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Logo</Label>
+                    <Label>{t('generate.organization.logo')}</Label>
                     <div className="flex items-center gap-3">
                       {logoUrl ? (
                         <div className="relative">
-                          <img src={logoUrl} alt="Logo" className="w-12 h-12 object-contain border rounded" />
+                          <img src={logoUrl} alt={t('accessibility.logoPreview')} className="w-12 h-12 object-contain border rounded" />
                           <button
                             onClick={() => setLogoUrl(null)}
                             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5"
+                            aria-label={t('accessibility.removeLogo')}
                           >
-                            <X className="w-3 h-3" />
+                            <X className="w-3 h-3" aria-hidden="true" />
                           </button>
                         </div>
                       ) : (
                         <div className="w-12 h-12 border-2 border-dashed rounded flex items-center justify-center">
-                          <ImageIcon className="w-5 h-5 text-gray-400" />
+                          <ImageIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
                         </div>
                       )}
                       <input
@@ -497,8 +510,8 @@ export default function BatchPage() {
                         size="sm"
                         onClick={() => logoInputRef.current?.click()}
                       >
-                        <Upload className="w-4 h-4 mr-1" />
-                        Subir
+                        <Upload className="w-4 h-4 mr-1" aria-hidden="true" />
+                        {t('generate.organization.uploadLogo')}
                       </Button>
                     </div>
                   </div>
@@ -506,30 +519,31 @@ export default function BatchPage() {
 
                 {/* Course Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="course-name" required>Nombre del curso</Label>
+                  <Label htmlFor="course-name" required>{t('batch.settings.courseName')}</Label>
                   <Input
                     id="course-name"
                     value={courseName}
                     onChange={(e) => setCourseName(e.target.value)}
-                    placeholder="React Avanzado: Hooks y Patrones"
+                    placeholder={t('batch.settings.courseNamePlaceholder')}
+                    aria-required="true"
                   />
                 </div>
 
                 {/* Other Settings */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="cert-type">Tipo de certificado</Label>
+                    <Label htmlFor="cert-type">{t('batch.settings.type')}</Label>
                     <Select
                       id="cert-type"
                       value={certificateType}
                       onChange={(e) => setCertificateType(e.target.value as 'participation' | 'completion')}
                     >
-                      <option value="participation">Participacion</option>
-                      <option value="completion">Aprobacion</option>
+                      <option value="participation">{t('generate.course.typeParticipation')}</option>
+                      <option value="completion">{t('generate.course.typeCompletion')}</option>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="issue-date">Fecha de emision</Label>
+                    <Label htmlFor="issue-date">{t('batch.settings.issueDate')}</Label>
                     <Input
                       id="issue-date"
                       type="date"
@@ -538,29 +552,29 @@ export default function BatchPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="default-hours">Horas (por defecto)</Label>
+                    <Label htmlFor="default-hours">{t('generate.course.hours')}</Label>
                     <Input
                       id="default-hours"
                       type="number"
                       value={defaultHours || ''}
                       onChange={(e) => setDefaultHours(e.target.value ? parseInt(e.target.value) : undefined)}
-                      placeholder="40"
+                      placeholder={t('generate.course.hoursPlaceholder')}
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="instructor">Nombre del instructor</Label>
+                    <Label htmlFor="instructor">{t('batch.settings.instructor')}</Label>
                     <Input
                       id="instructor"
                       value={instructorName}
                       onChange={(e) => setInstructorName(e.target.value)}
-                      placeholder="Maria Rodriguez"
+                      placeholder={t('batch.settings.instructorPlaceholder')}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="paper-size">Tamano de papel</Label>
+                    <Label htmlFor="paper-size">{t('generate.preview.paperSize')}</Label>
                     <Select
                       id="paper-size"
                       value={paperSize}
@@ -575,25 +589,27 @@ export default function BatchPage() {
 
                 {/* Template Selection */}
                 <div className="space-y-2">
-                  <Label>Plantilla</Label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <Label>{t('batch.settings.template')}</Label>
+                  <div className="grid grid-cols-3 gap-3" role="radiogroup" aria-label={t('batch.settings.template')}>
                     {TEMPLATES.map((template) => (
                       <button
                         key={template.id}
                         type="button"
                         onClick={() => setSelectedTemplate(template.id)}
+                        role="radio"
+                        aria-checked={selectedTemplate === template.id}
                         className={`p-3 rounded-lg border-2 text-center transition-all ${
                           selectedTemplate === template.id
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
                         }`}
                       >
-                        <span className="text-xl">
+                        <span className="text-xl" aria-hidden="true">
                           {template.id === 'elegant' && '🎨'}
                           {template.id === 'minimal' && '✨'}
                           {template.id === 'corporate' && '🏢'}
                         </span>
-                        <p className="text-sm mt-1">{template.name}</p>
+                        <p className="text-sm mt-1 text-gray-900 dark:text-white">{template.name}</p>
                       </button>
                     ))}
                   </div>
@@ -602,22 +618,23 @@ export default function BatchPage() {
             </Card>
 
             {/* Generate Button */}
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap">
               <Button
                 onClick={generateCertificates}
                 disabled={csvData.length === 0 || !courseName || isGenerating}
                 size="lg"
-                className="flex-1"
+                className="flex-1 min-w-[200px]"
+                aria-busy={isGenerating}
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Generando... ({progress.current}/{progress.total})
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden="true" />
+                    {t('batch.progress.generating')} ({progress.current}/{progress.total})
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
-                    Generar {csvData.length} Certificados
+                    <CheckCircle2 className="h-4 w-4 mr-2" aria-hidden="true" />
+                    {t('batch.actions.generate', { count: csvData.length })}
                   </>
                 )}
               </Button>
@@ -630,24 +647,25 @@ export default function BatchPage() {
                     variant="outline"
                     size="lg"
                   >
-                    <Download className="h-4 w-4 mr-2" />
-                    Descargar ZIP
+                    <Download className="h-4 w-4 mr-2" aria-hidden="true" />
+                    {t('batch.actions.downloadAll')}
                   </Button>
                   <Button
                     onClick={sendAllEmails}
                     disabled={isGenerating || isSendingEmails}
                     variant="outline"
                     size="lg"
+                    aria-busy={isSendingEmails}
                   >
                     {isSendingEmails ? (
                       <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Enviando... ({progress.current}/{progress.total})
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden="true" />
+                        {t('generate.actions.sending')} ({progress.current}/{progress.total})
                       </>
                     ) : (
                       <>
-                        <Mail className="h-4 w-4 mr-2" />
-                        Enviar por Email
+                        <Mail className="h-4 w-4 mr-2" aria-hidden="true" />
+                        {t('batch.actions.sendEmails')}
                       </>
                     )}
                   </Button>
@@ -659,24 +677,24 @@ export default function BatchPage() {
             {(generatedCertificates.length > 0 || errors.length > 0 || emailsSent > 0 || emailErrors.length > 0) && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Resultados</CardTitle>
+                  <CardTitle className="text-lg">{t('batch.progress.complete')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {generatedCertificates.length > 0 && (
-                    <Alert variant="success">
+                    <Alert variant="success" role="status">
                       <AlertTitle className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4" />
-                        {generatedCertificates.length} certificados generados
+                        <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                        {t('batch.progress.success', { count: generatedCertificates.length })}
                       </AlertTitle>
                       <AlertDescription>
                         {isPersisted ? (
-                          <p className="text-sm text-green-700 mt-1">
-                            Los certificados han sido guardados en tu cuenta y pueden ser validados.
+                          <p className="text-sm text-green-700 dark:text-green-400 mt-1">
+                            {t('generate.success.persisted')}
                           </p>
                         ) : (
-                          <p className="text-sm text-amber-700 flex items-center gap-1 mt-1">
-                            <Info className="h-4 w-4" />
-                            Modo anonimo: Los certificados no se guardan. Descarga el ZIP o inicia sesion.
+                          <p className="text-sm text-amber-700 dark:text-amber-400 flex items-center gap-1 mt-1">
+                            <Info className="h-4 w-4" aria-hidden="true" />
+                            {t('generate.success.anonymous')}
                           </p>
                         )}
                       </AlertDescription>
@@ -684,43 +702,43 @@ export default function BatchPage() {
                   )}
 
                   {errors.length > 0 && (
-                    <Alert variant="error">
+                    <Alert variant="error" role="alert">
                       <AlertTitle className="flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4" />
-                        {errors.length} errores de generacion
+                        <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                        {t('batch.progress.errors', { count: errors.length })}
                       </AlertTitle>
                       <AlertDescription>
                         <ul className="list-disc list-inside mt-2 text-sm">
                           {errors.slice(0, 5).map((err, i) => (
                             <li key={i}>{err}</li>
                           ))}
-                          {errors.length > 5 && <li>... y {errors.length - 5} mas</li>}
+                          {errors.length > 5 && <li>... +{errors.length - 5}</li>}
                         </ul>
                       </AlertDescription>
                     </Alert>
                   )}
 
                   {emailsSent > 0 && (
-                    <Alert variant="success">
+                    <Alert variant="success" role="status">
                       <AlertTitle className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        {emailsSent} correos enviados
+                        <Mail className="h-4 w-4" aria-hidden="true" />
+                        {emailsSent} {t('generate.actions.sent')}
                       </AlertTitle>
                     </Alert>
                   )}
 
                   {emailErrors.length > 0 && (
-                    <Alert variant="error">
+                    <Alert variant="error" role="alert">
                       <AlertTitle className="flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4" />
-                        {emailErrors.length} errores de envio
+                        <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                        {emailErrors.length} {t('batch.progress.errors', { count: emailErrors.length })}
                       </AlertTitle>
                       <AlertDescription>
                         <ul className="list-disc list-inside mt-2 text-sm">
                           {emailErrors.slice(0, 5).map((err, i) => (
                             <li key={i}>{err}</li>
                           ))}
-                          {emailErrors.length > 5 && <li>... y {emailErrors.length - 5} mas</li>}
+                          {emailErrors.length > 5 && <li>... +{emailErrors.length - 5}</li>}
                         </ul>
                       </AlertDescription>
                     </Alert>
@@ -734,15 +752,15 @@ export default function BatchPage() {
           <div className="lg:sticky lg:top-4 lg:self-start">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Vista Previa</CardTitle>
+                <CardTitle className="text-lg">{t('generate.preview.title')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="bg-gray-100 rounded-lg p-2">
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2">
                   <CertificatePreview
                     data={{
-                      student_name: csvData[0]?.student_name || 'Nombre del Estudiante',
-                      student_email: csvData[0]?.student_email || 'email@ejemplo.com',
-                      course_name: courseName || 'Nombre del Curso',
+                      student_name: csvData[0]?.student_name || t('batch.preview.name'),
+                      student_email: csvData[0]?.student_email || 'email@example.com',
+                      course_name: courseName || t('batch.settings.courseName'),
                       certificate_type: certificateType,
                       instructor_name: instructorName || undefined,
                       hours: csvData[0]?.hours || defaultHours,
@@ -756,10 +774,10 @@ export default function BatchPage() {
                     className="shadow-lg"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-3 text-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
                   {csvData.length > 0
-                    ? `Mostrando vista previa del primer estudiante`
-                    : 'Sube un CSV para ver la vista previa'}
+                    ? t('batch.preview.rows', { count: 1 })
+                    : t('batch.upload.hint')}
                 </p>
               </CardContent>
             </Card>

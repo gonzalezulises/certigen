@@ -1,0 +1,320 @@
+{
+  "common": {
+    "appName": "CertiGen",
+    "tagline": "ระบบใบรับรองที่ตรวจสอบได้",
+    "loading": "กำลังโหลด...",
+    "error": "เกิดข้อผิดพลาด",
+    "success": "สำเร็จ",
+    "cancel": "ยกเลิก",
+    "save": "บันทึก",
+    "download": "ดาวน์โหลด",
+    "send": "ส่ง",
+    "submit": "ส่ง",
+    "close": "ปิด",
+    "optional": "ไม่บังคับ",
+    "required": "จำเป็น"
+  },
+  "navigation": {
+    "home": "หน้าหลัก",
+    "generate": "สร้าง",
+    "batch": "ชุด",
+    "validate": "ตรวจสอบ",
+    "admin": "ผู้ดูแล",
+    "login": "เข้าสู่ระบบ",
+    "logout": "ออกจากระบบ",
+    "main": "เมนูหลัก"
+  },
+  "home": {
+    "hero": {
+      "title": "สร้างใบรับรองมืออาชีพ",
+      "subtitle": "สร้างใบรับรองที่ตรวจสอบได้พร้อมรหัส QR ในไม่กี่วินาที",
+      "cta": "เริ่มสร้าง"
+    },
+    "features": {
+      "title": "คุณสมบัติ",
+      "qrVerification": {
+        "title": "การตรวจสอบ QR",
+        "description": "ใบรับรองทุกใบมีรหัส QR เฉพาะสำหรับการตรวจสอบทันที"
+      },
+      "templates": {
+        "title": "แม่แบบมืออาชีพ",
+        "description": "เลือกจากดีไซน์หรูหรา มินิมอล หรือองค์กร"
+      },
+      "batch": {
+        "title": "สร้างแบบชุด",
+        "description": "สร้างใบรับรองหลายร้อยใบจากไฟล์ CSV"
+      },
+      "email": {
+        "title": "ส่งทางอีเมล",
+        "description": "ส่งใบรับรองโดยตรงถึงผู้รับ"
+      }
+    }
+  },
+  "generate": {
+    "title": "สร้างใบรับรอง",
+    "subtitle": "กรอกแบบฟอร์มเพื่อสร้างใบรับรองที่ตรวจสอบได้พร้อมรหัส QR",
+    "batchLink": "สร้างแบบชุด (CSV)",
+    "organization": {
+      "title": "องค์กร",
+      "name": "ชื่อองค์กร",
+      "namePlaceholder": "บริษัท / มหาวิทยาลัย",
+      "logo": "โลโก้",
+      "logoOptional": "โลโก้ (ไม่บังคับ)",
+      "logoHint": "PNG, JPG สูงสุด 2MB",
+      "uploadLogo": "อัปโหลดโลโก้"
+    },
+    "student": {
+      "title": "ข้อมูลผู้เรียน",
+      "name": "ชื่อ-นามสกุล",
+      "namePlaceholder": "สมชาย ใจดี",
+      "nameRequired": "ชื่อต้องมีอย่างน้อย 2 ตัวอักษร",
+      "email": "อีเมล",
+      "emailPlaceholder": "somchai@example.co.th",
+      "emailInvalid": "รูปแบบอีเมลไม่ถูกต้อง",
+      "emailHint": "จำเป็นเฉพาะเมื่อต้องการส่งใบรับรองทางอีเมล"
+    },
+    "course": {
+      "title": "ข้อมูลหลักสูตร",
+      "name": "ชื่อหลักสูตร",
+      "namePlaceholder": "React ขั้นสูง: Hooks และ Patterns",
+      "nameRequired": "ชื่อหลักสูตรต้องมีอย่างน้อย 2 ตัวอักษร",
+      "type": "ประเภทใบรับรอง",
+      "typeParticipation": "การเข้าร่วม",
+      "typeCompletion": "สำเร็จหลักสูตร",
+      "hours": "ชั่วโมงเรียน",
+      "hoursPlaceholder": "40",
+      "grade": "คะแนน (0-100)",
+      "gradePlaceholder": "85",
+      "instructor": "ชื่อผู้สอน",
+      "instructorPlaceholder": "อาจารย์สมศรี",
+      "issueDate": "วันที่ออก"
+    },
+    "template": {
+      "title": "แม่แบบใบรับรอง",
+      "elegant": "หรูหรา",
+      "elegantDesc": "ดีไซน์มืออาชีพพร้อมไล่สีน้ำเงินและขอบทอง",
+      "minimal": "มินิมอล",
+      "minimalDesc": "ดีไซน์สะอาดและทันสมัยพร้อมเส้นเรียบง่าย",
+      "corporate": "องค์กร",
+      "corporateDesc": "ดีไซน์เป็นทางการพร้อมที่ว่างสำหรับโลโก้สถาบัน"
+    },
+    "preview": {
+      "title": "ตัวอย่าง",
+      "paperSize": "ขนาดกระดาษ"
+    },
+    "actions": {
+      "generate": "สร้างใบรับรอง",
+      "downloadPdf": "ดาวน์โหลด PDF",
+      "sendEmail": "ส่งทางอีเมล",
+      "sending": "กำลังส่ง...",
+      "sent": "ส่งแล้ว"
+    },
+    "success": {
+      "title": "สร้างใบรับรองสำเร็จ",
+      "number": "เลขที่ใบรับรอง",
+      "persisted": "ใบรับรองถูกบันทึกในบัญชีของคุณและสามารถตรวจสอบได้",
+      "anonymous": "โหมดไม่ระบุตัวตน: ใบรับรองไม่ถูกบันทึก ดาวน์โหลด PDF หรือเข้าสู่ระบบเพื่อบันทึก"
+    }
+  },
+  "validate": {
+    "title": "ตรวจสอบใบรับรอง",
+    "subtitle": "กรอกเลขที่ใบรับรองเพื่อตรวจสอบความถูกต้อง",
+    "placeholder": "กรอกเลขที่ใบรับรอง (เช่น CER-20240115-847362)",
+    "button": "ตรวจสอบ",
+    "validating": "กำลังตรวจสอบ...",
+    "results": {
+      "valid": "ใบรับรองถูกต้อง",
+      "invalid": "ใบรับรองไม่ถูกต้อง",
+      "notFound": "ไม่พบใบรับรอง",
+      "notFoundHint": "หากสร้างในโหมดไม่ระบุตัวตน จะไม่สามารถตรวจสอบออนไลน์ได้",
+      "studentName": "ผู้เรียน",
+      "courseName": "หลักสูตร",
+      "type": "ประเภท",
+      "issueDate": "วันที่ออก",
+      "instructor": "ผู้สอน",
+      "hours": "ชั่วโมง",
+      "grade": "คะแนน",
+      "validationCount": "จำนวนการตรวจสอบ"
+    },
+    "scan": {
+      "title": "หรือสแกนรหัส QR",
+      "description": "ใช้กล้องอุปกรณ์ของคุณสแกนรหัส QR บนใบรับรอง"
+    }
+  },
+  "batch": {
+    "title": "สร้างแบบชุด",
+    "subtitle": "สร้างใบรับรองหลายใบพร้อมกันจากไฟล์ CSV",
+    "requiresAuth": "คุณต้องเข้าสู่ระบบเพื่อสร้างใบรับรองแบบชุด",
+    "login": "เข้าสู่ระบบ",
+    "register": "ลงทะเบียน",
+    "upload": {
+      "title": "อัปโหลดไฟล์ CSV",
+      "dragDrop": "คลิกเพื่ออัปโหลดหรือลากและวาง",
+      "hint": "ไฟล์ CSV พร้อมคอลัมน์: ชื่อ, อีเมล, คะแนน (ไม่บังคับ), ชั่วโมง (ไม่บังคับ)",
+      "selected": "ไฟล์ที่เลือก"
+    },
+    "settings": {
+      "title": "การตั้งค่าการสร้าง",
+      "courseName": "ชื่อหลักสูตร",
+      "courseNamePlaceholder": "บูทแคมป์พัฒนาเว็บ",
+      "instructor": "ผู้สอน",
+      "instructorPlaceholder": "อาจารย์สมศรี",
+      "type": "ประเภทใบรับรอง",
+      "template": "แม่แบบ",
+      "issueDate": "วันที่ออก"
+    },
+    "preview": {
+      "title": "ตัวอย่างข้อมูล",
+      "rows": "พบ {count} แถว",
+      "name": "ชื่อ",
+      "email": "อีเมล",
+      "grade": "คะแนน",
+      "hours": "ชั่วโมง"
+    },
+    "progress": {
+      "generating": "กำลังสร้างใบรับรอง...",
+      "processing": "กำลังประมวลผล {current} จาก {total}",
+      "complete": "สร้างเสร็จสมบูรณ์",
+      "success": "สร้างใบรับรอง {count} ใบสำเร็จ",
+      "errors": "เกิดข้อผิดพลาด {count} รายการ"
+    },
+    "actions": {
+      "generate": "สร้าง {count} ใบรับรอง",
+      "downloadAll": "ดาวน์โหลดทั้งหมด (ZIP)",
+      "sendEmails": "ส่งทั้งหมดทางอีเมล",
+      "clear": "ล้าง"
+    },
+    "csvFormat": {
+      "title": "รูปแบบ CSV",
+      "required": "คอลัมน์ที่จำเป็น",
+      "optional": "คอลัมน์ไม่บังคับ",
+      "example": "ตัวอย่าง"
+    }
+  },
+  "admin": {
+    "title": "แผงผู้ดูแล",
+    "subtitle": "จัดการและติดตามใบรับรองที่สร้าง",
+    "session": "เซสชัน",
+    "logout": "ออกจากระบบ",
+    "stats": {
+      "total": "ใบรับรองทั้งหมด",
+      "thisMonth": "เดือนนี้",
+      "completions": "สำเร็จหลักสูตร",
+      "participations": "การเข้าร่วม"
+    },
+    "recent": {
+      "title": "ใบรับรองล่าสุด",
+      "empty": "ยังไม่มีใบรับรองที่สร้าง",
+      "generateFirst": "สร้างใบรับรองแรก",
+      "number": "เลขที่",
+      "student": "ผู้เรียน",
+      "course": "หลักสูตร",
+      "type": "ประเภท",
+      "date": "วันที่",
+      "status": "สถานะ",
+      "active": "ใช้งาน",
+      "inactive": "ไม่ใช้งาน"
+    },
+    "api": {
+      "title": "การเชื่อมต่อ API",
+      "description": "ใช้ CertiGen API เพื่อสร้างใบรับรองอัตโนมัติจากแพลตฟอร์มของคุณ"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "เข้าสู่ระบบ",
+      "subtitle": "เข้าถึงแผงผู้ดูแลของคุณ",
+      "email": "อีเมล",
+      "emailPlaceholder": "you@email.co.th",
+      "password": "รหัสผ่าน",
+      "passwordPlaceholder": "••••••••",
+      "submit": "เข้าสู่ระบบ",
+      "noAccount": "ยังไม่มีบัญชี?",
+      "register": "ลงทะเบียน"
+    },
+    "register": {
+      "title": "ลงทะเบียน",
+      "subtitle": "สร้างบัญชีเพื่อบันทึกใบรับรอง",
+      "email": "อีเมล",
+      "emailPlaceholder": "you@email.co.th",
+      "password": "รหัสผ่าน",
+      "passwordPlaceholder": "อย่างน้อย 6 ตัวอักษร",
+      "confirmPassword": "ยืนยันรหัสผ่าน",
+      "confirmPasswordPlaceholder": "กรอกรหัสผ่านอีกครั้ง",
+      "submit": "ลงทะเบียน",
+      "hasAccount": "มีบัญชีแล้ว?",
+      "login": "เข้าสู่ระบบ",
+      "success": "สร้างบัญชีสำเร็จ กรุณาตรวจสอบอีเมลเพื่อยืนยัน"
+    },
+    "anonymous": {
+      "title": "ดำเนินการต่อโดยไม่มีบัญชี",
+      "button": "สร้างใบรับรองแบบไม่ระบุตัวตน",
+      "hint": "ใบรับรองแบบไม่ระบุตัวตนไม่ถูกบันทึกและต้องการอีเมลผู้รับเพื่อส่ง"
+    },
+    "errors": {
+      "invalidCredentials": "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+      "emailNotConfirmed": "อีเมลยังไม่ได้รับการยืนยัน กรุณาตรวจสอบกล่องจดหมาย",
+      "userExists": "บัญชีพร้อมอีเมลนี้มีอยู่แล้ว",
+      "weakPassword": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+      "passwordMismatch": "รหัสผ่านไม่ตรงกัน",
+      "generic": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง"
+    }
+  },
+  "footer": {
+    "tagline": "ระบบใบรับรองที่ตรวจสอบได้",
+    "validate": "ตรวจสอบใบรับรอง",
+    "github": "GitHub",
+    "developedBy": "พัฒนาโดย",
+    "rights": "สัญญาอนุญาต MIT"
+  },
+  "accessibility": {
+    "skipToContent": "ข้ามไปยังเนื้อหาหลัก",
+    "openMenu": "เปิดเมนูนำทาง",
+    "closeMenu": "ปิดเมนูนำทาง",
+    "toggleTheme": "สลับธีมสว่าง/มืด",
+    "currentTheme": "ธีมปัจจุบัน: {theme}",
+    "selectLanguage": "เลือกภาษา",
+    "currentLanguage": "ภาษาปัจจุบัน: {language}",
+    "certificatePreview": "ตัวอย่างใบรับรองสำหรับ {name}",
+    "qrCode": "รหัส QR สำหรับตรวจสอบใบรับรอง",
+    "logoPreview": "ตัวอย่างโลโก้",
+    "removeLogo": "ลบโลโก้",
+    "loading": "กำลังโหลดเนื้อหา",
+    "error": "ข้อความแสดงข้อผิดพลาด",
+    "success": "ข้อความสำเร็จ",
+    "formError": "แบบฟอร์มมี {count} ข้อผิดพลาด"
+  },
+  "errors": {
+    "required": "ช่องนี้จำเป็น",
+    "minLength": "ต้องมีอย่างน้อย {min} ตัวอักษร",
+    "maxLength": "ต้องมีไม่เกิน {max} ตัวอักษร",
+    "email": "รูปแบบอีเมลไม่ถูกต้อง",
+    "number": "ต้องเป็นตัวเลขที่ถูกต้อง",
+    "min": "ต้องมีอย่างน้อย {min}",
+    "max": "ต้องมีไม่เกิน {max}",
+    "fileTooLarge": "ไฟล์เกินขนาดสูงสุด {max}",
+    "invalidFormat": "รูปแบบไฟล์ไม่ถูกต้อง อนุญาต: {formats}",
+    "networkError": "ข้อผิดพลาดเครือข่าย กรุณาลองอีกครั้ง",
+    "serverError": "ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองภายหลัง",
+    "notFound": "ไม่พบ",
+    "unauthorized": "กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ"
+  },
+  "theme": {
+    "light": "สว่าง",
+    "dark": "มืด",
+    "system": "ระบบ"
+  },
+  "certificate": {
+    "title": "ใบรับรอง",
+    "ofParticipation": "การเข้าร่วม",
+    "ofCompletion": "สำเร็จหลักสูตร",
+    "certifies": "ขอรับรองว่า",
+    "hasParticipated": "ได้เข้าร่วมหลักสูตรอย่างเรียบร้อย",
+    "hasCompleted": "ได้สำเร็จหลักสูตรเรียบร้อยแล้ว",
+    "issueDate": "วันที่ออก",
+    "certificateNumber": "เลขที่ใบรับรอง",
+    "hours": "ชั่วโมง",
+    "grade": "คะแนน",
+    "verify": "ตรวจสอบ"
+  }
+}
