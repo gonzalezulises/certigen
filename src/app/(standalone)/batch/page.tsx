@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { Button, Input, Label, Select, Card, CardContent, CardHeader, CardTitle, Alert, AlertTitle, AlertDescription } from '@/components/ui';
 import { CertificatePreview } from '@/components/certificate';
 import { TemplateStyle, PaperSize, PAPER_SIZES, TEMPLATES, Certificate } from '@/types/certificate';
-import { Upload, FileSpreadsheet, Download, ArrowLeft, CheckCircle2, AlertCircle, X, Image as ImageIcon, Loader2, Mail } from 'lucide-react';
+import { Upload, FileSpreadsheet, Download, ArrowLeft, CheckCircle2, AlertCircle, X, Image as ImageIcon, Loader2, Mail, Info } from 'lucide-react';
 import JSZip from 'jszip';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { useAuth } from '@/context/AuthContext';
 
 interface CSVStudent {
   student_name: string;
@@ -18,6 +19,8 @@ interface CSVStudent {
 }
 
 export default function BatchPage() {
+  const { user } = useAuth();
+
   const [csvData, setCsvData] = useState<CSVStudent[]>([]);
   const [fileName, setFileName] = useState<string>('');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -33,6 +36,7 @@ export default function BatchPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSendingEmails, setIsSendingEmails] = useState(false);
   const [generatedCertificates, setGeneratedCertificates] = useState<Certificate[]>([]);
+  const [isPersisted, setIsPersisted] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
   const [emailsSent, setEmailsSent] = useState(0);
@@ -150,6 +154,10 @@ export default function BatchPage() {
 
         if (response.ok && result.certificate) {
           generated.push(result.certificate);
+          // Capture persistence status from first successful response
+          if (generated.length === 1 && result.persisted !== undefined) {
+            setIsPersisted(result.persisted);
+          }
         } else {
           errorList.push(`Fila ${i + 2}: ${result.error || 'Error desconocido'}`);
         }
@@ -378,6 +386,23 @@ export default function BatchPage() {
             </p>
           </div>
         </div>
+
+        {/* Auth Status Banner */}
+        {!user && (
+          <Alert className="mb-6 bg-amber-50 border-amber-200">
+            <AlertTitle className="flex items-center gap-2 text-amber-800">
+              <Info className="h-4 w-4" />
+              Modo Anonimo
+            </AlertTitle>
+            <AlertDescription className="text-amber-700">
+              Los certificados generados no se guardaran en base de datos.{' '}
+              <Link href="/admin/auth" className="underline font-medium hover:text-amber-900">
+                Inicia sesion
+              </Link>{' '}
+              para guardar y validar certificados.
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* CSV Upload & Settings */}
@@ -643,6 +668,18 @@ export default function BatchPage() {
                         <CheckCircle2 className="h-4 w-4" />
                         {generatedCertificates.length} certificados generados
                       </AlertTitle>
+                      <AlertDescription>
+                        {isPersisted ? (
+                          <p className="text-sm text-green-700 mt-1">
+                            Los certificados han sido guardados en tu cuenta y pueden ser validados.
+                          </p>
+                        ) : (
+                          <p className="text-sm text-amber-700 flex items-center gap-1 mt-1">
+                            <Info className="h-4 w-4" />
+                            Modo anonimo: Los certificados no se guardan. Descarga el ZIP o inicia sesion.
+                          </p>
+                        )}
+                      </AlertDescription>
                     </Alert>
                   )}
 

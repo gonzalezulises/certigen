@@ -4,8 +4,8 @@ import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Input, Label, Select, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { certificateFormSchema, CertificateFormData, TEMPLATES, TemplateStyle } from '@/types/certificate';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { certificateFormSchema, authenticatedCertificateFormSchema, CertificateFormData, TEMPLATES, TemplateStyle } from '@/types/certificate';
+import { Upload, X, Image as ImageIcon, Info } from 'lucide-react';
 
 interface CertificateFormProps {
   onSubmit: (data: CertificateFormData) => Promise<void>;
@@ -14,6 +14,7 @@ interface CertificateFormProps {
   selectedTemplate: TemplateStyle;
   onTemplateChange: (template: TemplateStyle) => void;
   isLoading?: boolean;
+  isAuthenticated?: boolean;
 }
 
 export function CertificateForm({
@@ -23,6 +24,7 @@ export function CertificateForm({
   selectedTemplate,
   onTemplateChange,
   isLoading = false,
+  isAuthenticated = false,
 }: CertificateFormProps) {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +36,9 @@ export function CertificateForm({
     setValue,
     formState: { errors },
   } = useForm<CertificateFormData>({
-    resolver: zodResolver(certificateFormSchema),
+    // Use appropriate schema based on authentication status
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(isAuthenticated ? authenticatedCertificateFormSchema : certificateFormSchema) as any,
     defaultValues: {
       student_name: '',
       student_email: '',
@@ -179,7 +183,9 @@ export function CertificateForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="student_email" required>Correo electronico</Label>
+              <Label htmlFor="student_email" required={!isAuthenticated}>
+                Correo electronico {isAuthenticated && <span className="text-gray-400 font-normal">(opcional)</span>}
+              </Label>
               <Input
                 id="student_email"
                 type="email"
@@ -187,6 +193,12 @@ export function CertificateForm({
                 {...register('student_email')}
                 error={errors.student_email?.message}
               />
+              {isAuthenticated && (
+                <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <Info className="h-3 w-3" />
+                  Solo necesario si deseas enviar el certificado por email
+                </p>
+              )}
             </div>
           </div>
         </CardContent>

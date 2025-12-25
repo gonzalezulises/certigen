@@ -54,9 +54,25 @@ export interface EduPlatformIntegration {
 }
 
 // Zod Schemas for Validation
+// Schema for anonymous users (email required for certificate delivery)
 export const certificateFormSchema = z.object({
   student_name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   student_email: z.string().email('Email inválido'),
+  course_name: z.string().min(2, 'El nombre del curso debe tener al menos 2 caracteres'),
+  certificate_type: z.enum(['participation', 'completion']),
+  instructor_name: z.string().optional(),
+  hours: z.number().min(1).optional(),
+  grade: z.number().min(0).max(100).optional(),
+  issue_date: z.string(),
+  template_id: z.string().optional(),
+  logo_url: z.string().optional(),
+  organization_name: z.string().optional(),
+});
+
+// Schema for authenticated users (email optional, certificates are saved)
+export const authenticatedCertificateFormSchema = z.object({
+  student_name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  student_email: z.string().email('Email inválido').optional().or(z.literal('')),
   course_name: z.string().min(2, 'El nombre del curso debe tener al menos 2 caracteres'),
   certificate_type: z.enum(['participation', 'completion']),
   instructor_name: z.string().optional(),

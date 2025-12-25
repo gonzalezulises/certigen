@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, Button, Alert, AlertDescription } from '@/components/ui';
-import { Settings, Award, Users, BarChart3, AlertCircle } from 'lucide-react';
+import { Settings, Award, Users, BarChart3, AlertCircle, LogOut } from 'lucide-react';
 import { formatShortDate, getCertificateTypeLabel } from '@/lib/utils';
 import { Certificate } from '@/types/certificate';
 import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@/context/AuthContext';
 
 export default function AdminPage() {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -18,13 +20,28 @@ export default function AdminPage() {
     participations: 0,
   });
 
+  const { user, loading: authLoading, signOut } = useAuth();
+  const router = useRouter();
+
+  // Redirect to auth if not logged in
   useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/admin/auth');
+    }
+  }, [user, authLoading, router]);
+
+  useEffect(() => {
+    // Only fetch if user is authenticated
+    if (!user) return;
+
     const fetchCertificates = async () => {
       try {
         const supabase = createClient();
+        // Fetch only user's certificates
         const { data, error } = await supabase
           .from('certificates')
           .select('*')
+          .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(10);
 
@@ -63,7 +80,26 @@ export default function AdminPage() {
     };
 
     fetchCertificates();
-  }, []);
+  }, [user]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/admin/auth');
+  };
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -76,7 +112,14 @@ export default function AdminPage() {
           <p className="text-gray-600 mt-2">
             Gestiona y monitorea los certificados generados.
           </p>
+          <p className="text-sm text-gray-500 mt-1">
+            Sesion: {user.email}
+          </p>
         </div>
+        <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
+          <LogOut className="h-4 w-4" />
+          Cerrar Sesion
+        </Button>
       </div>
 
       {error && (

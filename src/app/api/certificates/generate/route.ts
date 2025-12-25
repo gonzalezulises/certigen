@@ -3,6 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { certificateFormSchema } from '@/types/certificate';
 import { generateCertificateNumber, getValidationUrl } from '@/lib/utils';
+import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,13 +43,56 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    // Check if user is authenticated
+    const { data: { user } } = await supabase.auth.getUser();
+
     // Generate unique certificate number
     const certificateNumber = generateCertificateNumber();
 
-    // Create certificate in database
-    const { data: certificate, error } = await supabase
-      .from('certificates')
-      .insert({
+    if (user) {
+      // AUTHENTICATED: Save to database with user_id
+      const { data: certificate, error } = await supabase
+        .from('certificates')
+        .insert({
+          certificate_number: certificateNumber,
+          student_name: data.student_name,
+          student_email: data.student_email,
+          course_name: data.course_name,
+          certificate_type: data.certificate_type,
+          instructor_name: data.instructor_name || null,
+          hours: data.hours || null,
+          grade: data.grade || null,
+          issue_date: data.issue_date,
+          qr_code_url: getValidationUrl(certificateNumber),
+          user_id: user.id,
+          metadata: {
+            template_id: body.template_id || 'elegant',
+          },
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Database error:', error);
+        return NextResponse.json(
+          { error: 'Error al guardar el certificado', details: error.message },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        certificate,
+        persisted: true,
+      });
+    } else {
+      // ANONYMOUS: Return ephemeral certificate (not saved to DB)
+      // Generate a verification hash for validation without storage
+      const verificationData = `${certificateNumber}-${data.student_name}-${data.course_name}-${data.issue_date}`;
+      const verificationHash = crypto.createHash('sha256').update(verificationData).digest('hex').substring(0, 16);
+
+      const ephemeralCertificate = {
+        id: `ephemeral-${Date.now()}`,
         certificate_number: certificateNumber,
         student_name: data.student_name,
         student_email: data.student_email,
@@ -59,25 +103,22 @@ export async function POST(request: NextRequest) {
         grade: data.grade || null,
         issue_date: data.issue_date,
         qr_code_url: getValidationUrl(certificateNumber),
+        verification_hash: verificationHash,
+        is_active: true,
+        created_at: new Date().toISOString(),
         metadata: {
           template_id: body.template_id || 'elegant',
+          ephemeral: true,
         },
-      })
-      .select()
-      .single();
+      };
 
-    if (error) {
-      console.error('Database error:', error);
-      return NextResponse.json(
-        { error: 'Error al guardar el certificado', details: error.message },
-        { status: 500 }
-      );
+      return NextResponse.json({
+        success: true,
+        certificate: ephemeralCertificate,
+        persisted: false,
+        message: 'Certificado generado en modo anonimo. No se guarda en base de datos.',
+      });
     }
-
-    return NextResponse.json({
-      success: true,
-      certificate,
-    });
   } catch (error) {
     console.error('Generate certificate error:', error);
     return NextResponse.json(

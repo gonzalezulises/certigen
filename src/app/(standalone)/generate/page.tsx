@@ -7,9 +7,11 @@ import html2canvas from 'html2canvas';
 import { CertificateForm, CertificatePreview, CertificatePDFButton } from '@/components/certificate';
 import { Alert, AlertTitle, AlertDescription, Card, CardContent, CardHeader, CardTitle, Label, Select, Button } from '@/components/ui';
 import { CertificateFormData, TemplateStyle, PaperSize, PAPER_SIZES, Certificate } from '@/types/certificate';
-import { CheckCircle2, Eye, FileText, FileSpreadsheet, Mail, Loader2 } from 'lucide-react';
+import { CheckCircle2, Eye, FileText, FileSpreadsheet, Mail, Loader2, Info } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function GeneratePage() {
+  const { user, loading: authLoading } = useAuth();
   const [formData, setFormData] = useState<Partial<CertificateFormData>>({
     certificate_type: 'participation',
     issue_date: new Date().toISOString().split('T')[0],
@@ -21,6 +23,7 @@ export default function GeneratePage() {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [generatedCertificate, setGeneratedCertificate] = useState<Certificate | null>(null);
+  const [isPersisted, setIsPersisted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleFormChange = (data: Partial<CertificateFormData>) => {
@@ -137,6 +140,7 @@ export default function GeneratePage() {
       }
 
       setGeneratedCertificate(result.certificate);
+      setIsPersisted(result.persisted || false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
     } finally {
@@ -178,7 +182,19 @@ export default function GeneratePage() {
               Certificado Generado Exitosamente
             </AlertTitle>
             <AlertDescription>
-              Numero de certificado: <span className="font-mono font-bold">{generatedCertificate.certificate_number}</span>
+              <div className="space-y-1">
+                <p>Numero de certificado: <span className="font-mono font-bold">{generatedCertificate.certificate_number}</span></p>
+                {isPersisted ? (
+                  <p className="text-sm text-green-700">
+                    El certificado ha sido guardado en tu cuenta y puede ser validado.
+                  </p>
+                ) : (
+                  <p className="text-sm text-amber-700 flex items-center gap-1">
+                    <Info className="h-4 w-4" />
+                    Modo anonimo: El certificado no se guarda. Descarga el PDF o inicia sesion para guardar.
+                  </p>
+                )}
+              </div>
             </AlertDescription>
           </Alert>
         )}
@@ -194,6 +210,7 @@ export default function GeneratePage() {
               selectedTemplate={selectedTemplate}
               onTemplateChange={setSelectedTemplate}
               isLoading={isLoading}
+              isAuthenticated={!!user}
             />
           </div>
 

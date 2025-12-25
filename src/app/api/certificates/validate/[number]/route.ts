@@ -58,10 +58,11 @@ export async function GET(
       .single();
 
     if (certError || !certificate) {
-      // Record invalid validation attempt
+      // Certificate not found - could be invalid or ephemeral (anonymous)
       return NextResponse.json({
         is_valid: false,
-        error: 'Certificado no encontrado',
+        error: 'Certificado no encontrado. Si fue generado en modo anonimo, no puede ser validado en linea.',
+        message_type: 'not_found',
       });
     }
 
