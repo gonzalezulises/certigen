@@ -81,19 +81,19 @@ export const ClassicTemplate: React.FC<CertificateTemplateProps> = ({
       >
         <View style={styles.container}>
           {/* Esquinas ornamentadas */}
-          {border.cornerStyle === 'ornate' && (
+          {(border.cornerStyle === 'ornate' || border.cornerStyle === 'simple' || border.cornerStyle === 'flourish') && (
             <>
               <View style={{ position: 'absolute', top: 10, left: 10 }}>
-                <CornerOrnament color={colors.border} position="top-left" size={40} />
+                <CornerOrnament color={colors.border} position="top-left" size={border.cornerStyle === 'simple' ? 25 : 40} />
               </View>
               <View style={{ position: 'absolute', top: 10, right: 10 }}>
-                <CornerOrnament color={colors.border} position="top-right" size={40} />
+                <CornerOrnament color={colors.border} position="top-right" size={border.cornerStyle === 'simple' ? 25 : 40} />
               </View>
               <View style={{ position: 'absolute', bottom: 10, right: 10 }}>
-                <CornerOrnament color={colors.border} position="bottom-right" size={40} />
+                <CornerOrnament color={colors.border} position="bottom-right" size={border.cornerStyle === 'simple' ? 25 : 40} />
               </View>
               <View style={{ position: 'absolute', bottom: 10, left: 10 }}>
-                <CornerOrnament color={colors.border} position="bottom-left" size={40} />
+                <CornerOrnament color={colors.border} position="bottom-left" size={border.cornerStyle === 'simple' ? 25 : 40} />
               </View>
             </>
           )}

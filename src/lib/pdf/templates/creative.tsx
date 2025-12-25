@@ -130,19 +130,19 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
 
         <View style={styles.container}>
           {/* Flourishes en las esquinas */}
-          {border.cornerStyle === 'flourish' && (
+          {(border.cornerStyle === 'flourish' || border.cornerStyle === 'ornate' || border.cornerStyle === 'simple') && (
             <>
               <View style={{ position: 'absolute', top: 5, left: 5 }}>
-                <FlourishCorner color={colors.primary} position="top-left" size={60} />
+                <FlourishCorner color={colors.primary} position="top-left" size={border.cornerStyle === 'simple' ? 35 : 60} />
               </View>
               <View style={{ position: 'absolute', top: 5, right: 5 }}>
-                <FlourishCorner color={colors.primary} position="top-right" size={60} />
+                <FlourishCorner color={colors.primary} position="top-right" size={border.cornerStyle === 'simple' ? 35 : 60} />
               </View>
               <View style={{ position: 'absolute', bottom: 5, right: 5 }}>
-                <FlourishCorner color={colors.primary} position="bottom-right" size={60} />
+                <FlourishCorner color={colors.primary} position="bottom-right" size={border.cornerStyle === 'simple' ? 35 : 60} />
               </View>
               <View style={{ position: 'absolute', bottom: 5, left: 5 }}>
-                <FlourishCorner color={colors.primary} position="bottom-left" size={60} />
+                <FlourishCorner color={colors.primary} position="bottom-left" size={border.cornerStyle === 'simple' ? 35 : 60} />
               </View>
             </>
           )}
