@@ -1,6 +1,29 @@
 # CertiGen
 
-Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verificable.
+<div align="center">
+
+![CertiGen Logo](https://img.shields.io/badge/CertiGen-v3.1.0-blue?style=for-the-badge)
+![Next.js](https://img.shields.io/badge/Next.js-16.x-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)
+![React PDF](https://img.shields.io/badge/@react--pdf/renderer-4.x-red?style=for-the-badge)
+
+**Sistema de Generacion y Validacion de Certificados con QR**
+
+[Demo en Vivo](https://certigen-sandy.vercel.app) · [Reportar Bug](https://github.com/gonzalezulises/certigen/issues) · [Solicitar Feature](https://github.com/gonzalezulises/certigen/issues)
+
+</div>
+
+---
+
+## Novedades v3.1.0
+
+- **Configurador Visual de Plantillas** - Personaliza colores, tipografia, bordes y mas en tiempo real
+- **Generacion PDF Vectorial** - PDFs de alta calidad con @react-pdf/renderer
+- **3 Plantillas Profesionales** - Classic, Minimal y Creative con configuracion completa
+- **Codigo QR Integrado** - Validacion instantanea escaneando el certificado
+- **9 Idiomas** - ES, EN, DE, IT, PL, RU, HU, HE (RTL), TH
+
+---
 
 ## Demo
 
@@ -11,6 +34,7 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 ## Tabla de Contenidos
 
 - [Caracteristicas](#caracteristicas)
+- [Configurador de Plantillas](#configurador-de-plantillas)
 - [Internacionalizacion](#internacionalizacion)
 - [Tema y Accesibilidad](#tema-y-accesibilidad)
 - [Arquitectura](#arquitectura)
@@ -35,10 +59,11 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 | **Generacion de Certificados** | Crea certificados con ID unico formato `CER-YYYYMMDD-XXXXXX` |
 | **Codigos QR** | Cada certificado incluye QR para validacion instantanea |
 | **Validacion Publica** | Cualquiera puede verificar autenticidad via web o QR |
-| **3 Plantillas** | Elegante, Minimalista y Corporativa |
+| **3 Plantillas Configurables** | Classic, Minimal y Creative con personalizacion completa |
+| **Configurador Visual** | Ajusta colores, tipografia, bordes, ornamentos en tiempo real |
 | **Logo Personalizado** | Sube el logo de tu organizacion |
-| **Tamano de Papel** | Soporta A4 y Legal horizontal |
-| **Exportacion PDF** | Descarga certificados en formato PDF de alta calidad |
+| **Tamano de Papel** | Soporta A4, Letter y Legal horizontal |
+| **PDF Vectorial** | Generacion con @react-pdf/renderer para maxima calidad |
 | **Generacion en Lote** | Genera multiples certificados desde CSV |
 | **Envio por Email** | Envia certificados automaticamente por correo con PDF adjunto |
 | **API REST** | Integracion con plataformas externas |
@@ -52,6 +77,72 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 1. **Individual**: Genera certificados uno por uno con vista previa en tiempo real
 2. **Lote (CSV)**: Sube un archivo CSV para generar multiples certificados
 3. **API**: Genera certificados automaticamente desde otras plataformas
+
+---
+
+## Configurador de Plantillas
+
+CertiGen incluye un potente configurador visual que permite personalizar cada aspecto del certificado.
+
+### Plantillas Disponibles
+
+| Plantilla | Descripcion | Caracteristicas |
+|-----------|-------------|-----------------|
+| **Classic** | Diseño tradicional y elegante | Bordes ornamentados, sello, esquinas decorativas |
+| **Minimal** | Diseño limpio y moderno | Espaciado generoso, tipografia prominente |
+| **Creative** | Diseño artistico y dinamico | Patrones de fondo, flourishes, estilo script |
+
+### Opciones de Personalizacion
+
+#### Colores
+- Color primario (titulo)
+- Color secundario (curso)
+- Color de acento (divisores, ornamentos)
+- Color de fondo
+- Color de texto
+- Color de bordes
+
+#### Tipografia
+- Fuente de titulo (Serif, Sans, Script, Slab, Display)
+- Fuente de cuerpo
+- Fuente de acento (nombre del estudiante)
+- Peso de fuentes
+- Transformacion de texto (mayusculas, normal)
+- Escala (compacta, normal, espaciosa)
+
+#### Bordes y Layout
+- Estilo de borde (ninguno, solido, doble, ornamentado)
+- Ancho del borde
+- Radio de esquinas
+- Padding
+- Orientacion (horizontal, vertical)
+- Tamano de papel (A4, Letter, Legal)
+
+#### Ornamentos
+- Divisores (simple, elegante, ornamentado)
+- Sello oficial (clasico, moderno, cinta)
+- Patron de fondo (ninguno, marca de agua)
+- Esquinas decorativas
+
+#### Contenido
+- Texto del encabezado
+- Subtitulo personalizado
+- Mostrar/ocultar elementos (fecha, horas, calificacion, instructor, QR, numero)
+- Nombre de organizacion
+
+### Sistema de PDF Vectorial
+
+CertiGen utiliza `@react-pdf/renderer` para generar PDFs de alta calidad:
+
+```
+Caracteristicas del Motor PDF:
+├── Renderizado 100% vectorial
+├── Fuentes embebidas (Inter, Merriweather, Great Vibes, Roboto Slab)
+├── Codigo QR integrado en el documento
+├── Soporte para orientacion landscape/portrait
+├── Tamanos de papel: A4, Letter, Legal
+└── Ornamentos y sellos renderizados con SVG
+```
 
 ---
 
@@ -208,9 +299,9 @@ Usuario                    Frontend                    API                     S
 | **Email Templates** | React Email | - | Plantillas de correo en React |
 | **Validacion** | Zod | 3.x | Schema validation |
 | **Formularios** | React Hook Form | 7.x | Form management |
-| **PDF** | jsPDF + html2canvas | - | Generacion de PDFs |
+| **PDF** | @react-pdf/renderer | 4.x | Generacion vectorial de PDFs |
+| **QR Codes** | qrcode | 1.x | Generacion de QR codes |
 | **ZIP** | JSZip | - | Empaquetado de multiples PDFs |
-| **QR Codes** | react-qr-code | - | Generacion de QR |
 | **Iconos** | Lucide React | - | Iconografia |
 | **Despliegue** | Vercel | - | Hosting, Edge Functions |
 
@@ -637,6 +728,31 @@ MIT License - ver [LICENSE](LICENSE)
 ---
 
 ## Changelog
+
+### v3.1.0 (2024-12-25)
+- **Correccion de opciones de configuracion** - Las opciones de colores, bordes y tipografia ahora se aplican correctamente al PDF
+- **Valores por defecto robustos** - Todas las variables de diseño tienen valores por defecto para evitar errores
+- **Nuevo tagline** - "Sistema de Generacion y Validacion de Certificados con QR" en 9 idiomas
+- **Mejora en merge de configuracion** - Deep merge que filtra valores undefined
+- **Templates actualizados** - Classic, Minimal y Creative con defaults locales
+
+### v3.0.0 (2024-12-25)
+- **Migracion a @react-pdf/renderer** - Generacion de PDFs 100% vectoriales
+- **Nuevo configurador visual** - Personaliza cada aspecto del certificado en tiempo real
+- **3 plantillas profesionales**:
+  - **Classic**: Diseño tradicional con bordes ornamentados y sello
+  - **Minimal**: Diseño limpio y moderno con espaciado generoso
+  - **Creative**: Diseño artistico con patrones y flourishes
+- **Sistema de tipografia avanzado** - 5 familias de fuentes embebidas
+- **Ornamentos SVG** - Sellos, divisores y esquinas decorativas vectoriales
+- **Configuracion completa**:
+  - 7 colores personalizables
+  - 5 fuentes para diferentes elementos
+  - Bordes con 4 estilos y esquinas opcionales
+  - Ornamentos con opacidad ajustable
+  - Layout flexible (3 tamanos de papel, 2 orientaciones)
+- **Schema TypeScript** - Tipos estrictos para toda la configuracion
+- **Generacion de QR mejorada** - QR codes con colores personalizables
 
 ### v2.0.0 (2024-12-25)
 - **Internacionalizacion completa** con 9 idiomas (EN, DE, PL, RU, ES, HE, HU, IT, TH)
