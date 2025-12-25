@@ -10,22 +10,18 @@ interface CertificatePreviewProps {
   certificateNumber?: string;
   template?: TemplateStyle;
   paperSize?: PaperSize;
+  logoUrl?: string | null;
   className?: string;
 }
 
 // Using inline hex colors to avoid html2canvas LAB color parsing issues
 const colors = {
-  // Blues
   blue900: '#1e3a5f',
   blue800: '#1e4976',
   blue700: '#2563eb',
   blue200: '#bfdbfe',
-  blue100: '#dbeafe',
-  blue600: '#2563eb',
-  // Yellows
   yellow400: '#facc15',
   yellow500: '#eab308',
-  // Grays
   gray900: '#111827',
   gray800: '#1f2937',
   gray700: '#374151',
@@ -33,9 +29,6 @@ const colors = {
   gray500: '#6b7280',
   gray400: '#9ca3af',
   gray200: '#e5e7eb',
-  gray100: '#f3f4f6',
-  gray50: '#f9fafb',
-  // Others
   white: '#ffffff',
 };
 
@@ -44,6 +37,7 @@ export function CertificatePreview({
   certificateNumber = 'CER-XXXXXXXX-XXXXXX',
   template = 'elegant',
   paperSize = 'a4',
+  logoUrl,
   className = '',
 }: CertificatePreviewProps) {
   const validationUrl = getValidationUrl(certificateNumber);
@@ -53,6 +47,43 @@ export function CertificatePreview({
     aspectRatio: paper.cssAspect,
     width: '100%',
     maxWidth: '100%',
+  };
+
+  // Logo component
+  const Logo = ({ size = 64, light = false }: { size?: number; light?: boolean }) => {
+    if (logoUrl) {
+      return (
+        <img
+          src={logoUrl}
+          alt="Logo"
+          style={{
+            width: size,
+            height: size,
+            objectFit: 'contain',
+            borderRadius: '4px',
+          }}
+        />
+      );
+    }
+    if (data.organization_name) {
+      return (
+        <div style={{
+          width: size,
+          height: size,
+          backgroundColor: light ? 'rgba(255,255,255,0.2)' : colors.gray200,
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: light ? colors.white : colors.gray600,
+          fontSize: size * 0.3,
+          fontWeight: 'bold',
+        }}>
+          {data.organization_name.substring(0, 2).toUpperCase()}
+        </div>
+      );
+    }
+    return null;
   };
 
   if (template === 'elegant') {
@@ -92,8 +123,18 @@ export function CertificatePreview({
           justifyContent: 'space-between',
           padding: '5%',
         }}>
-          {/* Header */}
+          {/* Header with Logo */}
           <div style={{ textAlign: 'center' }}>
+            {(logoUrl || data.organization_name) && (
+              <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
+                <Logo size={50} light />
+                {data.organization_name && (
+                  <span style={{ fontSize: 'clamp(0.8rem, 2vw, 1.2rem)', color: colors.blue200 }}>
+                    {data.organization_name}
+                  </span>
+                )}
+              </div>
+            )}
             <h1 style={{
               fontSize: 'clamp(1.5rem, 5vw, 3rem)',
               fontWeight: 'bold',
@@ -199,7 +240,6 @@ export function CertificatePreview({
               </div>
             )}
 
-            {/* QR Code */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
               <div style={{ backgroundColor: colors.white, padding: '8px', borderRadius: '4px' }}>
                 <QRCode value={validationUrl} size={48} />
@@ -238,6 +278,16 @@ export function CertificatePreview({
         }}>
           {/* Header */}
           <div>
+            {(logoUrl || data.organization_name) && (
+              <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
+                <Logo size={40} />
+                {data.organization_name && (
+                  <span style={{ fontSize: 'clamp(0.7rem, 1.5vw, 1rem)', color: colors.gray600, fontWeight: 500 }}>
+                    {data.organization_name}
+                  </span>
+                )}
+              </div>
+            )}
             <p style={{
               fontSize: 'clamp(0.5rem, 1.2vw, 0.75rem)',
               letterSpacing: '0.3em',
@@ -337,32 +387,31 @@ export function CertificatePreview({
         height: '100%',
         padding: '4%',
       }}>
-        {/* Header */}
+        {/* Header with Logo */}
         <div style={{
           textAlign: 'center',
           borderBottom: `2px solid ${colors.blue900}`,
           paddingBottom: '3%',
         }}>
-          <div style={{
-            width: '64px',
-            height: '64px',
-            backgroundColor: colors.gray200,
-            borderRadius: '50%',
-            margin: '0 auto 16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: colors.gray400,
-            fontSize: 'clamp(0.4rem, 1vw, 0.75rem)',
-          }}>
-            LOGO
+          <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
+            <Logo size={56} />
+            {data.organization_name && !logoUrl && (
+              <span style={{ fontSize: 'clamp(0.8rem, 1.8vw, 1.1rem)', color: colors.blue900, fontWeight: 600 }}>
+                {data.organization_name}
+              </span>
+            )}
           </div>
+          {data.organization_name && logoUrl && (
+            <p style={{ fontSize: 'clamp(0.7rem, 1.5vw, 1rem)', color: colors.gray600, margin: '8px 0 0 0' }}>
+              {data.organization_name}
+            </p>
+          )}
           <h1 style={{
             fontSize: 'clamp(1rem, 2.5vw, 1.75rem)',
             fontWeight: 'bold',
             color: colors.blue900,
             letterSpacing: '0.05em',
-            margin: 0,
+            margin: '12px 0 0 0',
           }}>
             CERTIFICADO OFICIAL
           </h1>

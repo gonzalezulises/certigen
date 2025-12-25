@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { CertificateForm, CertificatePreview, CertificatePDFButton } from '@/components/certificate';
-import { Alert, AlertTitle, AlertDescription, Card, CardContent, CardHeader, CardTitle, Label, Select } from '@/components/ui';
+import { Alert, AlertTitle, AlertDescription, Card, CardContent, CardHeader, CardTitle, Label, Select, Button } from '@/components/ui';
 import { CertificateFormData, TemplateStyle, PaperSize, PAPER_SIZES, Certificate } from '@/types/certificate';
-import { CheckCircle2, Eye, FileText } from 'lucide-react';
+import { CheckCircle2, Eye, FileText, FileSpreadsheet } from 'lucide-react';
 
 export default function GeneratePage() {
   const [formData, setFormData] = useState<Partial<CertificateFormData>>({
@@ -13,12 +14,17 @@ export default function GeneratePage() {
   });
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateStyle>('elegant');
   const [paperSize, setPaperSize] = useState<PaperSize>('a4');
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [generatedCertificate, setGeneratedCertificate] = useState<Certificate | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleFormChange = (data: Partial<CertificateFormData>) => {
     setFormData(data);
+  };
+
+  const handleLogoChange = (url: string | null) => {
+    setLogoUrl(url);
   };
 
   const handleSubmit = async (data: CertificateFormData) => {
@@ -55,11 +61,19 @@ export default function GeneratePage() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Generar Certificado</h1>
-          <p className="text-gray-600 mt-2 text-sm sm:text-base">
-            Completa el formulario para generar un certificado verificable con codigo QR.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Generar Certificado</h1>
+            <p className="text-gray-600 mt-2 text-sm sm:text-base">
+              Completa el formulario para generar un certificado verificable con codigo QR.
+            </p>
+          </div>
+          <Link href="/batch">
+            <Button variant="outline" className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" />
+              Generar en lote (CSV)
+            </Button>
+          </Link>
         </div>
 
         {/* Alerts */}
@@ -89,6 +103,7 @@ export default function GeneratePage() {
             <CertificateForm
               onSubmit={handleSubmit}
               onChange={handleFormChange}
+              onLogoChange={handleLogoChange}
               selectedTemplate={selectedTemplate}
               onTemplateChange={setSelectedTemplate}
               isLoading={isLoading}
@@ -133,6 +148,7 @@ export default function GeneratePage() {
                       certificateNumber={generatedCertificate?.certificate_number}
                       template={selectedTemplate}
                       paperSize={paperSize}
+                      logoUrl={logoUrl}
                       className="shadow-lg mx-auto"
                     />
                   </div>

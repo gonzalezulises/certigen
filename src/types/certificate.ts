@@ -64,9 +64,32 @@ export const certificateFormSchema = z.object({
   grade: z.number().min(0).max(100).optional(),
   issue_date: z.string(),
   template_id: z.string().optional(),
+  logo_url: z.string().optional(),
+  organization_name: z.string().optional(),
 });
 
 export type CertificateFormData = z.infer<typeof certificateFormSchema>;
+
+// CSV Batch Upload Types
+export interface CSVRow {
+  student_name: string;
+  student_email: string;
+  course_name?: string;
+  certificate_type?: 'participation' | 'completion';
+  instructor_name?: string;
+  hours?: number;
+  grade?: number;
+  issue_date?: string;
+}
+
+export interface BatchGenerateResult {
+  success: boolean;
+  total: number;
+  generated: number;
+  failed: number;
+  certificates: Certificate[];
+  errors: { row: number; error: string }[];
+}
 
 export const validateCertificateSchema = z.object({
   certificate_number: z.string().min(1, 'El número de certificado es requerido'),

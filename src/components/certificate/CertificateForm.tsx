@@ -1,14 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Input, Label, Select, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { certificateFormSchema, CertificateFormData, TEMPLATES, TemplateStyle } from '@/types/certificate';
+import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
 interface CertificateFormProps {
   onSubmit: (data: CertificateFormData) => Promise<void>;
   onChange?: (data: Partial<CertificateFormData>) => void;
+  onLogoChange?: (logoUrl: string | null) => void;
   selectedTemplate: TemplateStyle;
   onTemplateChange: (template: TemplateStyle) => void;
   isLoading?: boolean;
@@ -17,14 +19,19 @@ interface CertificateFormProps {
 export function CertificateForm({
   onSubmit,
   onChange,
+  onLogoChange,
   selectedTemplate,
   onTemplateChange,
   isLoading = false,
 }: CertificateFormProps) {
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<CertificateFormData>({
     resolver: zodResolver(certificateFormSchema),
@@ -37,6 +44,7 @@ export function CertificateForm({
       hours: undefined,
       grade: undefined,
       issue_date: new Date().toISOString().split('T')[0],
+      organization_name: '',
     },
   });
 
@@ -50,8 +58,110 @@ export function CertificateForm({
     return () => subscription.unsubscribe();
   }, [watch, onChange]);
 
+  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen');
+        return;
+      }
+      // Validate file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('El archivo debe ser menor a 2MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setLogoPreview(base64);
+        setValue('logo_url', base64);
+        if (onLogoChange) {
+          onLogoChange(base64);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    setLogoPreview(null);
+    setValue('logo_url', undefined);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    if (onLogoChange) {
+      onLogoChange(null);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {/* Organization & Logo */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Organizacion</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="organization_name">Nombre de la organizacion</Label>
+              <Input
+                id="organization_name"
+                placeholder="Mi Empresa / Universidad"
+                {...register('organization_name')}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Logo (opcional)</Label>
+              <div className="flex items-center gap-4">
+                {logoPreview ? (
+                  <div className="relative">
+                    <img
+                      src={logoPreview}
+                      alt="Logo preview"
+                      className="w-16 h-16 object-contain border rounded bg-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveLogo}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 border-2 border-dashed rounded flex items-center justify-center bg-gray-50">
+                    <ImageIcon className="w-6 h-6 text-gray-400" />
+                  </div>
+                )}
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                    id="logo-upload"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Subir logo
+                  </Button>
+                  <p className="text-xs text-gray-500 mt-1">PNG, JPG hasta 2MB</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Student Information */}
       <Card>
         <CardHeader>
