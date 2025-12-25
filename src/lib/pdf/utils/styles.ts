@@ -70,7 +70,9 @@ export const generateStyles = (config: TemplateConfig) => {
   const borderWidth = (config.border?.style ?? 'none') !== 'none'
     ? (borderWidthMap[config.border?.width ?? DEFAULT_BORDER_WIDTH] ?? borderWidthMap[DEFAULT_BORDER_WIDTH])
     : 0;
-  const borderRadius = radiusMap[config.border?.radius ?? DEFAULT_RADIUS] ?? radiusMap[DEFAULT_RADIUS];
+  // Asegurar que borderRadius siempre tenga un valor válido
+  const radiusValue = config.border?.radius;
+  const borderRadius = (radiusValue && radiusMap[radiusValue]) ?? radiusMap[DEFAULT_RADIUS];
 
   // Valores de tipografía con defaults
   const bodyFont = fontFamilyMap[config.typography?.bodyFont ?? DEFAULT_FONT] ?? fontFamilyMap[DEFAULT_FONT];
@@ -111,7 +113,7 @@ export const generateStyles = (config: TemplateConfig) => {
       flex: 1,
       borderWidth: borderWidth,
       borderColor: colors.border,
-      borderRadius: borderRadius,
+      borderRadius: borderRadius || 0,
       borderStyle: 'solid',
       padding: padding * 0.6,
       position: 'relative',
