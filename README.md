@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![CertiGen Logo](https://img.shields.io/badge/CertiGen-v3.1.0-blue?style=for-the-badge)
+![CertiGen Logo](https://img.shields.io/badge/CertiGen-v3.1.1-blue?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-16.x-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)
 ![React PDF](https://img.shields.io/badge/@react--pdf/renderer-4.x-red?style=for-the-badge)
@@ -15,12 +15,12 @@
 
 ---
 
-## Novedades v3.1.0
+## Novedades v3.1.1
 
-- **Configurador Visual de Plantillas** - Personaliza colores, tipografia, bordes y mas en tiempo real
-- **Generacion PDF Vectorial** - PDFs de alta calidad con @react-pdf/renderer
-- **3 Plantillas Profesionales** - Classic, Minimal y Creative con configuracion completa
-- **Codigo QR Integrado** - Validacion instantanea escaneando el certificado
+- **Vista previa con QR** - El configurador ahora muestra el codigo QR en la vista previa
+- **Fuentes corregidas** - Reemplazadas fuentes corruptas (Merriweather, RobotoSlab)
+- **Estilos de esquinas** - Todos los estilos (none, simple, ornate, flourish) funcionan correctamente
+- **Configuracion robusta** - Manejo seguro de valores undefined en toda la configuracion
 - **9 Idiomas** - ES, EN, DE, IT, PL, RU, HU, HE (RTL), TH
 
 ---
@@ -728,6 +728,14 @@ MIT License - ver [LICENSE](LICENSE)
 ---
 
 ## Changelog
+
+### v3.1.1 (2024-12-25)
+- **Fuentes corregidas** - Reemplazadas Merriweather y RobotoSlab que estaban corruptas (eran HTML en lugar de TTF)
+- **QR en vista previa** - El configurador ahora muestra el codigo QR y numero de certificado en el preview
+- **Error fontStyle italic** - Eliminado uso de italic en template creative (Sans no tiene variante italic)
+- **Error borderRadius undefined** - Añadido manejo robusto para valores de radius no definidos
+- **Estilos de esquinas** - Los templates classic y creative ahora manejan todos los estilos (none, simple, ornate, flourish)
+- **Optional chaining** - Añadido a todos los accesos de config en el preview para evitar errores
 
 ### v3.1.0 (2024-12-25)
 - **Correccion de opciones de configuracion** - Las opciones de colores, bordes y tipografia ahora se aplican correctamente al PDF
