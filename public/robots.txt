@@ -1,0 +1,15 @@
+# CertiGen - Robots.txt
+# https://certigen-sandy.vercel.app
+
+User-agent: *
+Allow: /
+Allow: /generate
+Allow: /validate
+Allow: /batch
+
+# Disallow admin and API routes
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://certigen-sandy.vercel.app/sitemap.xml

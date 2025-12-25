@@ -25,7 +25,7 @@ export function Footer() {
               Validar Certificado
             </Link>
             <Link
-              href="https://github.com/your-username/certigen"
+              href="https://github.com/gonzalezulises/certigen"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600 transition-colors"

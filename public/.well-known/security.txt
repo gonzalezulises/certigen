@@ -1,0 +1,7 @@
+# CertiGen Security Policy
+# https://certigen-sandy.vercel.app
+
+Contact: mailto:ulises@rizo.ma
+Expires: 2026-12-25T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://certigen-sandy.vercel.app/.well-known/security.txt
