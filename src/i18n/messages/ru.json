@@ -316,5 +316,212 @@
     "hours": "часов",
     "grade": "Оценка",
     "verify": "Проверить"
+  },
+  "configurator": {
+    "title": "Настроить сертификат",
+    "back": "Назад",
+    "preview": "Предпросмотр",
+    "downloadPdf": "Скачать PDF",
+    "saveConfig": "Сохранить настройки",
+    "reset": "Сбросить",
+    "generating": "Генерация...",
+    "templates": {
+      "title": "Базовый шаблон",
+      "classic": {
+        "name": "Классический академический",
+        "description": "Формальный дизайн с орнаментальными рамками, идеально для учебных заведений"
+      },
+      "minimal": {
+        "name": "Минималистичный",
+        "description": "Просторный макет с типографикой как главным элементом, элегантность в простоте"
+      },
+      "creative": {
+        "name": "Креативный",
+        "description": "Выразительный дизайн со смелыми декоративными элементами, для особых наград"
+      }
+    },
+    "panels": {
+      "colors": "Цвета",
+      "typography": "Типографика",
+      "layout": "Макет",
+      "elements": "Элементы",
+      "content": "Содержание",
+      "branding": "Брендинг"
+    },
+    "colors": {
+      "title": "Цвета",
+      "palettes": "Готовые палитры",
+      "primary": "Основной цвет",
+      "secondary": "Дополнительный цвет",
+      "accent": "Акцентный цвет",
+      "background": "Фон",
+      "text": "Основной текст",
+      "textMuted": "Второстепенный текст",
+      "border": "Рамки"
+    },
+    "typography": {
+      "title": "Типографика",
+      "fonts": "Шрифты",
+      "titleFont": "Заголовки",
+      "bodyFont": "Основной текст",
+      "nameFont": "Имя",
+      "style": "Стиль",
+      "scale": "Общий масштаб",
+      "alignment": "Выравнивание",
+      "titleWeight": "Жирность заголовка",
+      "nameWeight": "Жирность имени",
+      "titleTransform": "Трансформация заголовка",
+      "fontOptions": {
+        "serif": "Засечки (Формальный)",
+        "sans": "Без засечек (Современный)",
+        "script": "Рукописный (Элегантный)",
+        "slab": "Slab (Технический)",
+        "display": "Декоративный"
+      },
+      "scaleOptions": {
+        "compact": "Компактный",
+        "normal": "Обычный",
+        "spacious": "Просторный"
+      },
+      "alignmentOptions": {
+        "left": "По левому краю",
+        "center": "По центру",
+        "right": "По правому краю"
+      },
+      "weightOptions": {
+        "normal": "Обычная",
+        "medium": "Средняя",
+        "bold": "Жирная",
+        "black": "Сверхжирная"
+      },
+      "transformOptions": {
+        "none": "Обычный",
+        "uppercase": "ЗАГЛАВНЫЕ",
+        "capitalize": "С Заглавной"
+      }
+    },
+    "layout": {
+      "page": "Страница",
+      "paperSize": "Размер",
+      "orientation": "Ориентация",
+      "borders": "Рамки",
+      "borderStyle": "Стиль",
+      "borderWidth": "Ширина",
+      "corners": "Углы",
+      "padding": "Отступы",
+      "positions": "Позиции",
+      "logoPosition": "Логотип",
+      "logoSize": "Размер логотипа",
+      "qrPosition": "QR-код",
+      "signaturePosition": "Подпись",
+      "showSignatureLine": "Показать линию подписи",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Letter",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "Альбомная",
+        "portrait": "Портретная"
+      },
+      "borderStyleOptions": {
+        "none": "Без рамки",
+        "simple": "Простая",
+        "double": "Двойная",
+        "certificate": "Сертификат",
+        "ornate": "Орнаментальная"
+      },
+      "widthOptions": {
+        "thin": "Тонкая",
+        "medium": "Средняя",
+        "thick": "Толстая"
+      },
+      "cornerOptions": {
+        "none": "Без декора",
+        "simple": "Простые",
+        "ornate": "Орнаментальные",
+        "flourish": "Витиеватые"
+      },
+      "paddingOptions": {
+        "compact": "Компактные",
+        "normal": "Обычные",
+        "spacious": "Просторные"
+      },
+      "positionOptions": {
+        "topLeft": "Вверху слева",
+        "topCenter": "Вверху по центру",
+        "topRight": "Вверху справа",
+        "bottomLeft": "Внизу слева",
+        "bottomCenter": "Внизу по центру",
+        "bottomRight": "Внизу справа"
+      },
+      "sizeOptions": {
+        "small": "Маленький",
+        "medium": "Средний",
+        "large": "Большой"
+      },
+      "signatureOptions": {
+        "left": "Слева",
+        "center": "По центру",
+        "right": "Справа",
+        "dual": "Двойная"
+      }
+    },
+    "elements": {
+      "dividers": "Разделители",
+      "dividerStyle": "Стиль разделителя",
+      "seal": "Печать",
+      "sealStyle": "Стиль",
+      "sealPosition": "Позиция",
+      "background": "Фон",
+      "backgroundPattern": "Фоновый узор",
+      "backgroundOpacity": "Прозрачность узора",
+      "dividerOptions": {
+        "none": "Без разделителя",
+        "simple": "Простая линия",
+        "ornate": "Орнаментальный",
+        "dots": "Точки",
+        "gradient": "Градиент"
+      },
+      "sealStyleOptions": {
+        "classic": "Классическая",
+        "modern": "Современная",
+        "ribbon": "Лента",
+        "badge": "Значок"
+      },
+      "patternOptions": {
+        "none": "Без узора",
+        "subtleGrid": "Тонкая сетка",
+        "diagonalLines": "Диагональные линии",
+        "watermark": "Водяной знак"
+      }
+    },
+    "content": {
+      "texts": "Тексты",
+      "headerText": "Заголовок сертификата",
+      "subtitleTemplate": "Подзаголовок",
+      "footerText": "Текст внизу (опционально)",
+      "fieldsToShow": "Отображаемые поля",
+      "showSubtitle": "Подзаголовок",
+      "showOrganizationName": "Название организации",
+      "showDate": "Дата",
+      "showInstructor": "Инструктор",
+      "showHours": "Часы",
+      "showGrade": "Оценка",
+      "showCertificateNumber": "Номер сертификата",
+      "showQR": "QR-код"
+    },
+    "branding": {
+      "organization": "Организация",
+      "organizationName": "Название организации",
+      "organizationSubtitle": "Подзаголовок (опционально)",
+      "logo": "Логотип",
+      "uploadLogo": "Загрузить логотип",
+      "signature": "Подпись",
+      "signatureLabel": "Должность",
+      "uploadSignature": "Загрузить изображение подписи",
+      "secondSignature": "Вторая подпись (опционально)",
+      "secondSignatureLabel": "Должность"
+    }
   }
 }

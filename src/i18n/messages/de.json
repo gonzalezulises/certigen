@@ -316,5 +316,212 @@
     "hours": "Stunden",
     "grade": "Note",
     "verify": "Verifizieren"
+  },
+  "configurator": {
+    "title": "Zertifikat konfigurieren",
+    "back": "Zuruck",
+    "preview": "Vorschau",
+    "downloadPdf": "PDF herunterladen",
+    "saveConfig": "Konfiguration speichern",
+    "reset": "Zurucksetzen",
+    "generating": "Wird generiert...",
+    "templates": {
+      "title": "Basisvorlage",
+      "classic": {
+        "name": "Klassisch Akademisch",
+        "description": "Formales Design mit verzierten Rahmen, ideal fur Bildungseinrichtungen"
+      },
+      "minimal": {
+        "name": "Minimalistisch",
+        "description": "Grosszugiger Abstand und Typografie als Protagonist, Eleganz in der Einfachheit"
+      },
+      "creative": {
+        "name": "Kreativ",
+        "description": "Ausdrucksstarkes Design mit gewagten dekorativen Elementen, fur besondere Anerkennungen"
+      }
+    },
+    "panels": {
+      "colors": "Farben",
+      "typography": "Typografie",
+      "layout": "Layout",
+      "elements": "Elemente",
+      "content": "Inhalt",
+      "branding": "Marke"
+    },
+    "colors": {
+      "title": "Farben",
+      "palettes": "Vordefinierte Paletten",
+      "primary": "Primarfarbe",
+      "secondary": "Sekundarfarbe",
+      "accent": "Akzentfarbe",
+      "background": "Hintergrund",
+      "text": "Haupttext",
+      "textMuted": "Sekundartext",
+      "border": "Rahmen"
+    },
+    "typography": {
+      "title": "Typografie",
+      "fonts": "Schriftarten",
+      "titleFont": "Titel",
+      "bodyFont": "Haupttext",
+      "nameFont": "Name",
+      "style": "Stil",
+      "scale": "Allgemeine Skalierung",
+      "alignment": "Ausrichtung",
+      "titleWeight": "Titelstarke",
+      "nameWeight": "Namenstarke",
+      "titleTransform": "Titeltransformation",
+      "fontOptions": {
+        "serif": "Serif (Formal)",
+        "sans": "Sans-serif (Modern)",
+        "script": "Script (Elegant)",
+        "slab": "Slab (Tech)",
+        "display": "Display (Dekorativ)"
+      },
+      "scaleOptions": {
+        "compact": "Kompakt",
+        "normal": "Normal",
+        "spacious": "Geraumig"
+      },
+      "alignmentOptions": {
+        "left": "Links",
+        "center": "Zentriert",
+        "right": "Rechts"
+      },
+      "weightOptions": {
+        "normal": "Normal",
+        "medium": "Medium",
+        "bold": "Fett",
+        "black": "Schwarz"
+      },
+      "transformOptions": {
+        "none": "Normal",
+        "uppercase": "GROSSBUCHSTABEN",
+        "capitalize": "Grossschreibung"
+      }
+    },
+    "layout": {
+      "page": "Seite",
+      "paperSize": "Grosse",
+      "orientation": "Ausrichtung",
+      "borders": "Rahmen",
+      "borderStyle": "Stil",
+      "borderWidth": "Breite",
+      "corners": "Ecken",
+      "padding": "Innenabstand",
+      "positions": "Positionen",
+      "logoPosition": "Logo",
+      "logoSize": "Logogrosse",
+      "qrPosition": "QR-Code",
+      "signaturePosition": "Unterschrift",
+      "showSignatureLine": "Unterschriftslinie anzeigen",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Brief",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "Querformat",
+        "portrait": "Hochformat"
+      },
+      "borderStyleOptions": {
+        "none": "Kein Rahmen",
+        "simple": "Einfach",
+        "double": "Doppelt",
+        "certificate": "Zertifikat",
+        "ornate": "Verziert"
+      },
+      "widthOptions": {
+        "thin": "Dunn",
+        "medium": "Mittel",
+        "thick": "Dick"
+      },
+      "cornerOptions": {
+        "none": "Keine Dekoration",
+        "simple": "Einfach",
+        "ornate": "Verziert",
+        "flourish": "Verzierung"
+      },
+      "paddingOptions": {
+        "compact": "Kompakt",
+        "normal": "Normal",
+        "spacious": "Geraumig"
+      },
+      "positionOptions": {
+        "topLeft": "Oben links",
+        "topCenter": "Oben mittig",
+        "topRight": "Oben rechts",
+        "bottomLeft": "Unten links",
+        "bottomCenter": "Unten mittig",
+        "bottomRight": "Unten rechts"
+      },
+      "sizeOptions": {
+        "small": "Klein",
+        "medium": "Mittel",
+        "large": "Gross"
+      },
+      "signatureOptions": {
+        "left": "Links",
+        "center": "Mitte",
+        "right": "Rechts",
+        "dual": "Doppelt"
+      }
+    },
+    "elements": {
+      "dividers": "Trennlinien",
+      "dividerStyle": "Trennlinienstil",
+      "seal": "Siegel",
+      "sealStyle": "Stil",
+      "sealPosition": "Position",
+      "background": "Hintergrund",
+      "backgroundPattern": "Hintergrundmuster",
+      "backgroundOpacity": "Musterdeckkraft",
+      "dividerOptions": {
+        "none": "Keine Trennlinie",
+        "simple": "Einfache Linie",
+        "ornate": "Verziert",
+        "dots": "Punkte",
+        "gradient": "Verlauf"
+      },
+      "sealStyleOptions": {
+        "classic": "Klassisch",
+        "modern": "Modern",
+        "ribbon": "Band",
+        "badge": "Abzeichen"
+      },
+      "patternOptions": {
+        "none": "Kein Muster",
+        "subtleGrid": "Dezentes Raster",
+        "diagonalLines": "Diagonale Linien",
+        "watermark": "Wasserzeichen"
+      }
+    },
+    "content": {
+      "texts": "Texte",
+      "headerText": "Zertifikatstitel",
+      "subtitleTemplate": "Untertitel",
+      "footerText": "Fusstext (optional)",
+      "fieldsToShow": "Anzuzeigende Felder",
+      "showSubtitle": "Untertitel",
+      "showOrganizationName": "Organisationsname",
+      "showDate": "Datum",
+      "showInstructor": "Dozent",
+      "showHours": "Stunden",
+      "showGrade": "Note",
+      "showCertificateNumber": "Zertifikatsnummer",
+      "showQR": "QR-Code"
+    },
+    "branding": {
+      "organization": "Organisation",
+      "organizationName": "Organisationsname",
+      "organizationSubtitle": "Untertitel (optional)",
+      "logo": "Logo",
+      "uploadLogo": "Logo hochladen",
+      "signature": "Unterschrift",
+      "signatureLabel": "Titel/Position",
+      "uploadSignature": "Unterschriftsbild hochladen",
+      "secondSignature": "Zweite Unterschrift (optional)",
+      "secondSignatureLabel": "Titel/Position"
+    }
   }
 }

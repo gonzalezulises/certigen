@@ -316,5 +316,212 @@
     "hours": "ora",
     "grade": "Osztalyzat",
     "verify": "Ellenorzes"
+  },
+  "configurator": {
+    "title": "Tanusitvany konfiguralas",
+    "back": "Vissza",
+    "preview": "Elonezet",
+    "downloadPdf": "PDF letoltes",
+    "saveConfig": "Beallitasok mentese",
+    "reset": "Visszaallitas",
+    "generating": "Generalas...",
+    "templates": {
+      "title": "Alap sablon",
+      "classic": {
+        "name": "Klasszikus akademiai",
+        "description": "Formalis dizajn diszitett keretekkel, idealis oktatasi intezmenyeknek"
+      },
+      "minimal": {
+        "name": "Minimalista",
+        "description": "Teres elrendezes tipografiaval foszerepben, elegancia az egyszeru segben"
+      },
+      "creative": {
+        "name": "Kreativ",
+        "description": "Kifejezoerej dizajn meresz dekorativ elemekkel, kulonleges elismeresekhez"
+      }
+    },
+    "panels": {
+      "colors": "Szinek",
+      "typography": "Tipografia",
+      "layout": "Elrendezes",
+      "elements": "Elemek",
+      "content": "Tartalom",
+      "branding": "Markajeles"
+    },
+    "colors": {
+      "title": "Szinek",
+      "palettes": "Elore meghatarozott palettak",
+      "primary": "Elsodleges szin",
+      "secondary": "Masodlagos szin",
+      "accent": "Kiemelő szin",
+      "background": "Hatter",
+      "text": "Fo szoveg",
+      "textMuted": "Masodlagos szoveg",
+      "border": "Keretek"
+    },
+    "typography": {
+      "title": "Tipografia",
+      "fonts": "Betutipusok",
+      "titleFont": "Cimek",
+      "bodyFont": "Tozsszoveg",
+      "nameFont": "Nev",
+      "style": "Stilus",
+      "scale": "Altalanos meretaras",
+      "alignment": "Igazitas",
+      "titleWeight": "Cim vastagasga",
+      "nameWeight": "Nev vastagsaga",
+      "titleTransform": "Cim atalakitasa",
+      "fontOptions": {
+        "serif": "Serif (Formalis)",
+        "sans": "Sans-serif (Modern)",
+        "script": "Script (Elegans)",
+        "slab": "Slab (Tech)",
+        "display": "Display (Dekorativ)"
+      },
+      "scaleOptions": {
+        "compact": "Kompakt",
+        "normal": "Normalis",
+        "spacious": "Teres"
+      },
+      "alignmentOptions": {
+        "left": "Balra",
+        "center": "Kozepre",
+        "right": "Jobbra"
+      },
+      "weightOptions": {
+        "normal": "Normalis",
+        "medium": "Kozepes",
+        "bold": "Felkover",
+        "black": "Fekete"
+      },
+      "transformOptions": {
+        "none": "Normalis",
+        "uppercase": "NAGYBETUK",
+        "capitalize": "Kezdobetu Nagy"
+      }
+    },
+    "layout": {
+      "page": "Oldal",
+      "paperSize": "Meret",
+      "orientation": "Tajolas",
+      "borders": "Keretek",
+      "borderStyle": "Stilus",
+      "borderWidth": "Szelesseg",
+      "corners": "Sarkok",
+      "padding": "Belső margó",
+      "positions": "Poziciok",
+      "logoPosition": "Logo",
+      "logoSize": "Logo meret",
+      "qrPosition": "QR kod",
+      "signaturePosition": "Alairas",
+      "showSignatureLine": "Alairas vonal megjelenitese",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Letter",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "Fekvo",
+        "portrait": "Allo"
+      },
+      "borderStyleOptions": {
+        "none": "Nincs keret",
+        "simple": "Egyszeru",
+        "double": "Dupla",
+        "certificate": "Tanusitvany",
+        "ornate": "Diszitett"
+      },
+      "widthOptions": {
+        "thin": "Vekony",
+        "medium": "Kozepes",
+        "thick": "Vastag"
+      },
+      "cornerOptions": {
+        "none": "Nincs diszites",
+        "simple": "Egyszeru",
+        "ornate": "Diszitett",
+        "flourish": "Viragdisz"
+      },
+      "paddingOptions": {
+        "compact": "Kompakt",
+        "normal": "Normalis",
+        "spacious": "Teres"
+      },
+      "positionOptions": {
+        "topLeft": "Fent balra",
+        "topCenter": "Fent kozepen",
+        "topRight": "Fent jobbra",
+        "bottomLeft": "Lent balra",
+        "bottomCenter": "Lent kozepen",
+        "bottomRight": "Lent jobbra"
+      },
+      "sizeOptions": {
+        "small": "Kicsi",
+        "medium": "Kozepes",
+        "large": "Nagy"
+      },
+      "signatureOptions": {
+        "left": "Bal",
+        "center": "Kozep",
+        "right": "Jobb",
+        "dual": "Dupla"
+      }
+    },
+    "elements": {
+      "dividers": "Elvalasztok",
+      "dividerStyle": "Elvalaszto stilus",
+      "seal": "Pecset",
+      "sealStyle": "Stilus",
+      "sealPosition": "Pozicio",
+      "background": "Hatter",
+      "backgroundPattern": "Hatter minta",
+      "backgroundOpacity": "Minta atlatszosaga",
+      "dividerOptions": {
+        "none": "Nincs elvalaszto",
+        "simple": "Egyszeru vonal",
+        "ornate": "Diszitett",
+        "dots": "Pontok",
+        "gradient": "Atmenetes"
+      },
+      "sealStyleOptions": {
+        "classic": "Klasszikus",
+        "modern": "Modern",
+        "ribbon": "Szalag",
+        "badge": "Jelveny"
+      },
+      "patternOptions": {
+        "none": "Nincs minta",
+        "subtleGrid": "Finom racs",
+        "diagonalLines": "Atlós vonalak",
+        "watermark": "Vizjel"
+      }
+    },
+    "content": {
+      "texts": "Szovegek",
+      "headerText": "Tanusitvany cime",
+      "subtitleTemplate": "Alcim",
+      "footerText": "Lablec szoveg (opcionalis)",
+      "fieldsToShow": "Megjelenitendo mezok",
+      "showSubtitle": "Alcim",
+      "showOrganizationName": "Szervezet neve",
+      "showDate": "Datum",
+      "showInstructor": "Oktato",
+      "showHours": "Orak",
+      "showGrade": "Osztalyzat",
+      "showCertificateNumber": "Tanusitvany szama",
+      "showQR": "QR kod"
+    },
+    "branding": {
+      "organization": "Szervezet",
+      "organizationName": "Szervezet neve",
+      "organizationSubtitle": "Alcim (opcionalis)",
+      "logo": "Logo",
+      "uploadLogo": "Logo feltoltese",
+      "signature": "Alairas",
+      "signatureLabel": "Cim/Pozicio",
+      "uploadSignature": "Alairas kep feltoltese",
+      "secondSignature": "Masodik alairas (opcionalis)",
+      "secondSignatureLabel": "Cim/Pozicio"
+    }
   }
 }

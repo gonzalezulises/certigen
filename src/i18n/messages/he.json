@@ -316,5 +316,212 @@
     "hours": "שעות",
     "grade": "ציון",
     "verify": "אמת"
+  },
+  "configurator": {
+    "title": "הגדר תעודה",
+    "back": "חזרה",
+    "preview": "תצוגה מקדימה",
+    "downloadPdf": "הורד PDF",
+    "saveConfig": "שמור הגדרות",
+    "reset": "אפס",
+    "generating": "מייצר...",
+    "templates": {
+      "title": "תבנית בסיס",
+      "classic": {
+        "name": "קלאסי אקדמי",
+        "description": "עיצוב פורמלי עם מסגרות מעוטרות, אידיאלי למוסדות חינוך"
+      },
+      "minimal": {
+        "name": "מינימליסטי",
+        "description": "מרווח נרחב וטיפוגרפיה כגיבור, אלגנטיות בפשטות"
+      },
+      "creative": {
+        "name": "יצירתי",
+        "description": "עיצוב אקספרסיבי עם אלמנטים דקורטיביים נועזים, להכרות מיוחדות"
+      }
+    },
+    "panels": {
+      "colors": "צבעים",
+      "typography": "טיפוגרפיה",
+      "layout": "פריסה",
+      "elements": "אלמנטים",
+      "content": "תוכן",
+      "branding": "מיתוג"
+    },
+    "colors": {
+      "title": "צבעים",
+      "palettes": "פלטות מוגדרות מראש",
+      "primary": "צבע ראשי",
+      "secondary": "צבע משני",
+      "accent": "צבע הדגשה",
+      "background": "רקע",
+      "text": "טקסט ראשי",
+      "textMuted": "טקסט משני",
+      "border": "מסגרות"
+    },
+    "typography": {
+      "title": "טיפוגרפיה",
+      "fonts": "גופנים",
+      "titleFont": "כותרות",
+      "bodyFont": "גוף",
+      "nameFont": "שם",
+      "style": "סגנון",
+      "scale": "סקלה כללית",
+      "alignment": "יישור",
+      "titleWeight": "משקל כותרת",
+      "nameWeight": "משקל שם",
+      "titleTransform": "טרנספורמציית כותרת",
+      "fontOptions": {
+        "serif": "סריף (פורמלי)",
+        "sans": "סאנס-סריף (מודרני)",
+        "script": "סקריפט (אלגנטי)",
+        "slab": "סלאב (טק)",
+        "display": "דיספליי (דקורטיבי)"
+      },
+      "scaleOptions": {
+        "compact": "קומפקטי",
+        "normal": "רגיל",
+        "spacious": "מרווח"
+      },
+      "alignmentOptions": {
+        "left": "שמאל",
+        "center": "מרכז",
+        "right": "ימין"
+      },
+      "weightOptions": {
+        "normal": "רגיל",
+        "medium": "בינוני",
+        "bold": "מודגש",
+        "black": "שחור"
+      },
+      "transformOptions": {
+        "none": "רגיל",
+        "uppercase": "אותיות גדולות",
+        "capitalize": "אות ראשונה גדולה"
+      }
+    },
+    "layout": {
+      "page": "עמוד",
+      "paperSize": "גודל",
+      "orientation": "כיוון",
+      "borders": "מסגרות",
+      "borderStyle": "סגנון",
+      "borderWidth": "רוחב",
+      "corners": "פינות",
+      "padding": "ריפוד",
+      "positions": "מיקומים",
+      "logoPosition": "לוגו",
+      "logoSize": "גודל לוגו",
+      "qrPosition": "קוד QR",
+      "signaturePosition": "חתימה",
+      "showSignatureLine": "הצג קו חתימה",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Letter",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "לרוחב",
+        "portrait": "לאורך"
+      },
+      "borderStyleOptions": {
+        "none": "ללא מסגרת",
+        "simple": "פשוט",
+        "double": "כפול",
+        "certificate": "תעודה",
+        "ornate": "מעוטר"
+      },
+      "widthOptions": {
+        "thin": "דק",
+        "medium": "בינוני",
+        "thick": "עבה"
+      },
+      "cornerOptions": {
+        "none": "ללא עיטור",
+        "simple": "פשוט",
+        "ornate": "מעוטר",
+        "flourish": "פלוריש"
+      },
+      "paddingOptions": {
+        "compact": "קומפקטי",
+        "normal": "רגיל",
+        "spacious": "מרווח"
+      },
+      "positionOptions": {
+        "topLeft": "למעלה משמאל",
+        "topCenter": "למעלה במרכז",
+        "topRight": "למעלה מימין",
+        "bottomLeft": "למטה משמאל",
+        "bottomCenter": "למטה במרכז",
+        "bottomRight": "למטה מימין"
+      },
+      "sizeOptions": {
+        "small": "קטן",
+        "medium": "בינוני",
+        "large": "גדול"
+      },
+      "signatureOptions": {
+        "left": "שמאל",
+        "center": "מרכז",
+        "right": "ימין",
+        "dual": "כפול"
+      }
+    },
+    "elements": {
+      "dividers": "מפרידים",
+      "dividerStyle": "סגנון מפריד",
+      "seal": "חותמת",
+      "sealStyle": "סגנון",
+      "sealPosition": "מיקום",
+      "background": "רקע",
+      "backgroundPattern": "תבנית רקע",
+      "backgroundOpacity": "שקיפות תבנית",
+      "dividerOptions": {
+        "none": "ללא מפריד",
+        "simple": "קו פשוט",
+        "ornate": "מעוטר",
+        "dots": "נקודות",
+        "gradient": "גרדיאנט"
+      },
+      "sealStyleOptions": {
+        "classic": "קלאסי",
+        "modern": "מודרני",
+        "ribbon": "סרט",
+        "badge": "תג"
+      },
+      "patternOptions": {
+        "none": "ללא תבנית",
+        "subtleGrid": "רשת עדינה",
+        "diagonalLines": "קווים אלכסוניים",
+        "watermark": "סימן מים"
+      }
+    },
+    "content": {
+      "texts": "טקסטים",
+      "headerText": "כותרת התעודה",
+      "subtitleTemplate": "כותרת משנה",
+      "footerText": "טקסט תחתון (אופציונלי)",
+      "fieldsToShow": "שדות להצגה",
+      "showSubtitle": "כותרת משנה",
+      "showOrganizationName": "שם הארגון",
+      "showDate": "תאריך",
+      "showInstructor": "מדריך",
+      "showHours": "שעות",
+      "showGrade": "ציון",
+      "showCertificateNumber": "מספר תעודה",
+      "showQR": "קוד QR"
+    },
+    "branding": {
+      "organization": "ארגון",
+      "organizationName": "שם הארגון",
+      "organizationSubtitle": "כותרת משנה (אופציונלי)",
+      "logo": "לוגו",
+      "uploadLogo": "העלה לוגו",
+      "signature": "חתימה",
+      "signatureLabel": "תפקיד/תואר",
+      "uploadSignature": "העלה תמונת חתימה",
+      "secondSignature": "חתימה שנייה (אופציונלי)",
+      "secondSignatureLabel": "תפקיד/תואר"
+    }
   }
 }

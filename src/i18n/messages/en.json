@@ -316,5 +316,212 @@
     "hours": "hours",
     "grade": "Grade",
     "verify": "Verify"
+  },
+  "configurator": {
+    "title": "Configure Certificate",
+    "back": "Back",
+    "preview": "Preview",
+    "downloadPdf": "Download PDF",
+    "saveConfig": "Save Configuration",
+    "reset": "Reset",
+    "generating": "Generating...",
+    "templates": {
+      "title": "Base Template",
+      "classic": {
+        "name": "Classic Academic",
+        "description": "Formal design with ornate borders, ideal for educational institutions"
+      },
+      "minimal": {
+        "name": "Minimalist",
+        "description": "Ample spacing and typography as protagonist, elegance in simplicity"
+      },
+      "creative": {
+        "name": "Creative",
+        "description": "Expressive design with bold decorative elements, for special recognitions"
+      }
+    },
+    "panels": {
+      "colors": "Colors",
+      "typography": "Typography",
+      "layout": "Layout",
+      "elements": "Elements",
+      "content": "Content",
+      "branding": "Branding"
+    },
+    "colors": {
+      "title": "Colors",
+      "palettes": "Predefined palettes",
+      "primary": "Primary color",
+      "secondary": "Secondary color",
+      "accent": "Accent color",
+      "background": "Background",
+      "text": "Main text",
+      "textMuted": "Secondary text",
+      "border": "Borders"
+    },
+    "typography": {
+      "title": "Typography",
+      "fonts": "Fonts",
+      "titleFont": "Titles",
+      "bodyFont": "Body",
+      "nameFont": "Name",
+      "style": "Style",
+      "scale": "General scale",
+      "alignment": "Alignment",
+      "titleWeight": "Title weight",
+      "nameWeight": "Name weight",
+      "titleTransform": "Title transform",
+      "fontOptions": {
+        "serif": "Serif (Formal)",
+        "sans": "Sans-serif (Modern)",
+        "script": "Script (Elegant)",
+        "slab": "Slab (Tech)",
+        "display": "Display (Decorative)"
+      },
+      "scaleOptions": {
+        "compact": "Compact",
+        "normal": "Normal",
+        "spacious": "Spacious"
+      },
+      "alignmentOptions": {
+        "left": "Left",
+        "center": "Center",
+        "right": "Right"
+      },
+      "weightOptions": {
+        "normal": "Normal",
+        "medium": "Medium",
+        "bold": "Bold",
+        "black": "Black"
+      },
+      "transformOptions": {
+        "none": "Normal",
+        "uppercase": "UPPERCASE",
+        "capitalize": "Capitalize"
+      }
+    },
+    "layout": {
+      "page": "Page",
+      "paperSize": "Size",
+      "orientation": "Orientation",
+      "borders": "Borders",
+      "borderStyle": "Style",
+      "borderWidth": "Width",
+      "corners": "Corners",
+      "padding": "Padding",
+      "positions": "Positions",
+      "logoPosition": "Logo",
+      "logoSize": "Logo size",
+      "qrPosition": "QR Code",
+      "signaturePosition": "Signature",
+      "showSignatureLine": "Show signature line",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Letter",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "Landscape",
+        "portrait": "Portrait"
+      },
+      "borderStyleOptions": {
+        "none": "No border",
+        "simple": "Simple",
+        "double": "Double",
+        "certificate": "Certificate",
+        "ornate": "Ornate"
+      },
+      "widthOptions": {
+        "thin": "Thin",
+        "medium": "Medium",
+        "thick": "Thick"
+      },
+      "cornerOptions": {
+        "none": "No decoration",
+        "simple": "Simple",
+        "ornate": "Ornate",
+        "flourish": "Flourish"
+      },
+      "paddingOptions": {
+        "compact": "Compact",
+        "normal": "Normal",
+        "spacious": "Spacious"
+      },
+      "positionOptions": {
+        "topLeft": "Top left",
+        "topCenter": "Top center",
+        "topRight": "Top right",
+        "bottomLeft": "Bottom left",
+        "bottomCenter": "Bottom center",
+        "bottomRight": "Bottom right"
+      },
+      "sizeOptions": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "signatureOptions": {
+        "left": "Left",
+        "center": "Center",
+        "right": "Right",
+        "dual": "Dual"
+      }
+    },
+    "elements": {
+      "dividers": "Dividers",
+      "dividerStyle": "Divider style",
+      "seal": "Seal",
+      "sealStyle": "Style",
+      "sealPosition": "Position",
+      "background": "Background",
+      "backgroundPattern": "Background pattern",
+      "backgroundOpacity": "Pattern opacity",
+      "dividerOptions": {
+        "none": "No divider",
+        "simple": "Simple line",
+        "ornate": "Ornate",
+        "dots": "Dots",
+        "gradient": "Gradient"
+      },
+      "sealStyleOptions": {
+        "classic": "Classic",
+        "modern": "Modern",
+        "ribbon": "Ribbon",
+        "badge": "Badge"
+      },
+      "patternOptions": {
+        "none": "No pattern",
+        "subtleGrid": "Subtle grid",
+        "diagonalLines": "Diagonal lines",
+        "watermark": "Watermark"
+      }
+    },
+    "content": {
+      "texts": "Texts",
+      "headerText": "Certificate title",
+      "subtitleTemplate": "Subtitle",
+      "footerText": "Footer text (optional)",
+      "fieldsToShow": "Fields to show",
+      "showSubtitle": "Subtitle",
+      "showOrganizationName": "Organization name",
+      "showDate": "Date",
+      "showInstructor": "Instructor",
+      "showHours": "Hours",
+      "showGrade": "Grade",
+      "showCertificateNumber": "Certificate number",
+      "showQR": "QR Code"
+    },
+    "branding": {
+      "organization": "Organization",
+      "organizationName": "Organization name",
+      "organizationSubtitle": "Subtitle (optional)",
+      "logo": "Logo",
+      "uploadLogo": "Upload logo",
+      "signature": "Signature",
+      "signatureLabel": "Title/Position",
+      "uploadSignature": "Upload signature image",
+      "secondSignature": "Second signature (optional)",
+      "secondSignatureLabel": "Title/Position"
+    }
   }
 }

@@ -316,5 +316,212 @@
     "hours": "ชั่วโมง",
     "grade": "คะแนน",
     "verify": "ตรวจสอบ"
+  },
+  "configurator": {
+    "title": "กำหนดค่าใบรับรอง",
+    "back": "กลับ",
+    "preview": "ตัวอย่าง",
+    "downloadPdf": "ดาวน์โหลด PDF",
+    "saveConfig": "บันทึกการตั้งค่า",
+    "reset": "รีเซ็ต",
+    "generating": "กำลังสร้าง...",
+    "templates": {
+      "title": "เทมเพลตพื้นฐาน",
+      "classic": {
+        "name": "คลาสสิกวิชาการ",
+        "description": "ดีไซน์เป็นทางการพร้อมกรอบตกแต่ง เหมาะสำหรับสถาบันการศึกษา"
+      },
+      "minimal": {
+        "name": "มินิมอล",
+        "description": "พื้นที่กว้างขวางและตัวอักษรเป็นจุดเด่น ความสง่างามในความเรียบง่าย"
+      },
+      "creative": {
+        "name": "สร้างสรรค์",
+        "description": "ดีไซน์สื่ออารมณ์พร้อมองค์ประกอบตกแต่งที่โดดเด่น สำหรับการยกย่องพิเศษ"
+      }
+    },
+    "panels": {
+      "colors": "สี",
+      "typography": "ตัวอักษร",
+      "layout": "เค้าโครง",
+      "elements": "องค์ประกอบ",
+      "content": "เนื้อหา",
+      "branding": "แบรนด์"
+    },
+    "colors": {
+      "title": "สี",
+      "palettes": "พาเลตที่กำหนดไว้",
+      "primary": "สีหลัก",
+      "secondary": "สีรอง",
+      "accent": "สีเน้น",
+      "background": "พื้นหลัง",
+      "text": "ข้อความหลัก",
+      "textMuted": "ข้อความรอง",
+      "border": "กรอบ"
+    },
+    "typography": {
+      "title": "ตัวอักษร",
+      "fonts": "ฟอนต์",
+      "titleFont": "หัวข้อ",
+      "bodyFont": "เนื้อหา",
+      "nameFont": "ชื่อ",
+      "style": "รูปแบบ",
+      "scale": "ขนาดทั่วไป",
+      "alignment": "การจัดเรียง",
+      "titleWeight": "น้ำหนักหัวข้อ",
+      "nameWeight": "น้ำหนักชื่อ",
+      "titleTransform": "การแปลงหัวข้อ",
+      "fontOptions": {
+        "serif": "เซอริฟ (ทางการ)",
+        "sans": "ซานส์-เซอริฟ (ทันสมัย)",
+        "script": "สคริปต์ (สง่างาม)",
+        "slab": "สแลบ (เทค)",
+        "display": "ดิสเพลย์ (ตกแต่ง)"
+      },
+      "scaleOptions": {
+        "compact": "กระชับ",
+        "normal": "ปกติ",
+        "spacious": "กว้างขวาง"
+      },
+      "alignmentOptions": {
+        "left": "ซ้าย",
+        "center": "กลาง",
+        "right": "ขวา"
+      },
+      "weightOptions": {
+        "normal": "ปกติ",
+        "medium": "กลาง",
+        "bold": "หนา",
+        "black": "หนามาก"
+      },
+      "transformOptions": {
+        "none": "ปกติ",
+        "uppercase": "ตัวพิมพ์ใหญ่",
+        "capitalize": "ตัวแรกพิมพ์ใหญ่"
+      }
+    },
+    "layout": {
+      "page": "หน้า",
+      "paperSize": "ขนาด",
+      "orientation": "การวางแนว",
+      "borders": "กรอบ",
+      "borderStyle": "รูปแบบ",
+      "borderWidth": "ความกว้าง",
+      "corners": "มุม",
+      "padding": "ระยะห่าง",
+      "positions": "ตำแหน่ง",
+      "logoPosition": "โลโก้",
+      "logoSize": "ขนาดโลโก้",
+      "qrPosition": "รหัส QR",
+      "signaturePosition": "ลายเซ็น",
+      "showSignatureLine": "แสดงเส้นลายเซ็น",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Letter",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "แนวนอน",
+        "portrait": "แนวตั้ง"
+      },
+      "borderStyleOptions": {
+        "none": "ไม่มีกรอบ",
+        "simple": "เรียบง่าย",
+        "double": "สองชั้น",
+        "certificate": "ใบรับรอง",
+        "ornate": "ตกแต่ง"
+      },
+      "widthOptions": {
+        "thin": "บาง",
+        "medium": "กลาง",
+        "thick": "หนา"
+      },
+      "cornerOptions": {
+        "none": "ไม่มีตกแต่ง",
+        "simple": "เรียบง่าย",
+        "ornate": "ตกแต่ง",
+        "flourish": "ลวดลาย"
+      },
+      "paddingOptions": {
+        "compact": "กระชับ",
+        "normal": "ปกติ",
+        "spacious": "กว้างขวาง"
+      },
+      "positionOptions": {
+        "topLeft": "บนซ้าย",
+        "topCenter": "บนกลาง",
+        "topRight": "บนขวา",
+        "bottomLeft": "ล่างซ้าย",
+        "bottomCenter": "ล่างกลาง",
+        "bottomRight": "ล่างขวา"
+      },
+      "sizeOptions": {
+        "small": "เล็ก",
+        "medium": "กลาง",
+        "large": "ใหญ่"
+      },
+      "signatureOptions": {
+        "left": "ซ้าย",
+        "center": "กลาง",
+        "right": "ขวา",
+        "dual": "คู่"
+      }
+    },
+    "elements": {
+      "dividers": "ตัวแบ่ง",
+      "dividerStyle": "รูปแบบตัวแบ่ง",
+      "seal": "ตราประทับ",
+      "sealStyle": "รูปแบบ",
+      "sealPosition": "ตำแหน่ง",
+      "background": "พื้นหลัง",
+      "backgroundPattern": "ลายพื้นหลัง",
+      "backgroundOpacity": "ความโปร่งใสลาย",
+      "dividerOptions": {
+        "none": "ไม่มีตัวแบ่ง",
+        "simple": "เส้นเรียบง่าย",
+        "ornate": "ตกแต่ง",
+        "dots": "จุด",
+        "gradient": "ไล่สี"
+      },
+      "sealStyleOptions": {
+        "classic": "คลาสสิก",
+        "modern": "ทันสมัย",
+        "ribbon": "ริบบิ้น",
+        "badge": "เข็มกลัด"
+      },
+      "patternOptions": {
+        "none": "ไม่มีลาย",
+        "subtleGrid": "ตารางบาง",
+        "diagonalLines": "เส้นทแยง",
+        "watermark": "ลายน้ำ"
+      }
+    },
+    "content": {
+      "texts": "ข้อความ",
+      "headerText": "หัวข้อใบรับรอง",
+      "subtitleTemplate": "หัวข้อรอง",
+      "footerText": "ข้อความท้าย (ไม่บังคับ)",
+      "fieldsToShow": "ฟิลด์ที่จะแสดง",
+      "showSubtitle": "หัวข้อรอง",
+      "showOrganizationName": "ชื่อองค์กร",
+      "showDate": "วันที่",
+      "showInstructor": "ผู้สอน",
+      "showHours": "ชั่วโมง",
+      "showGrade": "คะแนน",
+      "showCertificateNumber": "เลขที่ใบรับรอง",
+      "showQR": "รหัส QR"
+    },
+    "branding": {
+      "organization": "องค์กร",
+      "organizationName": "ชื่อองค์กร",
+      "organizationSubtitle": "หัวข้อรอง (ไม่บังคับ)",
+      "logo": "โลโก้",
+      "uploadLogo": "อัปโหลดโลโก้",
+      "signature": "ลายเซ็น",
+      "signatureLabel": "ตำแหน่ง/ชื่อ",
+      "uploadSignature": "อัปโหลดรูปลายเซ็น",
+      "secondSignature": "ลายเซ็นที่สอง (ไม่บังคับ)",
+      "secondSignatureLabel": "ตำแหน่ง/ชื่อ"
+    }
   }
 }

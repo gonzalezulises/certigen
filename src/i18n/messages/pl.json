@@ -316,5 +316,212 @@
     "hours": "godzin",
     "grade": "Ocena",
     "verify": "Zweryfikuj"
+  },
+  "configurator": {
+    "title": "Konfiguruj Certyfikat",
+    "back": "Wstecz",
+    "preview": "Podglad",
+    "downloadPdf": "Pobierz PDF",
+    "saveConfig": "Zapisz Konfiguracje",
+    "reset": "Resetuj",
+    "generating": "Generowanie...",
+    "templates": {
+      "title": "Szablon Bazowy",
+      "classic": {
+        "name": "Klasyczny Akademicki",
+        "description": "Formalny design z ozdobnymi ramkami, idealny dla instytucji edukacyjnych"
+      },
+      "minimal": {
+        "name": "Minimalistyczny",
+        "description": "Przestronny uklad z typografia jako glownym elementem, elegancja w prostocie"
+      },
+      "creative": {
+        "name": "Kreatywny",
+        "description": "Ekspresyjny design z odwaznymi elementami dekoracyjnymi, dla specjalnych wyroZnien"
+      }
+    },
+    "panels": {
+      "colors": "Kolory",
+      "typography": "Typografia",
+      "layout": "Uklad",
+      "elements": "Elementy",
+      "content": "Tresc",
+      "branding": "Marka"
+    },
+    "colors": {
+      "title": "Kolory",
+      "palettes": "Predefiniowane palety",
+      "primary": "Kolor glowny",
+      "secondary": "Kolor drugorzedny",
+      "accent": "Kolor akcentowy",
+      "background": "Tlo",
+      "text": "Tekst glowny",
+      "textMuted": "Tekst drugorzedny",
+      "border": "Ramki"
+    },
+    "typography": {
+      "title": "Typografia",
+      "fonts": "Czcionki",
+      "titleFont": "Tytuly",
+      "bodyFont": "Tresc",
+      "nameFont": "Imie",
+      "style": "Styl",
+      "scale": "Skala ogolna",
+      "alignment": "Wyrownanie",
+      "titleWeight": "Grubosc tytulu",
+      "nameWeight": "Grubosc imienia",
+      "titleTransform": "Transformacja tytulu",
+      "fontOptions": {
+        "serif": "Szeryfowa (Formalna)",
+        "sans": "Bezszeryfowa (Nowoczesna)",
+        "script": "Script (Elegancka)",
+        "slab": "Slab (Tech)",
+        "display": "Display (Dekoracyjna)"
+      },
+      "scaleOptions": {
+        "compact": "Kompaktowy",
+        "normal": "Normalny",
+        "spacious": "Przestronny"
+      },
+      "alignmentOptions": {
+        "left": "Do lewej",
+        "center": "Do srodka",
+        "right": "Do prawej"
+      },
+      "weightOptions": {
+        "normal": "Normalna",
+        "medium": "Srednia",
+        "bold": "Pogrubiona",
+        "black": "Czarna"
+      },
+      "transformOptions": {
+        "none": "Normalna",
+        "uppercase": "WIELKIE LITERY",
+        "capitalize": "Pierwsze Wielkie"
+      }
+    },
+    "layout": {
+      "page": "Strona",
+      "paperSize": "Rozmiar",
+      "orientation": "Orientacja",
+      "borders": "Ramki",
+      "borderStyle": "Styl",
+      "borderWidth": "Szerokosc",
+      "corners": "Narozniki",
+      "padding": "Odstep",
+      "positions": "Pozycje",
+      "logoPosition": "Logo",
+      "logoSize": "Rozmiar logo",
+      "qrPosition": "Kod QR",
+      "signaturePosition": "Podpis",
+      "showSignatureLine": "Pokaz linie podpisu",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Letter",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "Pozioma",
+        "portrait": "Pionowa"
+      },
+      "borderStyleOptions": {
+        "none": "Brak ramki",
+        "simple": "Prosta",
+        "double": "Podwojna",
+        "certificate": "Certyfikat",
+        "ornate": "Ozdobna"
+      },
+      "widthOptions": {
+        "thin": "Cienka",
+        "medium": "Srednia",
+        "thick": "Gruba"
+      },
+      "cornerOptions": {
+        "none": "Brak dekoracji",
+        "simple": "Prosta",
+        "ornate": "Ozdobna",
+        "flourish": "Flourish"
+      },
+      "paddingOptions": {
+        "compact": "Kompaktowy",
+        "normal": "Normalny",
+        "spacious": "Przestronny"
+      },
+      "positionOptions": {
+        "topLeft": "Gora lewo",
+        "topCenter": "Gora srodek",
+        "topRight": "Gora prawo",
+        "bottomLeft": "Dol lewo",
+        "bottomCenter": "Dol srodek",
+        "bottomRight": "Dol prawo"
+      },
+      "sizeOptions": {
+        "small": "Maly",
+        "medium": "Sredni",
+        "large": "Duzy"
+      },
+      "signatureOptions": {
+        "left": "Lewo",
+        "center": "Srodek",
+        "right": "Prawo",
+        "dual": "Podwojny"
+      }
+    },
+    "elements": {
+      "dividers": "Separatory",
+      "dividerStyle": "Styl separatora",
+      "seal": "Pieczec",
+      "sealStyle": "Styl",
+      "sealPosition": "Pozycja",
+      "background": "Tlo",
+      "backgroundPattern": "Wzor tla",
+      "backgroundOpacity": "Przezroczystosc wzoru",
+      "dividerOptions": {
+        "none": "Brak separatora",
+        "simple": "Prosta linia",
+        "ornate": "Ozdobny",
+        "dots": "Kropki",
+        "gradient": "Gradient"
+      },
+      "sealStyleOptions": {
+        "classic": "Klasyczna",
+        "modern": "Nowoczesna",
+        "ribbon": "Wstazka",
+        "badge": "Odznaka"
+      },
+      "patternOptions": {
+        "none": "Brak wzoru",
+        "subtleGrid": "Subtelna siatka",
+        "diagonalLines": "Linie ukosne",
+        "watermark": "Znak wodny"
+      }
+    },
+    "content": {
+      "texts": "Teksty",
+      "headerText": "Tytul certyfikatu",
+      "subtitleTemplate": "Podtytul",
+      "footerText": "Tekst stopki (opcjonalny)",
+      "fieldsToShow": "Pola do wyswietlenia",
+      "showSubtitle": "Podtytul",
+      "showOrganizationName": "Nazwa organizacji",
+      "showDate": "Data",
+      "showInstructor": "Instruktor",
+      "showHours": "Godziny",
+      "showGrade": "Ocena",
+      "showCertificateNumber": "Numer certyfikatu",
+      "showQR": "Kod QR"
+    },
+    "branding": {
+      "organization": "Organizacja",
+      "organizationName": "Nazwa organizacji",
+      "organizationSubtitle": "Podtytul (opcjonalny)",
+      "logo": "Logo",
+      "uploadLogo": "Przeslij logo",
+      "signature": "Podpis",
+      "signatureLabel": "Tytul/Stanowisko",
+      "uploadSignature": "Przeslij obraz podpisu",
+      "secondSignature": "Drugi podpis (opcjonalny)",
+      "secondSignatureLabel": "Tytul/Stanowisko"
+    }
   }
 }

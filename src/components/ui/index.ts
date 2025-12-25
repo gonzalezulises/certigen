@@ -6,3 +6,6 @@ export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 export { Alert, AlertTitle, AlertDescription } from './alert';
 export { LanguageSelector } from './LanguageSelector';
 export { ThemeToggle } from './ThemeToggle';
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs';
+export { Slider } from './slider';
+export { Switch } from './switch';

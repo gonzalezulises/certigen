@@ -1,104 +1,144 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
-import { CertificateForm, CertificatePreview, CertificatePDFButton } from '@/components/certificate';
-import { Alert, AlertTitle, AlertDescription, Card, CardContent, CardHeader, CardTitle, Label, Select, Button } from '@/components/ui';
-import { CertificateFormData, TemplateStyle, PaperSize, PAPER_SIZES, Certificate } from '@/types/certificate';
-import { CheckCircle2, Eye, FileText, FileSpreadsheet, Mail, Loader2, Info } from 'lucide-react';
+import { TemplateConfigurator } from '@/components/configurator/TemplateConfigurator';
+import { generateCertificatePDF } from '@/lib/pdf/generator';
+import { TemplateConfig, TemplateId, CertificateData } from '@/lib/pdf/config/schema';
+import { Alert, AlertTitle, AlertDescription, Card, CardContent, CardHeader, CardTitle, Button, Input, Label } from '@/components/ui';
+import { CheckCircle2, FileSpreadsheet, Mail, Loader2, Info, User, BookOpen, GraduationCap } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function GeneratePage() {
   const t = useTranslations();
-  const { user, loading: authLoading } = useAuth();
-  const [formData, setFormData] = useState<Partial<CertificateFormData>>({
-    certificate_type: 'participation',
-    issue_date: new Date().toISOString().split('T')[0],
-  });
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateStyle>('elegant');
-  const [paperSize, setPaperSize] = useState<PaperSize>('a4');
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const [generatedCertificate, setGeneratedCertificate] = useState<Certificate | null>(null);
+  const [generatedCertificate, setGeneratedCertificate] = useState<{
+    certificate_number: string;
+    pdfDataUrl: string;
+    pdfBlob: Blob;
+  } | null>(null);
   const [isPersisted, setIsPersisted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showConfigurator, setShowConfigurator] = useState(false);
+  const [savedConfig, setSavedConfig] = useState<{ templateId: TemplateId; config: TemplateConfig } | null>(null);
 
-  const handleFormChange = (data: Partial<CertificateFormData>) => {
-    setFormData(data);
-  };
+  // Certificate data form
+  const [certificateData, setCertificateData] = useState<Partial<CertificateData>>({
+    certificate_type: 'completion',
+    issue_date: new Date().toISOString(),
+  });
 
-  const handleLogoChange = (url: string | null) => {
-    setLogoUrl(url);
-  };
+  const handleInputChange = useCallback((field: keyof CertificateData, value: string | number) => {
+    setCertificateData(prev => ({ ...prev, [field]: value }));
+  }, []);
 
-  const generatePDFBase64 = async (): Promise<string | null> => {
-    const element = document.getElementById('certificate-preview');
-    if (!element) return null;
+  const handleSaveConfig = useCallback((templateId: TemplateId, config: TemplateConfig) => {
+    setSavedConfig({ templateId, config });
+    setShowConfigurator(false);
+  }, []);
 
-    const paper = PAPER_SIZES[paperSize];
-    const renderWidth = 1200;
-    const renderHeight = renderWidth / paper.aspectRatio;
-
-    const originalStyle = element.getAttribute('style') || '';
-    element.style.width = `${renderWidth}px`;
-    element.style.height = `${renderHeight}px`;
-    element.style.maxWidth = 'none';
+  const handleGenerate = async (templateId: TemplateId, config: TemplateConfig, data: CertificateData) => {
+    setIsGenerating(true);
+    setError(null);
+    setEmailSent(false);
 
     try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
+      // First, register the certificate with the API
+      const response = await fetch('/api/certificates/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          student_name: data.student_name,
+          student_email: data.student_email,
+          course_name: data.course_name,
+          certificate_type: data.certificate_type,
+          issue_date: data.issue_date,
+          instructor_name: data.instructor_name,
+          hours: data.hours,
+          grade: data.grade,
+          template_id: templateId,
+        }),
       });
 
-      element.setAttribute('style', originalStyle);
+      const result = await response.json();
 
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: paperSize === 'legal' ? [355.6, 215.9] : 'a4',
+      if (!response.ok) {
+        throw new Error(result.error || t('errors.serverError'));
+      }
+
+      // Update certificate data with the generated number
+      const fullData: CertificateData = {
+        ...data,
+        certificate_number: result.certificate.certificate_number,
+      };
+
+      // Generate the PDF using the new system
+      const pdfResult = await generateCertificatePDF({
+        templateId,
+        data: fullData,
+        config,
       });
 
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 0, 0, paper.width, paper.height);
-
-      const pdfBase64 = pdf.output('datauristring').split(',')[1];
-      return pdfBase64;
-    } catch {
-      element.setAttribute('style', originalStyle);
-      return null;
+      setGeneratedCertificate({
+        certificate_number: result.certificate.certificate_number,
+        pdfDataUrl: pdfResult.dataUrl,
+        pdfBlob: pdfResult.blob,
+      });
+      setIsPersisted(result.persisted || false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('errors.serverError'));
+    } finally {
+      setIsGenerating(false);
     }
   };
 
+  const handleDownloadPDF = useCallback(() => {
+    if (!generatedCertificate) return;
+
+    const link = document.createElement('a');
+    link.href = generatedCertificate.pdfDataUrl;
+    link.download = `certificado-${generatedCertificate.certificate_number}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [generatedCertificate]);
+
   const handleSendEmail = async () => {
-    if (!generatedCertificate || !formData.student_email) return;
+    if (!generatedCertificate || !certificateData.student_email) return;
 
     setIsSendingEmail(true);
     setError(null);
 
     try {
-      const pdfBase64 = await generatePDFBase64();
+      // Convert blob to base64
+      const reader = new FileReader();
+      const pdfBase64 = await new Promise<string>((resolve, reject) => {
+        reader.onloadend = () => {
+          const base64 = (reader.result as string).split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(generatedCertificate.pdfBlob);
+      });
 
       const response = await fetch('/api/certificates/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: formData.student_email,
-          studentName: generatedCertificate.student_name,
-          courseName: generatedCertificate.course_name,
+          to: certificateData.student_email,
+          studentName: certificateData.student_name,
+          courseName: certificateData.course_name,
           certificateNumber: generatedCertificate.certificate_number,
-          certificateType: generatedCertificate.certificate_type,
-          issueDate: generatedCertificate.issue_date,
-          organizationName: formData.organization_name,
-          instructorName: generatedCertificate.instructor_name,
-          hours: generatedCertificate.hours,
-          grade: generatedCertificate.grade,
+          certificateType: certificateData.certificate_type,
+          issueDate: certificateData.issue_date,
+          organizationName: savedConfig?.config.branding.organizationName,
+          instructorName: certificateData.instructor_name,
+          hours: certificateData.hours,
+          grade: certificateData.grade,
           pdfBase64,
         }),
       });
@@ -117,37 +157,34 @@ export default function GeneratePage() {
     }
   };
 
-  const handleSubmit = async (data: CertificateFormData) => {
-    setIsLoading(true);
-    setError(null);
-    setEmailSent(false);
-
-    try {
-      const response = await fetch('/api/certificates/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          template_id: selectedTemplate,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || t('errors.serverError'));
-      }
-
-      setGeneratedCertificate(result.certificate);
-      setIsPersisted(result.persisted || false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t('errors.serverError'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // If showing the configurator, render it full-screen
+  if (showConfigurator) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {t('configurator.title')}
+            </h1>
+            <Button variant="outline" onClick={() => setShowConfigurator(false)}>
+              {t('configurator.back')}
+            </Button>
+          </div>
+          <TemplateConfigurator
+            onSave={handleSaveConfig}
+            onGenerate={(templateId, config, data) => {
+              handleGenerate(templateId, config, data);
+              setShowConfigurator(false);
+            }}
+            initialTemplateId={savedConfig?.templateId}
+            initialConfig={savedConfig?.config}
+            certificateData={certificateData as CertificateData}
+            isGenerating={isGenerating}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -203,115 +240,213 @@ export default function GeneratePage() {
         )}
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
-          {/* Form Section */}
-          <div className="order-2 xl:order-1">
-            <CertificateForm
-              onSubmit={handleSubmit}
-              onChange={handleFormChange}
-              onLogoChange={handleLogoChange}
-              selectedTemplate={selectedTemplate}
-              onTemplateChange={setSelectedTemplate}
-              isLoading={isLoading}
-              isAuthenticated={!!user}
-            />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+          {/* Certificate Data Form */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                {t('generate.student.title')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="student_name">{t('generate.student.name')} *</Label>
+                <Input
+                  id="student_name"
+                  value={certificateData.student_name || ''}
+                  onChange={(e) => handleInputChange('student_name', e.target.value)}
+                  placeholder={t('generate.student.namePlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="student_email">{t('generate.student.email')}</Label>
+                <Input
+                  id="student_email"
+                  type="email"
+                  value={certificateData.student_email || ''}
+                  onChange={(e) => handleInputChange('student_email', e.target.value)}
+                  placeholder={t('generate.student.emailPlaceholder')}
+                  className="mt-1"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {t('generate.student.emailHint')}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
-          {/* Preview Section */}
-          <div className="order-1 xl:order-2 xl:sticky xl:top-4 xl:self-start">
-            <Card>
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Eye className="h-5 w-5" aria-hidden="true" />
-                  {t('generate.preview.title')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Paper Size Selector */}
-                <div className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <FileText className="h-5 w-5 text-gray-500 dark:text-gray-400 flex-shrink-0" aria-hidden="true" />
-                  <div className="flex-1">
-                    <Label htmlFor="paper-size" className="text-sm font-medium">
-                      {t('generate.preview.paperSize')}
-                    </Label>
-                    <Select
-                      id="paper-size"
-                      value={paperSize}
-                      onChange={(e) => setPaperSize(e.target.value as PaperSize)}
-                      className="mt-1"
-                    >
-                      {Object.entries(PAPER_SIZES).map(([key, config]) => (
-                        <option key={key} value={key}>
-                          {config.name} ({config.width}mm x {config.height}mm)
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                {t('generate.course.title')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="course_name">{t('generate.course.name')} *</Label>
+                <Input
+                  id="course_name"
+                  value={certificateData.course_name || ''}
+                  onChange={(e) => handleInputChange('course_name', e.target.value)}
+                  placeholder={t('generate.course.namePlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="hours">{t('generate.course.hours')}</Label>
+                  <Input
+                    id="hours"
+                    type="number"
+                    value={certificateData.hours || ''}
+                    onChange={(e) => handleInputChange('hours', parseInt(e.target.value) || 0)}
+                    placeholder={t('generate.course.hoursPlaceholder')}
+                    className="mt-1"
+                  />
                 </div>
-
-                {/* Certificate Preview */}
-                <div
-                  className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 sm:p-4 overflow-hidden"
-                  role="img"
-                  aria-label={t('accessibility.certificatePreview', { name: formData.student_name || '' })}
-                >
-                  <div className="w-full max-w-full overflow-auto">
-                    <CertificatePreview
-                      data={formData}
-                      certificateNumber={generatedCertificate?.certificate_number}
-                      template={selectedTemplate}
-                      paperSize={paperSize}
-                      logoUrl={logoUrl}
-                      className="shadow-lg mx-auto"
-                    />
-                  </div>
+                <div>
+                  <Label htmlFor="grade">{t('generate.course.grade')}</Label>
+                  <Input
+                    id="grade"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={certificateData.grade || ''}
+                    onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || 0)}
+                    placeholder={t('generate.course.gradePlaceholder')}
+                    className="mt-1"
+                  />
                 </div>
-
-                {/* Action Buttons */}
-                {generatedCertificate && (
-                  <div className="space-y-3 pt-2">
-                    <div className="flex justify-center gap-3">
-                      <CertificatePDFButton
-                        elementId="certificate-preview"
-                        fileName={`certificado-${generatedCertificate.certificate_number}.pdf`}
-                        paperSize={paperSize}
-                      />
-                      <Button
-                        onClick={handleSendEmail}
-                        disabled={isSendingEmail || emailSent}
-                        variant={emailSent ? 'outline' : 'default'}
-                        className="gap-2"
-                        aria-busy={isSendingEmail}
-                      >
-                        {isSendingEmail ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                            {t('generate.actions.sending')}
-                          </>
-                        ) : emailSent ? (
-                          <>
-                            <CheckCircle2 className="h-4 w-4 text-green-600" aria-hidden="true" />
-                            {t('generate.actions.sent')}
-                          </>
-                        ) : (
-                          <>
-                            <Mail className="h-4 w-4" aria-hidden="true" />
-                            {t('generate.actions.sendEmail')}
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                    {emailSent && (
-                      <p className="text-center text-sm text-green-600 dark:text-green-400" role="status">
-                        {t('generate.actions.sent')} - {formData.student_email}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+              <div>
+                <Label htmlFor="instructor_name">{t('generate.course.instructor')}</Label>
+                <Input
+                  id="instructor_name"
+                  value={certificateData.instructor_name || ''}
+                  onChange={(e) => handleInputChange('instructor_name', e.target.value)}
+                  placeholder={t('generate.course.instructorPlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="issue_date">{t('generate.course.issueDate')}</Label>
+                <Input
+                  id="issue_date"
+                  type="date"
+                  value={certificateData.issue_date?.split('T')[0] || ''}
+                  onChange={(e) => handleInputChange('issue_date', new Date(e.target.value).toISOString())}
+                  className="mt-1"
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Template Configuration */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GraduationCap className="h-5 w-5" />
+              {t('generate.template.title')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {savedConfig ? (
+              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {t(`configurator.templates.${savedConfig.templateId}.name`)}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {t(`configurator.templates.${savedConfig.templateId}.description`)}
+                  </p>
+                </div>
+                <Button variant="outline" onClick={() => setShowConfigurator(true)}>
+                  {t('configurator.title')}
+                </Button>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <GraduationCap className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  {t('generate.template.elegantDesc')}
+                </p>
+                <Button onClick={() => setShowConfigurator(true)} className="gap-2">
+                  <GraduationCap className="h-4 w-4" />
+                  {t('configurator.title')}
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Generate Button */}
+        <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            size="lg"
+            onClick={() => setShowConfigurator(true)}
+            disabled={!certificateData.student_name || !certificateData.course_name || isGenerating}
+            className="gap-2"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                {t('configurator.generating')}
+              </>
+            ) : (
+              <>
+                <GraduationCap className="h-5 w-5" />
+                {t('generate.actions.generate')}
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* Generated Certificate Actions */}
+        {generatedCertificate && (
+          <Card className="mt-6">
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button onClick={handleDownloadPDF} className="gap-2">
+                  {t('generate.actions.downloadPdf')}
+                </Button>
+                {certificateData.student_email && (
+                  <Button
+                    onClick={handleSendEmail}
+                    disabled={isSendingEmail || emailSent}
+                    variant={emailSent ? 'outline' : 'default'}
+                    className="gap-2"
+                  >
+                    {isSendingEmail ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {t('generate.actions.sending')}
+                      </>
+                    ) : emailSent ? (
+                      <>
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        {t('generate.actions.sent')}
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="h-4 w-4" />
+                        {t('generate.actions.sendEmail')}
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+              {emailSent && (
+                <p className="text-center text-sm text-green-600 dark:text-green-400 mt-4">
+                  {t('generate.actions.sent')} - {certificateData.student_email}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

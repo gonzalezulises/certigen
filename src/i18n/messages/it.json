@@ -316,5 +316,212 @@
     "hours": "ore",
     "grade": "Voto",
     "verify": "Verifica"
+  },
+  "configurator": {
+    "title": "Configura Certificato",
+    "back": "Indietro",
+    "preview": "Anteprima",
+    "downloadPdf": "Scarica PDF",
+    "saveConfig": "Salva Configurazione",
+    "reset": "Ripristina",
+    "generating": "Generazione...",
+    "templates": {
+      "title": "Template Base",
+      "classic": {
+        "name": "Classico Accademico",
+        "description": "Design formale con bordi ornamentali, ideale per istituzioni educative"
+      },
+      "minimal": {
+        "name": "Minimalista",
+        "description": "Ampia spaziatura e tipografia come protagonista, eleganza nella semplicita"
+      },
+      "creative": {
+        "name": "Creativo",
+        "description": "Design espressivo con elementi decorativi audaci, per riconoscimenti speciali"
+      }
+    },
+    "panels": {
+      "colors": "Colori",
+      "typography": "Tipografia",
+      "layout": "Layout",
+      "elements": "Elementi",
+      "content": "Contenuto",
+      "branding": "Branding"
+    },
+    "colors": {
+      "title": "Colori",
+      "palettes": "Palette predefinite",
+      "primary": "Colore primario",
+      "secondary": "Colore secondario",
+      "accent": "Colore accento",
+      "background": "Sfondo",
+      "text": "Testo principale",
+      "textMuted": "Testo secondario",
+      "border": "Bordi"
+    },
+    "typography": {
+      "title": "Tipografia",
+      "fonts": "Font",
+      "titleFont": "Titoli",
+      "bodyFont": "Corpo",
+      "nameFont": "Nome",
+      "style": "Stile",
+      "scale": "Scala generale",
+      "alignment": "Allineamento",
+      "titleWeight": "Peso titolo",
+      "nameWeight": "Peso nome",
+      "titleTransform": "Trasformazione titolo",
+      "fontOptions": {
+        "serif": "Serif (Formale)",
+        "sans": "Sans-serif (Moderno)",
+        "script": "Script (Elegante)",
+        "slab": "Slab (Tech)",
+        "display": "Display (Decorativo)"
+      },
+      "scaleOptions": {
+        "compact": "Compatto",
+        "normal": "Normale",
+        "spacious": "Spazioso"
+      },
+      "alignmentOptions": {
+        "left": "Sinistra",
+        "center": "Centro",
+        "right": "Destra"
+      },
+      "weightOptions": {
+        "normal": "Normale",
+        "medium": "Medio",
+        "bold": "Grassetto",
+        "black": "Nero"
+      },
+      "transformOptions": {
+        "none": "Normale",
+        "uppercase": "MAIUSCOLO",
+        "capitalize": "Iniziale Maiuscola"
+      }
+    },
+    "layout": {
+      "page": "Pagina",
+      "paperSize": "Dimensione",
+      "orientation": "Orientamento",
+      "borders": "Bordi",
+      "borderStyle": "Stile",
+      "borderWidth": "Larghezza",
+      "corners": "Angoli",
+      "padding": "Padding",
+      "positions": "Posizioni",
+      "logoPosition": "Logo",
+      "logoSize": "Dimensione logo",
+      "qrPosition": "Codice QR",
+      "signaturePosition": "Firma",
+      "showSignatureLine": "Mostra linea firma",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Letter",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "Orizzontale",
+        "portrait": "Verticale"
+      },
+      "borderStyleOptions": {
+        "none": "Nessun bordo",
+        "simple": "Semplice",
+        "double": "Doppio",
+        "certificate": "Certificato",
+        "ornate": "Ornato"
+      },
+      "widthOptions": {
+        "thin": "Sottile",
+        "medium": "Medio",
+        "thick": "Spesso"
+      },
+      "cornerOptions": {
+        "none": "Nessuna decorazione",
+        "simple": "Semplice",
+        "ornate": "Ornato",
+        "flourish": "Flourish"
+      },
+      "paddingOptions": {
+        "compact": "Compatto",
+        "normal": "Normale",
+        "spacious": "Spazioso"
+      },
+      "positionOptions": {
+        "topLeft": "In alto a sinistra",
+        "topCenter": "In alto al centro",
+        "topRight": "In alto a destra",
+        "bottomLeft": "In basso a sinistra",
+        "bottomCenter": "In basso al centro",
+        "bottomRight": "In basso a destra"
+      },
+      "sizeOptions": {
+        "small": "Piccolo",
+        "medium": "Medio",
+        "large": "Grande"
+      },
+      "signatureOptions": {
+        "left": "Sinistra",
+        "center": "Centro",
+        "right": "Destra",
+        "dual": "Doppia"
+      }
+    },
+    "elements": {
+      "dividers": "Separatori",
+      "dividerStyle": "Stile separatore",
+      "seal": "Sigillo",
+      "sealStyle": "Stile",
+      "sealPosition": "Posizione",
+      "background": "Sfondo",
+      "backgroundPattern": "Motivo sfondo",
+      "backgroundOpacity": "Opacita motivo",
+      "dividerOptions": {
+        "none": "Nessun separatore",
+        "simple": "Linea semplice",
+        "ornate": "Ornato",
+        "dots": "Punti",
+        "gradient": "Gradiente"
+      },
+      "sealStyleOptions": {
+        "classic": "Classico",
+        "modern": "Moderno",
+        "ribbon": "Nastro",
+        "badge": "Distintivo"
+      },
+      "patternOptions": {
+        "none": "Nessun motivo",
+        "subtleGrid": "Griglia sottile",
+        "diagonalLines": "Linee diagonali",
+        "watermark": "Filigrana"
+      }
+    },
+    "content": {
+      "texts": "Testi",
+      "headerText": "Titolo certificato",
+      "subtitleTemplate": "Sottotitolo",
+      "footerText": "Testo pie pagina (opzionale)",
+      "fieldsToShow": "Campi da mostrare",
+      "showSubtitle": "Sottotitolo",
+      "showOrganizationName": "Nome organizzazione",
+      "showDate": "Data",
+      "showInstructor": "Istruttore",
+      "showHours": "Ore",
+      "showGrade": "Voto",
+      "showCertificateNumber": "Numero certificato",
+      "showQR": "Codice QR"
+    },
+    "branding": {
+      "organization": "Organizzazione",
+      "organizationName": "Nome organizzazione",
+      "organizationSubtitle": "Sottotitolo (opzionale)",
+      "logo": "Logo",
+      "uploadLogo": "Carica logo",
+      "signature": "Firma",
+      "signatureLabel": "Titolo/Posizione",
+      "uploadSignature": "Carica immagine firma",
+      "secondSignature": "Seconda firma (opzionale)",
+      "secondSignatureLabel": "Titolo/Posizione"
+    }
   }
 }
