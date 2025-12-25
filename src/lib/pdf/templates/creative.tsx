@@ -242,7 +242,7 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
                   <Text style={styles.signatureName}>{data.instructor_name}</Text>
                 )}
                 {branding.signatureLabel && (
-                  <Text style={[styles.signatureLabel, { fontStyle: 'italic' }]}>
+                  <Text style={styles.signatureLabel}>
                     {branding.signatureLabel}
                   </Text>
                 )}
@@ -262,7 +262,7 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
 
             <View style={styles.footerRight}>
               {content.showCertificateNumber && (
-                <Text style={[styles.certificateNumber, { fontStyle: 'italic' }]}>
+                <Text style={styles.certificateNumber}>
                   {data.certificate_number}
                 </Text>
               )}
