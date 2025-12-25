@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@react-email/components": "^1.0.2",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.89.0",
     "clsx": "^2.1.1",
@@ -24,6 +25,7 @@
     "react-dom": "19.2.3",
     "react-hook-form": "^7.69.0",
     "react-qr-code": "^2.0.18",
+    "resend": "^6.6.0",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.2.1"
   },

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button, Input, Label, Select, Card, CardContent, CardHeader, CardTitle, Alert, AlertTitle, AlertDescription } from '@/components/ui';
 import { CertificatePreview } from '@/components/certificate';
 import { TemplateStyle, PaperSize, PAPER_SIZES, TEMPLATES, Certificate } from '@/types/certificate';
-import { Upload, FileSpreadsheet, Download, ArrowLeft, CheckCircle2, AlertCircle, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, FileSpreadsheet, Download, ArrowLeft, CheckCircle2, AlertCircle, X, Image as ImageIcon, Loader2, Mail } from 'lucide-react';
 import JSZip from 'jszip';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -31,8 +31,11 @@ export default function BatchPage() {
   const [defaultHours, setDefaultHours] = useState<number | undefined>();
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSendingEmails, setIsSendingEmails] = useState(false);
   const [generatedCertificates, setGeneratedCertificates] = useState<Certificate[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
+  const [emailErrors, setEmailErrors] = useState<string[]>([]);
+  const [emailsSent, setEmailsSent] = useState(0);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -242,6 +245,119 @@ export default function BatchPage() {
     URL.revokeObjectURL(url);
 
     setIsGenerating(false);
+  };
+
+  const sendAllEmails = async () => {
+    if (generatedCertificates.length === 0) return;
+
+    setIsSendingEmails(true);
+    setEmailErrors([]);
+    setEmailsSent(0);
+    setProgress({ current: 0, total: generatedCertificates.length });
+
+    const paper = PAPER_SIZES[paperSize];
+    const errorList: string[] = [];
+    let sentCount = 0;
+
+    for (let i = 0; i < generatedCertificates.length; i++) {
+      const cert = generatedCertificates[i];
+      setProgress({ current: i + 1, total: generatedCertificates.length });
+
+      try {
+        // Generate PDF for this certificate
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.width = '1200px';
+        document.body.appendChild(container);
+
+        const { createRoot } = await import('react-dom/client');
+        const root = createRoot(container);
+
+        await new Promise<void>((resolve) => {
+          root.render(
+            <CertificatePreview
+              data={{
+                student_name: cert.student_name,
+                student_email: cert.student_email,
+                course_name: cert.course_name,
+                certificate_type: cert.certificate_type,
+                instructor_name: cert.instructor_name || undefined,
+                hours: cert.hours || undefined,
+                grade: cert.grade || undefined,
+                issue_date: cert.issue_date,
+                organization_name: organizationName || undefined,
+              }}
+              certificateNumber={cert.certificate_number}
+              template={selectedTemplate}
+              paperSize={paperSize}
+              logoUrl={logoUrl}
+            />
+          );
+          setTimeout(resolve, 200);
+        });
+
+        const element = container.querySelector('[id="certificate-preview"]') as HTMLElement;
+        let pdfBase64: string | null = null;
+
+        if (element) {
+          const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+          });
+
+          const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: paperSize === 'legal' ? [355.6, 215.9] : 'a4',
+          });
+
+          const imgData = canvas.toDataURL('image/png');
+          pdf.addImage(imgData, 'PNG', 0, 0, paper.width, paper.height);
+          pdfBase64 = pdf.output('datauristring').split(',')[1];
+        }
+
+        root.unmount();
+        document.body.removeChild(container);
+
+        // Send email
+        const response = await fetch('/api/certificates/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: cert.student_email,
+            studentName: cert.student_name,
+            courseName: cert.course_name,
+            certificateNumber: cert.certificate_number,
+            certificateType: cert.certificate_type,
+            issueDate: cert.issue_date,
+            organizationName: organizationName || undefined,
+            instructorName: cert.instructor_name,
+            hours: cert.hours,
+            grade: cert.grade,
+            pdfBase64,
+          }),
+        });
+
+        if (response.ok) {
+          sentCount++;
+          setEmailsSent(sentCount);
+        } else {
+          const result = await response.json();
+          errorList.push(`${cert.student_email}: ${result.error || 'Error desconocido'}`);
+        }
+      } catch {
+        errorList.push(`${cert.student_email}: Error de conexion`);
+      }
+
+      // Delay to avoid rate limiting
+      await new Promise(r => setTimeout(r, 500));
+    }
+
+    setEmailErrors(errorList);
+    setIsSendingEmails(false);
   };
 
   return (
@@ -482,20 +598,40 @@ export default function BatchPage() {
               </Button>
 
               {generatedCertificates.length > 0 && (
-                <Button
-                  onClick={downloadAllAsPDF}
-                  disabled={isGenerating}
-                  variant="outline"
-                  size="lg"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Descargar ZIP
-                </Button>
+                <>
+                  <Button
+                    onClick={downloadAllAsPDF}
+                    disabled={isGenerating || isSendingEmails}
+                    variant="outline"
+                    size="lg"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Descargar ZIP
+                  </Button>
+                  <Button
+                    onClick={sendAllEmails}
+                    disabled={isGenerating || isSendingEmails}
+                    variant="outline"
+                    size="lg"
+                  >
+                    {isSendingEmails ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Enviando... ({progress.current}/{progress.total})
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="h-4 w-4 mr-2" />
+                        Enviar por Email
+                      </>
+                    )}
+                  </Button>
+                </>
               )}
             </div>
 
             {/* Results */}
-            {(generatedCertificates.length > 0 || errors.length > 0) && (
+            {(generatedCertificates.length > 0 || errors.length > 0 || emailsSent > 0 || emailErrors.length > 0) && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Resultados</CardTitle>
@@ -514,7 +650,7 @@ export default function BatchPage() {
                     <Alert variant="error">
                       <AlertTitle className="flex items-center gap-2">
                         <AlertCircle className="h-4 w-4" />
-                        {errors.length} errores
+                        {errors.length} errores de generacion
                       </AlertTitle>
                       <AlertDescription>
                         <ul className="list-disc list-inside mt-2 text-sm">
@@ -522,6 +658,32 @@ export default function BatchPage() {
                             <li key={i}>{err}</li>
                           ))}
                           {errors.length > 5 && <li>... y {errors.length - 5} mas</li>}
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  {emailsSent > 0 && (
+                    <Alert variant="success">
+                      <AlertTitle className="flex items-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        {emailsSent} correos enviados
+                      </AlertTitle>
+                    </Alert>
+                  )}
+
+                  {emailErrors.length > 0 && (
+                    <Alert variant="error">
+                      <AlertTitle className="flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4" />
+                        {emailErrors.length} errores de envio
+                      </AlertTitle>
+                      <AlertDescription>
+                        <ul className="list-disc list-inside mt-2 text-sm">
+                          {emailErrors.slice(0, 5).map((err, i) => (
+                            <li key={i}>{err}</li>
+                          ))}
+                          {emailErrors.length > 5 && <li>... y {emailErrors.length - 5} mas</li>}
                         </ul>
                       </AlertDescription>
                     </Alert>

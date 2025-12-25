@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { CertificateForm, CertificatePreview, CertificatePDFButton } from '@/components/certificate';
 import { Alert, AlertTitle, AlertDescription, Card, CardContent, CardHeader, CardTitle, Label, Select, Button } from '@/components/ui';
 import { CertificateFormData, TemplateStyle, PaperSize, PAPER_SIZES, Certificate } from '@/types/certificate';
-import { CheckCircle2, Eye, FileText, FileSpreadsheet } from 'lucide-react';
+import { CheckCircle2, Eye, FileText, FileSpreadsheet, Mail, Loader2 } from 'lucide-react';
 
 export default function GeneratePage() {
   const [formData, setFormData] = useState<Partial<CertificateFormData>>({
@@ -16,6 +18,8 @@ export default function GeneratePage() {
   const [paperSize, setPaperSize] = useState<PaperSize>('a4');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const [generatedCertificate, setGeneratedCertificate] = useState<Certificate | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,9 +31,92 @@ export default function GeneratePage() {
     setLogoUrl(url);
   };
 
+  const generatePDFBase64 = async (): Promise<string | null> => {
+    const element = document.getElementById('certificate-preview');
+    if (!element) return null;
+
+    const paper = PAPER_SIZES[paperSize];
+    const renderWidth = 1200;
+    const renderHeight = renderWidth / paper.aspectRatio;
+
+    const originalStyle = element.getAttribute('style') || '';
+    element.style.width = `${renderWidth}px`;
+    element.style.height = `${renderHeight}px`;
+    element.style.maxWidth = 'none';
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+      });
+
+      element.setAttribute('style', originalStyle);
+
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: paperSize === 'legal' ? [355.6, 215.9] : 'a4',
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 0, 0, paper.width, paper.height);
+
+      // Get base64 without the data:application/pdf prefix
+      const pdfBase64 = pdf.output('datauristring').split(',')[1];
+      return pdfBase64;
+    } catch {
+      element.setAttribute('style', originalStyle);
+      return null;
+    }
+  };
+
+  const handleSendEmail = async () => {
+    if (!generatedCertificate || !formData.student_email) return;
+
+    setIsSendingEmail(true);
+    setError(null);
+
+    try {
+      const pdfBase64 = await generatePDFBase64();
+
+      const response = await fetch('/api/certificates/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: formData.student_email,
+          studentName: generatedCertificate.student_name,
+          courseName: generatedCertificate.course_name,
+          certificateNumber: generatedCertificate.certificate_number,
+          certificateType: generatedCertificate.certificate_type,
+          issueDate: generatedCertificate.issue_date,
+          organizationName: formData.organization_name,
+          instructorName: generatedCertificate.instructor_name,
+          hours: generatedCertificate.hours,
+          grade: generatedCertificate.grade,
+          pdfBase64,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Error al enviar el correo');
+      }
+
+      setEmailSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al enviar el correo');
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
   const handleSubmit = async (data: CertificateFormData) => {
     setIsLoading(true);
     setError(null);
+    setEmailSent(false);
 
     try {
       const response = await fetch('/api/certificates/generate', {
@@ -154,14 +241,44 @@ export default function GeneratePage() {
                   </div>
                 </div>
 
-                {/* Download Button */}
+                {/* Action Buttons */}
                 {generatedCertificate && (
-                  <div className="flex justify-center pt-2">
-                    <CertificatePDFButton
-                      elementId="certificate-preview"
-                      fileName={`certificado-${generatedCertificate.certificate_number}.pdf`}
-                      paperSize={paperSize}
-                    />
+                  <div className="space-y-3 pt-2">
+                    <div className="flex justify-center gap-3">
+                      <CertificatePDFButton
+                        elementId="certificate-preview"
+                        fileName={`certificado-${generatedCertificate.certificate_number}.pdf`}
+                        paperSize={paperSize}
+                      />
+                      <Button
+                        onClick={handleSendEmail}
+                        disabled={isSendingEmail || emailSent}
+                        variant={emailSent ? 'outline' : 'default'}
+                        className="gap-2"
+                      >
+                        {isSendingEmail ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Enviando...
+                          </>
+                        ) : emailSent ? (
+                          <>
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            Enviado
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="h-4 w-4" />
+                            Enviar por Email
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    {emailSent && (
+                      <p className="text-center text-sm text-green-600">
+                        Certificado enviado a {formData.student_email}
+                      </p>
+                    )}
                   </div>
                 )}
               </CardContent>
