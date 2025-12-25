@@ -167,23 +167,27 @@ export function CertificateForm({
           <CardTitle className="text-lg">Plantilla del Certificado</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {TEMPLATES.map((template) => (
               <button
                 key={template.id}
                 type="button"
                 onClick={() => onTemplateChange(template.id)}
-                className={`p-4 rounded-lg border-2 transition-all text-left ${
+                className={`p-3 sm:p-4 rounded-lg border-2 transition-all text-left flex sm:flex-col items-center sm:items-stretch gap-3 sm:gap-0 ${
                   selectedTemplate === template.id
                     ? 'border-blue-500 bg-blue-50'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
-                <div className="aspect-video bg-gray-100 rounded mb-3 flex items-center justify-center text-gray-400 text-sm">
-                  Vista previa
+                <div className="w-16 h-12 sm:w-full sm:aspect-video bg-gray-100 rounded flex-shrink-0 sm:mb-3 flex items-center justify-center text-gray-400 text-xs sm:text-sm">
+                  {template.id === 'elegant' && '🎨'}
+                  {template.id === 'minimal' && '✨'}
+                  {template.id === 'corporate' && '🏢'}
                 </div>
-                <h4 className="font-medium">{template.name}</h4>
-                <p className="text-sm text-gray-500 mt-1">{template.description}</p>
+                <div className="min-w-0">
+                  <h4 className="font-medium text-sm sm:text-base">{template.name}</h4>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1 line-clamp-2">{template.description}</p>
+                </div>
               </button>
             ))}
           </div>

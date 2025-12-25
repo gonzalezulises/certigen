@@ -92,6 +92,32 @@ export interface ValidateCertificateResponse {
 
 // Template Types
 export type TemplateStyle = 'elegant' | 'minimal' | 'corporate';
+export type PaperSize = 'a4' | 'legal';
+
+export interface PaperSizeConfig {
+  name: string;
+  width: number;
+  height: number;
+  aspectRatio: number;
+  cssAspect: string;
+}
+
+export const PAPER_SIZES: Record<PaperSize, PaperSizeConfig> = {
+  a4: {
+    name: 'A4 Horizontal',
+    width: 297,
+    height: 210,
+    aspectRatio: 297 / 210,
+    cssAspect: '297/210',
+  },
+  legal: {
+    name: 'Legal Horizontal',
+    width: 355.6,
+    height: 215.9,
+    aspectRatio: 355.6 / 215.9,
+    cssAspect: '1647/1000',
+  },
+};
 
 export interface TemplateConfig {
   id: TemplateStyle;

@@ -214,7 +214,7 @@ console.log(certificate.certificate_number);
               </Button>
             </Link>
             <a
-              href="https://github.com/your-username/certigen"
+              href="https://github.com/gonzalezulises/certigen"
               target="_blank"
               rel="noopener noreferrer"
             >
