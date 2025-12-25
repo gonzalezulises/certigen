@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "CertiGen",
-    "tagline": "מערכת תעודות מאומתות",
+    "tagline": "מערכת יצירה ואימות תעודות עם QR",
     "loading": "טוען...",
     "error": "אירעה שגיאה",
     "success": "הצלחה",
@@ -261,7 +261,7 @@
     }
   },
   "footer": {
-    "tagline": "מערכת תעודות מאומתות",
+    "tagline": "מערכת יצירה ואימות תעודות עם QR",
     "validate": "אמת תעודה",
     "github": "GitHub",
     "developedBy": "פותח על ידי",

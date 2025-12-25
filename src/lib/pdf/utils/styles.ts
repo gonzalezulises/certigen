@@ -47,25 +47,70 @@ export const paperDimensions: Record<'A4' | 'LETTER' | 'LEGAL', { width: number;
   LEGAL: { width: 1008, height: 612 },
 };
 
+// Valores por defecto para evitar errores
+const DEFAULT_SCALE: 'compact' | 'normal' | 'spacious' = 'normal';
+const DEFAULT_PADDING: 'compact' | 'normal' | 'spacious' = 'normal';
+const DEFAULT_BORDER_WIDTH: 'thin' | 'medium' | 'thick' = 'thin';
+const DEFAULT_RADIUS: 'none' | 'small' | 'medium' | 'large' = 'none';
+const DEFAULT_LOGO_SIZE: 'small' | 'medium' | 'large' = 'medium';
+const DEFAULT_QR_SIZE: 'small' | 'medium' | 'large' = 'medium';
+const DEFAULT_FONT: 'sans' | 'serif' | 'script' | 'slab' | 'display' = 'sans';
+const DEFAULT_WEIGHT: 'normal' | 'medium' | 'bold' | 'black' = 'normal';
+const DEFAULT_ALIGNMENT = 'center' as const;
+const DEFAULT_TRANSFORM = 'none' as const;
+const DEFAULT_LOGO_POSITION = 'center' as const;
+const DEFAULT_SIGNATURE_POSITION = 'center' as const;
+const DEFAULT_VERTICAL_BALANCE = 'centered' as const;
+
 // Generador de estilos dinámicos
 export const generateStyles = (config: TemplateConfig) => {
-  const scale = scaleMap[config.typography.scale];
-  const padding = paddingMap[config.border.padding];
-  const borderWidth = config.border.style !== 'none' ? borderWidthMap[config.border.width] : 0;
-  const borderRadius = radiusMap[config.border.radius];
+  // Aplicar valores por defecto para evitar undefined
+  const scale = scaleMap[config.typography?.scale ?? DEFAULT_SCALE] ?? scaleMap[DEFAULT_SCALE];
+  const padding = paddingMap[config.border?.padding ?? DEFAULT_PADDING] ?? paddingMap[DEFAULT_PADDING];
+  const borderWidth = (config.border?.style ?? 'none') !== 'none'
+    ? (borderWidthMap[config.border?.width ?? DEFAULT_BORDER_WIDTH] ?? borderWidthMap[DEFAULT_BORDER_WIDTH])
+    : 0;
+  const borderRadius = radiusMap[config.border?.radius ?? DEFAULT_RADIUS] ?? radiusMap[DEFAULT_RADIUS];
+
+  // Valores de tipografía con defaults
+  const bodyFont = fontFamilyMap[config.typography?.bodyFont ?? DEFAULT_FONT] ?? fontFamilyMap[DEFAULT_FONT];
+  const titleFont = fontFamilyMap[config.typography?.titleFont ?? DEFAULT_FONT] ?? fontFamilyMap[DEFAULT_FONT];
+  const accentFont = fontFamilyMap[config.typography?.accentFont ?? DEFAULT_FONT] ?? fontFamilyMap[DEFAULT_FONT];
+  const alignment = config.typography?.alignment ?? DEFAULT_ALIGNMENT;
+  const titleWeight = fontWeightMap[config.typography?.titleWeight ?? DEFAULT_WEIGHT] ?? fontWeightMap[DEFAULT_WEIGHT];
+  const nameWeight = fontWeightMap[config.typography?.nameWeight ?? DEFAULT_WEIGHT] ?? fontWeightMap[DEFAULT_WEIGHT];
+  const titleTransform = config.typography?.titleTransform ?? DEFAULT_TRANSFORM;
+
+  // Valores de layout con defaults
+  const logoSize = logoSizeMap[config.layout?.logoSize ?? DEFAULT_LOGO_SIZE] ?? logoSizeMap[DEFAULT_LOGO_SIZE];
+  const qrSize = qrSizeMap[config.layout?.qrSize ?? DEFAULT_QR_SIZE] ?? qrSizeMap[DEFAULT_QR_SIZE];
+  const logoPosition = config.layout?.logoPosition ?? DEFAULT_LOGO_POSITION;
+  const signaturePosition = config.layout?.signaturePosition ?? DEFAULT_SIGNATURE_POSITION;
+  const verticalBalance = config.layout?.verticalBalance ?? DEFAULT_VERTICAL_BALANCE;
+
+  // Valores de colores con defaults
+  const colors = {
+    background: config.colors?.background ?? '#FFFFFF',
+    text: config.colors?.text ?? '#1a1a2e',
+    textMuted: config.colors?.textMuted ?? '#6b7280',
+    primary: config.colors?.primary ?? '#1a365d',
+    secondary: config.colors?.secondary ?? '#2d3748',
+    accent: config.colors?.accent ?? '#c9a227',
+    border: config.colors?.border ?? '#d4af37',
+  };
 
   return StyleSheet.create({
     page: {
-      backgroundColor: config.colors.background,
+      backgroundColor: colors.background,
       padding: padding,
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       position: 'relative',
     },
 
     container: {
       flex: 1,
       borderWidth: borderWidth,
-      borderColor: config.colors.border,
+      borderColor: colors.border,
       borderRadius: borderRadius,
       borderStyle: 'solid',
       padding: padding * 0.6,
@@ -80,9 +125,9 @@ export const generateStyles = (config: TemplateConfig) => {
 
     headerRow: {
       flexDirection: 'row',
-      justifyContent: config.layout.logoPosition.includes('left')
+      justifyContent: logoPosition.includes('left')
         ? 'flex-start'
-        : config.layout.logoPosition.includes('right')
+        : logoPosition.includes('right')
           ? 'flex-end'
           : 'center',
       alignItems: 'center',
@@ -91,74 +136,74 @@ export const generateStyles = (config: TemplateConfig) => {
     },
 
     logo: {
-      width: logoSizeMap[config.layout.logoSize],
+      width: logoSize,
       height: 'auto',
-      maxHeight: logoSizeMap[config.layout.logoSize] * 0.8,
+      maxHeight: logoSize * 0.8,
       objectFit: 'contain' as const,
     },
 
     organizationName: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 14 * scale,
       fontWeight: fontWeightMap.medium,
-      color: config.colors.text,
-      textAlign: config.typography.alignment,
+      color: colors.text,
+      textAlign: alignment,
       marginTop: 8,
     },
 
     organizationSubtitle: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 11 * scale,
-      color: config.colors.textMuted,
-      textAlign: config.typography.alignment,
+      color: colors.textMuted,
+      textAlign: alignment,
       marginTop: 2,
     },
 
     // Contenido principal
     mainContent: {
       flex: 1,
-      justifyContent: config.layout.verticalBalance === 'top-heavy'
+      justifyContent: verticalBalance === 'top-heavy'
         ? 'flex-start'
-        : config.layout.verticalBalance === 'bottom-heavy'
+        : verticalBalance === 'bottom-heavy'
           ? 'flex-end'
           : 'center',
       alignItems: 'center',
     },
 
     title: {
-      fontFamily: fontFamilyMap[config.typography.titleFont],
+      fontFamily: titleFont,
       fontSize: 32 * scale,
-      fontWeight: fontWeightMap[config.typography.titleWeight],
-      color: config.colors.primary,
-      textAlign: config.typography.alignment,
-      textTransform: config.typography.titleTransform,
-      letterSpacing: config.typography.titleTransform === 'uppercase' ? 3 : 0,
+      fontWeight: titleWeight,
+      color: colors.primary,
+      textAlign: alignment,
+      textTransform: titleTransform,
+      letterSpacing: titleTransform === 'uppercase' ? 3 : 0,
       marginBottom: 10 * scale,
     },
 
     subtitle: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 14 * scale,
-      color: config.colors.textMuted,
-      textAlign: config.typography.alignment,
+      color: colors.textMuted,
+      textAlign: alignment,
       marginBottom: 20 * scale,
     },
 
     studentName: {
-      fontFamily: fontFamilyMap[config.typography.accentFont],
+      fontFamily: accentFont,
       fontSize: 38 * scale,
-      fontWeight: fontWeightMap[config.typography.nameWeight],
-      color: config.colors.text,
-      textAlign: config.typography.alignment,
+      fontWeight: nameWeight,
+      color: colors.text,
+      textAlign: alignment,
       marginBottom: 15 * scale,
     },
 
     courseName: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 18 * scale,
       fontWeight: fontWeightMap.medium,
-      color: config.colors.secondary,
-      textAlign: config.typography.alignment,
+      color: colors.secondary,
+      textAlign: alignment,
       marginBottom: 25 * scale,
       maxWidth: '80%',
     },
@@ -178,37 +223,37 @@ export const generateStyles = (config: TemplateConfig) => {
     },
 
     detailLabel: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 9 * scale,
-      color: config.colors.textMuted,
+      color: colors.textMuted,
       textTransform: 'uppercase',
       letterSpacing: 1,
       marginBottom: 4,
     },
 
     detailValue: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 12 * scale,
       fontWeight: fontWeightMap.medium,
-      color: config.colors.text,
+      color: colors.text,
     },
 
     // Divisor
     divider: {
       width: 120,
       height: 1,
-      backgroundColor: config.colors.accent,
+      backgroundColor: colors.accent,
       marginVertical: 15 * scale,
     },
 
     // Firma
     signatureSection: {
-      flexDirection: config.layout.signaturePosition === 'dual' ? 'row' : 'column',
-      justifyContent: config.layout.signaturePosition === 'dual'
+      flexDirection: signaturePosition === 'dual' ? 'row' : 'column',
+      justifyContent: signaturePosition === 'dual'
         ? 'space-around'
-        : config.layout.signaturePosition === 'center'
+        : signaturePosition === 'center'
           ? 'center'
-          : config.layout.signaturePosition === 'left'
+          : signaturePosition === 'left'
             ? 'flex-start'
             : 'flex-end',
       alignItems: 'center',
@@ -231,21 +276,21 @@ export const generateStyles = (config: TemplateConfig) => {
     signatureLine: {
       width: 150,
       height: 1,
-      backgroundColor: config.colors.border,
+      backgroundColor: colors.border,
       marginBottom: 8,
     },
 
     signatureLabel: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 10 * scale,
-      color: config.colors.textMuted,
+      color: colors.textMuted,
     },
 
     signatureName: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 11 * scale,
       fontWeight: fontWeightMap.medium,
-      color: config.colors.text,
+      color: colors.text,
       marginBottom: 2,
     },
 
@@ -274,20 +319,20 @@ export const generateStyles = (config: TemplateConfig) => {
     },
 
     certificateNumber: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 8 * scale,
-      color: config.colors.textMuted,
+      color: colors.textMuted,
     },
 
     qrCode: {
-      width: qrSizeMap[config.layout.qrSize],
-      height: qrSizeMap[config.layout.qrSize],
+      width: qrSize,
+      height: qrSize,
     },
 
     qrLabel: {
-      fontFamily: fontFamilyMap[config.typography.bodyFont],
+      fontFamily: bodyFont,
       fontSize: 7 * scale,
-      color: config.colors.textMuted,
+      color: colors.textMuted,
       marginTop: 4,
       textAlign: 'center',
     },

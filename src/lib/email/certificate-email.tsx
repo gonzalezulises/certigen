@@ -118,7 +118,7 @@ export function CertificateEmail({
               Este es un correo automatico. Por favor no responder a este mensaje.
             </Text>
             <Text style={footerText}>
-              {organizationName || 'CertiGen'} - Sistema de Certificados Verificables
+              {organizationName || 'CertiGen'} - Sistema de Generación y Validación de Certificados con QR
             </Text>
           </Section>
         </Container>

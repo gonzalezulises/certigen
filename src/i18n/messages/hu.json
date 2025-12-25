@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "CertiGen",
-    "tagline": "Ellenorizheto Tanusitvany Rendszer",
+    "tagline": "QR Tanusitvany Generalasi es Ellenorzesi Rendszer",
     "loading": "Betoltes...",
     "error": "Hiba tortent",
     "success": "Sikeres",
@@ -261,7 +261,7 @@
     }
   },
   "footer": {
-    "tagline": "Ellenorizheto Tanusitvany Rendszer",
+    "tagline": "QR Tanusitvany Generalasi es Ellenorzesi Rendszer",
     "validate": "Tanusitvany Ellenorzese",
     "github": "GitHub",
     "developedBy": "Fejlesztette",

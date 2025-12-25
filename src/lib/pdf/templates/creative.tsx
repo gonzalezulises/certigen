@@ -63,8 +63,54 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
   qrCodeDataUrl,
 }) => {
   const styles = generateStyles(config);
-  const { width, height } = getPageDimensions(config.layout.paperSize, config.layout.orientation);
-  const padding = paddingMap[config.border.padding];
+  const paperSize = config.layout?.paperSize ?? 'A4';
+  const orientation = config.layout?.orientation ?? 'landscape';
+  const { width, height } = getPageDimensions(paperSize, orientation);
+  const padding = paddingMap[config.border?.padding ?? 'normal'] ?? paddingMap.normal;
+
+  // Defaults para evitar undefined
+  const colors = {
+    primary: config.colors?.primary ?? '#1a365d',
+    secondary: config.colors?.secondary ?? '#2d3748',
+    accent: config.colors?.accent ?? '#c9a227',
+  };
+
+  const border = {
+    cornerStyle: config.border?.cornerStyle ?? 'none',
+  };
+
+  const ornaments = {
+    backgroundPattern: config.ornaments?.backgroundPattern ?? 'none',
+    backgroundOpacity: config.ornaments?.backgroundOpacity ?? 0.1,
+    dividerStyle: config.ornaments?.dividerStyle ?? 'ornate',
+    showSeal: config.ornaments?.showSeal ?? false,
+    sealStyle: config.ornaments?.sealStyle ?? 'ribbon',
+  };
+
+  const content = {
+    showOrganizationName: config.content?.showOrganizationName ?? true,
+    showSubtitle: config.content?.showSubtitle ?? true,
+    showDate: config.content?.showDate ?? true,
+    showHours: config.content?.showHours ?? true,
+    showGrade: config.content?.showGrade ?? false,
+    showInstructor: config.content?.showInstructor ?? true,
+    showCertificateNumber: config.content?.showCertificateNumber ?? true,
+    showQR: config.content?.showQR ?? true,
+    headerText: config.content?.headerText ?? 'Certificado de Excelencia',
+    subtitleTemplate: config.content?.subtitleTemplate ?? '',
+  };
+
+  const layout = {
+    showSignatureLine: config.layout?.showSignatureLine ?? true,
+    signaturePosition: config.layout?.signaturePosition ?? 'center',
+  };
+
+  const branding = {
+    logoUrl: config.branding?.logoUrl ?? '',
+    organizationName: config.branding?.organizationName ?? '',
+    signatureImage: config.branding?.signatureImage ?? '',
+    signatureLabel: config.branding?.signatureLabel ?? '',
+  };
 
   return (
     <Document>
@@ -73,10 +119,10 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
         style={styles.page}
       >
         {/* Fondo decorativo */}
-        {config.ornaments.backgroundPattern === 'watermark' && (
+        {ornaments.backgroundPattern === 'watermark' && (
           <DecorativeBackground
-            color={config.colors.accent}
-            opacity={config.ornaments.backgroundOpacity}
+            color={colors.accent}
+            opacity={ornaments.backgroundOpacity}
             width={width}
             height={height}
           />
@@ -84,33 +130,33 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
 
         <View style={styles.container}>
           {/* Flourishes en las esquinas */}
-          {config.border.cornerStyle === 'flourish' && (
+          {border.cornerStyle === 'flourish' && (
             <>
               <View style={{ position: 'absolute', top: 5, left: 5 }}>
-                <FlourishCorner color={config.colors.primary} position="top-left" size={60} />
+                <FlourishCorner color={colors.primary} position="top-left" size={60} />
               </View>
               <View style={{ position: 'absolute', top: 5, right: 5 }}>
-                <FlourishCorner color={config.colors.primary} position="top-right" size={60} />
+                <FlourishCorner color={colors.primary} position="top-right" size={60} />
               </View>
               <View style={{ position: 'absolute', bottom: 5, right: 5 }}>
-                <FlourishCorner color={config.colors.primary} position="bottom-right" size={60} />
+                <FlourishCorner color={colors.primary} position="bottom-right" size={60} />
               </View>
               <View style={{ position: 'absolute', bottom: 5, left: 5 }}>
-                <FlourishCorner color={config.colors.primary} position="bottom-left" size={60} />
+                <FlourishCorner color={colors.primary} position="bottom-left" size={60} />
               </View>
             </>
           )}
 
           {/* Header */}
           <View style={styles.header}>
-            {config.branding.logoUrl && (
+            {branding.logoUrl && (
               <View style={styles.headerRow}>
-                <Image src={config.branding.logoUrl} style={styles.logo} />
+                <Image src={branding.logoUrl} style={styles.logo} />
               </View>
             )}
-            {config.content.showOrganizationName && config.branding.organizationName && (
+            {content.showOrganizationName && branding.organizationName && (
               <Text style={styles.organizationName}>
-                {config.branding.organizationName}
+                {branding.organizationName}
               </Text>
             )}
           </View>
@@ -119,13 +165,13 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
           <View style={styles.mainContent}>
             {/* Título decorativo */}
             <Text style={styles.title}>
-              {config.content.headerText}
+              {content.headerText}
             </Text>
 
             {/* Subtítulo */}
-            {config.content.showSubtitle && config.content.subtitleTemplate && (
+            {content.showSubtitle && content.subtitleTemplate && (
               <Text style={styles.subtitle}>
-                {config.content.subtitleTemplate}
+                {content.subtitleTemplate}
               </Text>
             )}
 
@@ -137,9 +183,9 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
             {/* Divisor ornamentado */}
             <View style={{ alignItems: 'center', marginVertical: 15 }}>
               <Divider
-                style={config.ornaments.dividerStyle}
-                color={config.colors.accent}
-                secondaryColor={config.colors.secondary}
+                style={ornaments.dividerStyle}
+                color={colors.accent}
+                secondaryColor={colors.secondary}
                 width={250}
               />
             </View>
@@ -151,19 +197,19 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
 
             {/* Detalles con estilo creativo */}
             <View style={styles.details}>
-              {config.content.showDate && (
+              {content.showDate && (
                 <View style={styles.detailItem}>
                   <Text style={styles.detailLabel}>✦ Fecha ✦</Text>
                   <Text style={styles.detailValue}>{formatDate(data.issue_date)}</Text>
                 </View>
               )}
-              {config.content.showHours && data.hours && (
+              {content.showHours && data.hours && (
                 <View style={styles.detailItem}>
                   <Text style={styles.detailLabel}>✦ Horas ✦</Text>
                   <Text style={styles.detailValue}>{data.hours}</Text>
                 </View>
               )}
-              {config.content.showGrade && data.grade && (
+              {content.showGrade && data.grade && (
                 <View style={styles.detailItem}>
                   <Text style={styles.detailLabel}>✦ Calificación ✦</Text>
                   <Text style={styles.detailValue}>{data.grade}%</Text>
@@ -172,12 +218,12 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
             </View>
 
             {/* Sello ribbon */}
-            {config.ornaments.showSeal && (
+            {ornaments.showSeal && (
               <View style={{ position: 'absolute', bottom: 100, alignSelf: 'center' }}>
                 <Seal
-                  style={config.ornaments.sealStyle}
-                  primaryColor={config.colors.primary}
-                  accentColor={config.colors.accent}
+                  style={ornaments.sealStyle}
+                  primaryColor={colors.primary}
+                  accentColor={colors.accent}
                   size={100}
                 />
               </View>
@@ -186,18 +232,18 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
             {/* Firma */}
             <View style={styles.signatureSection}>
               <View style={styles.signature}>
-                {config.branding.signatureImage && (
-                  <Image src={config.branding.signatureImage} style={styles.signatureImage} />
+                {branding.signatureImage && (
+                  <Image src={branding.signatureImage} style={styles.signatureImage} />
                 )}
-                {config.layout.showSignatureLine && (
+                {layout.showSignatureLine && (
                   <View style={[styles.signatureLine, { borderStyle: 'dashed' }]} />
                 )}
-                {config.content.showInstructor && data.instructor_name && (
+                {content.showInstructor && data.instructor_name && (
                   <Text style={styles.signatureName}>{data.instructor_name}</Text>
                 )}
-                {config.branding.signatureLabel && (
+                {branding.signatureLabel && (
                   <Text style={[styles.signatureLabel, { fontStyle: 'italic' }]}>
-                    {config.branding.signatureLabel}
+                    {branding.signatureLabel}
                   </Text>
                 )}
               </View>
@@ -207,7 +253,7 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
           {/* Footer */}
           <View style={styles.footer}>
             <View style={styles.footerLeft}>
-              {config.content.showQR && qrCodeDataUrl && (
+              {content.showQR && qrCodeDataUrl && (
                 <View style={{ alignItems: 'flex-start' }}>
                   <Image src={qrCodeDataUrl} style={styles.qrCode} />
                 </View>
@@ -215,7 +261,7 @@ export const CreativeTemplate: React.FC<CertificateTemplateProps> = ({
             </View>
 
             <View style={styles.footerRight}>
-              {config.content.showCertificateNumber && (
+              {content.showCertificateNumber && (
                 <Text style={[styles.certificateNumber, { fontStyle: 'italic' }]}>
                   {data.certificate_number}
                 </Text>

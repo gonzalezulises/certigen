@@ -20,7 +20,31 @@ export const MinimalTemplate: React.FC<CertificateTemplateProps> = ({
   qrCodeDataUrl,
 }) => {
   const styles = generateStyles(config);
-  const { width, height } = getPageDimensions(config.layout.paperSize, config.layout.orientation);
+  const paperSize = config.layout?.paperSize ?? 'A4';
+  const orientation = config.layout?.orientation ?? 'landscape';
+  const { width, height } = getPageDimensions(paperSize, orientation);
+
+  // Defaults para evitar undefined
+  const colors = {
+    accent: config.colors?.accent ?? '#c9a227',
+  };
+
+  const ornaments = {
+    dividerStyle: config.ornaments?.dividerStyle ?? 'simple',
+  };
+
+  const content = {
+    showOrganizationName: config.content?.showOrganizationName ?? true,
+    showDate: config.content?.showDate ?? true,
+    showInstructor: config.content?.showInstructor ?? true,
+    showQR: config.content?.showQR ?? true,
+    headerText: config.content?.headerText ?? 'Certificado',
+  };
+
+  const branding = {
+    logoUrl: config.branding?.logoUrl ?? '',
+    organizationName: config.branding?.organizationName ?? '',
+  };
 
   return (
     <Document>
@@ -31,14 +55,14 @@ export const MinimalTemplate: React.FC<CertificateTemplateProps> = ({
         <View style={styles.container}>
           {/* Header minimalista */}
           <View style={styles.header}>
-            {config.branding.logoUrl && (
+            {branding.logoUrl && (
               <View style={styles.headerRow}>
-                <Image src={config.branding.logoUrl} style={styles.logo} />
+                <Image src={branding.logoUrl} style={styles.logo} />
               </View>
             )}
-            {config.content.showOrganizationName && config.branding.organizationName && (
+            {content.showOrganizationName && branding.organizationName && (
               <Text style={styles.organizationName}>
-                {config.branding.organizationName}
+                {branding.organizationName}
               </Text>
             )}
           </View>
@@ -47,7 +71,7 @@ export const MinimalTemplate: React.FC<CertificateTemplateProps> = ({
           <View style={styles.mainContent}>
             {/* Título simple */}
             <Text style={styles.title}>
-              {config.content.headerText}
+              {content.headerText}
             </Text>
 
             {/* Nombre prominente */}
@@ -58,8 +82,8 @@ export const MinimalTemplate: React.FC<CertificateTemplateProps> = ({
             {/* Línea divisoria sutil */}
             <View style={{ alignItems: 'center', marginVertical: 20 }}>
               <Divider
-                style={config.ornaments.dividerStyle}
-                color={config.colors.accent}
+                style={ornaments.dividerStyle}
+                color={colors.accent}
                 width={150}
               />
             </View>
@@ -71,12 +95,12 @@ export const MinimalTemplate: React.FC<CertificateTemplateProps> = ({
 
             {/* Fecha e instructor en una línea */}
             <View style={{ flexDirection: 'row', gap: 30, marginTop: 30 }}>
-              {config.content.showDate && (
+              {content.showDate && (
                 <Text style={styles.signatureLabel}>
                   {formatDate(data.issue_date)}
                 </Text>
               )}
-              {config.content.showInstructor && data.instructor_name && (
+              {content.showInstructor && data.instructor_name && (
                 <Text style={styles.signatureLabel}>
                   {data.instructor_name}
                 </Text>
@@ -87,7 +111,7 @@ export const MinimalTemplate: React.FC<CertificateTemplateProps> = ({
           {/* Footer centrado */}
           <View style={styles.footer}>
             <View style={{ flex: 1, alignItems: 'center' }}>
-              {config.content.showQR && qrCodeDataUrl && (
+              {content.showQR && qrCodeDataUrl && (
                 <View style={{ alignItems: 'center' }}>
                   <Image src={qrCodeDataUrl} style={styles.qrCode} />
                 </View>

@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "CertiGen",
-    "tagline": "Verifiable Certificate System",
+    "tagline": "QR Certificate Generation and Validation System",
     "loading": "Loading...",
     "error": "An error occurred",
     "success": "Success",
@@ -261,7 +261,7 @@
     }
   },
   "footer": {
-    "tagline": "Verifiable Certificate System",
+    "tagline": "QR Certificate Generation and Validation System",
     "validate": "Validate Certificate",
     "github": "GitHub",
     "developedBy": "Developed by",

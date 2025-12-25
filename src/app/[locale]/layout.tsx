@@ -38,15 +38,15 @@ export async function generateMetadata({
   const { locale } = await params;
 
   const titles: Record<string, string> = {
-    en: 'CertiGen - Verifiable Certificate System',
-    es: 'CertiGen - Sistema de Certificados Verificables',
-    de: 'CertiGen - Verifizierbares Zertifikatsystem',
-    it: 'CertiGen - Sistema di Certificati Verificabili',
-    pl: 'CertiGen - System Weryfikowalnych Certyfikatow',
-    ru: 'CertiGen - Система Верифицируемых Сертификатов',
-    hu: 'CertiGen - Ellenorizheto Tanusitvany Rendszer',
-    he: 'CertiGen - מערכת תעודות מאומתות',
-    th: 'CertiGen - ระบบใบรับรองที่ตรวจสอบได้',
+    en: 'CertiGen - QR Certificate Generation and Validation System',
+    es: 'CertiGen - Sistema de Generación y Validación de Certificados con QR',
+    de: 'CertiGen - QR-Zertifikat-Generierungs- und Validierungssystem',
+    it: 'CertiGen - Sistema di Generazione e Validazione di Certificati con QR',
+    pl: 'CertiGen - System Generowania i Walidacji Certyfikatow z QR',
+    ru: 'CertiGen - Система Генерации и Валидации Сертификатов с QR',
+    hu: 'CertiGen - QR Tanusitvany Generalasi es Ellenorzesi Rendszer',
+    he: 'CertiGen - מערכת יצירה ואימות תעודות עם QR',
+    th: 'CertiGen - ระบบสร้างและตรวจสอบใบรับรองพร้อม QR',
   };
 
   const descriptions: Record<string, string> = {

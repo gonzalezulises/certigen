@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "CertiGen",
-    "tagline": "Sistema de Certificados Verificables",
+    "tagline": "Sistema de Generación y Validación de Certificados con QR",
     "loading": "Cargando...",
     "error": "Ocurrio un error",
     "success": "Exito",
@@ -261,7 +261,7 @@
     }
   },
   "footer": {
-    "tagline": "Sistema de Certificados Verificables",
+    "tagline": "Sistema de Generación y Validación de Certificados con QR",
     "validate": "Validar Certificado",
     "github": "GitHub",
     "developedBy": "Desarrollado por",
