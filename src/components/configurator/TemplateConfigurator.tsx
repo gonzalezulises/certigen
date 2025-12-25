@@ -292,44 +292,76 @@ export function TemplateConfigurator({
                 borderRadius: config.border.radius === 'large' ? '16px' : config.border.radius === 'medium' ? '8px' : '0',
               }}
             >
-              <div className="h-full flex flex-col items-center justify-center text-center">
-                {config.content.showOrganizationName && config.branding.organizationName && (
-                  <p style={{ color: config.colors.text }} className="text-sm font-medium mb-2">
-                    {config.branding.organizationName}
+              <div className="h-full flex flex-col items-center justify-between text-center">
+                {/* Header */}
+                <div className="w-full">
+                  {config.content.showOrganizationName && config.branding.organizationName && (
+                    <p style={{ color: config.colors.text }} className="text-sm font-medium mb-2">
+                      {config.branding.organizationName}
+                    </p>
+                  )}
+                </div>
+
+                {/* Main Content */}
+                <div className="flex-1 flex flex-col items-center justify-center">
+                  <h2
+                    style={{
+                      color: config.colors.primary,
+                      textTransform: config.typography.titleTransform,
+                      letterSpacing: config.typography.titleTransform === 'uppercase' ? '2px' : '0',
+                    }}
+                    className="text-2xl font-bold mb-4"
+                  >
+                    {config.content.headerText}
+                  </h2>
+                  {config.content.showSubtitle && config.content.subtitleTemplate && (
+                    <p style={{ color: config.colors.textMuted }} className="text-sm mb-2">
+                      {config.content.subtitleTemplate}
+                    </p>
+                  )}
+                  <h3
+                    style={{ color: config.colors.text }}
+                    className="text-3xl font-bold mb-4"
+                  >
+                    {sampleData.student_name}
+                  </h3>
+                  <div
+                    style={{ backgroundColor: config.colors.accent }}
+                    className="w-24 h-0.5 mb-4"
+                  />
+                  <p style={{ color: config.colors.secondary }} className="text-lg mb-6">
+                    {sampleData.course_name}
                   </p>
-                )}
-                <h2
-                  style={{
-                    color: config.colors.primary,
-                    textTransform: config.typography.titleTransform,
-                    letterSpacing: config.typography.titleTransform === 'uppercase' ? '2px' : '0',
-                  }}
-                  className="text-2xl font-bold mb-4"
-                >
-                  {config.content.headerText}
-                </h2>
-                {config.content.showSubtitle && config.content.subtitleTemplate && (
-                  <p style={{ color: config.colors.textMuted }} className="text-sm mb-2">
-                    {config.content.subtitleTemplate}
-                  </p>
-                )}
-                <h3
-                  style={{ color: config.colors.text }}
-                  className="text-3xl font-bold mb-4"
-                >
-                  {sampleData.student_name}
-                </h3>
-                <div
-                  style={{ backgroundColor: config.colors.accent }}
-                  className="w-24 h-0.5 mb-4"
-                />
-                <p style={{ color: config.colors.secondary }} className="text-lg mb-6">
-                  {sampleData.course_name}
-                </p>
-                <div className="flex gap-8 text-sm" style={{ color: config.colors.textMuted }}>
-                  {config.content.showDate && <span>{new Date().toLocaleDateString()}</span>}
-                  {config.content.showHours && sampleData.hours && <span>{sampleData.hours} horas</span>}
-                  {config.content.showGrade && sampleData.grade && <span>{sampleData.grade}%</span>}
+                  <div className="flex gap-8 text-sm" style={{ color: config.colors.textMuted }}>
+                    {config.content.showDate && <span>{new Date().toLocaleDateString()}</span>}
+                    {config.content.showHours && sampleData.hours && <span>{sampleData.hours} horas</span>}
+                    {config.content.showGrade && sampleData.grade && <span>{sampleData.grade}%</span>}
+                  </div>
+                </div>
+
+                {/* Footer with QR */}
+                <div className="w-full flex justify-between items-end mt-4">
+                  <div>
+                    {config.content.showCertificateNumber && (
+                      <p style={{ color: config.colors.textMuted }} className="text-xs">
+                        {sampleData.certificate_number}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    {config.content.showQR && qrDataUrl && (
+                      <img
+                        src={qrDataUrl}
+                        alt="QR Code"
+                        className="w-12 h-12"
+                        style={{
+                          backgroundColor: config.colors.background,
+                          padding: '2px',
+                          borderRadius: '4px'
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
