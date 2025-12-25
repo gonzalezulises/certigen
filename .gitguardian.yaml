@@ -1,0 +1,11 @@
+# GitGuardian configuration
+# Ignore false positives in i18n translation files
+
+paths-ignore:
+  - "src/i18n/messages/*.json"
+  - "**/*.example"
+
+matches-ignore:
+  # Ignore error message patterns that look like credentials
+  - name: "invalidCredentials translation strings"
+    match: "invalidCredentials"
