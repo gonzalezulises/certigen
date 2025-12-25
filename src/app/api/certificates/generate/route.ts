@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { certificateFormSchema } from '@/types/certificate';
+import { certificateFormSchema, authenticatedCertificateFormSchema } from '@/types/certificate';
 import { generateCertificateNumber, getValidationUrl } from '@/lib/utils';
 import crypto from 'crypto';
 
@@ -9,18 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate input
-    const validationResult = certificateFormSchema.safeParse(body);
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { error: 'Datos invalidos', details: validationResult.error.issues },
-        { status: 400 }
-      );
-    }
-
-    const data = validationResult.data;
-
-    // Create Supabase client
+    // Create Supabase client FIRST to check auth
     const cookieStore = await cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,8 +32,20 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    // Check if user is authenticated
+    // Check if user is authenticated BEFORE validation
     const { data: { user } } = await supabase.auth.getUser();
+
+    // Use appropriate schema based on auth status
+    const schema = user ? authenticatedCertificateFormSchema : certificateFormSchema;
+    const validationResult = schema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Datos invalidos', details: validationResult.error.issues },
+        { status: 400 }
+      );
+    }
+
+    const data = validationResult.data;
 
     // Generate unique certificate number
     const certificateNumber = generateCertificateNumber();
