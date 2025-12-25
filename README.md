@@ -37,14 +37,19 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 | **Codigos QR** | Cada certificado incluye QR para validacion instantanea |
 | **Validacion Publica** | Cualquiera puede verificar autenticidad via web o QR |
 | **3 Plantillas** | Elegante, Minimalista y Corporativa |
+| **Logo Personalizado** | Sube el logo de tu organizacion |
+| **Tamano de Papel** | Soporta A4 y Legal horizontal |
 | **Exportacion PDF** | Descarga certificados en formato PDF de alta calidad |
+| **Generacion en Lote** | Genera multiples certificados desde CSV |
+| **Envio por Email** | Envia certificados automaticamente por correo con PDF adjunto |
 | **API REST** | Integracion con plataformas externas |
 | **Panel Admin** | Gestion y monitoreo de certificados |
 
 ### Modos de Operacion
 
-1. **Standalone**: Aplicacion web independiente para generar certificados manualmente
-2. **Integrado**: API para generar certificados automaticamente desde otras plataformas
+1. **Individual**: Genera certificados uno por uno con vista previa en tiempo real
+2. **Lote (CSV)**: Sube un archivo CSV para generar multiples certificados
+3. **API**: Genera certificados automaticamente desde otras plataformas
 
 ---
 
@@ -55,13 +60,13 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         FRONTEND                                 │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │
-│  │   Inicio    │  │  Generador  │  │  Validador  │              │
-│  │     /       │  │  /generate  │  │  /validate  │              │
-│  └─────────────┘  └─────────────┘  └─────────────┘              │
-│         │                │                │                      │
-│         └────────────────┼────────────────┘                      │
-│                          ▼                                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────┐ │
+│  │   Inicio    │  │  Generador  │  │    Lote     │  │Validador│ │
+│  │     /       │  │  /generate  │  │   /batch    │  │/validate│ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────┘ │
+│         │                │                │              │       │
+│         └────────────────┴────────────────┴──────────────┘       │
+│                                   ▼                              │
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │              Next.js App Router (React 19)                │   │
 │  │  ┌────────────┐  ┌────────────┐  ┌────────────┐          │   │
@@ -74,8 +79,8 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 ┌─────────────────────────────────────────────────────────────────┐
 │                      API LAYER (Next.js)                         │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
-│  │ /api/certificates│  │ /api/validate   │  │ /api/integration│  │
-│  │    /generate    │  │   /[number]     │  │                 │  │
+│  │ /api/certificates│  │ /api/certificates│  │ /api/integration│  │
+│  │    /generate    │  │   /send-email   │  │                 │  │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
 │                              │                                   │
 │  ┌──────────────────────────────────────────────────────────┐   │
@@ -84,67 +89,50 @@ Sistema de Generacion y Validacion de Certificados Digitales con codigo QR verif
 │  └──────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                               │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        SUPABASE                                  │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │
-│  │ PostgreSQL  │  │    Auth     │  │   Storage   │              │
-│  │  Database   │  │   (JWT)     │  │   (Files)   │              │
-│  └─────────────┘  └─────────────┘  └─────────────┘              │
-│                                                                  │
-│  Tablas: certificates, certificate_templates,                    │
-│          certificate_validations, eduplatform_integration        │
-└─────────────────────────────────────────────────────────────────┘
+              ┌───────────────┴───────────────┐
+              ▼                               ▼
+┌─────────────────────────┐     ┌─────────────────────────┐
+│        SUPABASE         │     │         RESEND          │
+│  ┌─────────────┐        │     │                         │
+│  │ PostgreSQL  │        │     │   Email Delivery API    │
+│  │  Database   │        │     │                         │
+│  └─────────────┘        │     │  • Certificados PDF     │
+│                         │     │  • Plantilla HTML       │
+│  Tablas:                │     │                         │
+│  • certificates         │     └─────────────────────────┘
+│  • certificate_templates│
+│  • certificate_validations
+└─────────────────────────┘
 ```
 
-### Flujo de Generacion de Certificados
+### Flujo de Generacion y Envio
 
 ```
-Usuario                    Frontend                    API                     Supabase
+Usuario                    Frontend                    API                     Supabase/Resend
    │                          │                         │                          │
    │ 1. Completa formulario   │                         │                          │
+   │    + sube logo (opcional)│                         │                          │
    │────────────────────────▶│                         │                          │
    │                          │                         │                          │
    │                          │ 2. POST /api/generate   │                          │
    │                          │────────────────────────▶│                          │
-   │                          │                         │                          │
-   │                          │                         │ 3. Genera ID unico       │
-   │                          │                         │ 4. INSERT certificate    │
-   │                          │                         │────────────────────────▶│
-   │                          │                         │                          │
+   │                          │                         │ 3. INSERT certificate    │
+   │                          │                         │────────────────────────▶ │ (Supabase)
    │                          │                         │◀────────────────────────│
-   │                          │                         │ 5. Retorna certificado   │
    │                          │◀────────────────────────│                          │
    │                          │                         │                          │
-   │ 6. Muestra preview + QR  │                         │                          │
+   │ 4. Muestra preview + QR  │                         │                          │
    │◀────────────────────────│                         │                          │
    │                          │                         │                          │
-   │ 7. Descarga PDF          │                         │                          │
-   │◀────────────────────────│                         │                          │
-```
-
-### Flujo de Validacion
-
-```
-Visitante                  Frontend                    API                     Supabase
-   │                          │                         │                          │
-   │ 1. Escanea QR / Ingresa  │                         │                          │
-   │    numero de certificado │                         │                          │
+   │ 5. Click "Enviar Email"  │                         │                          │
    │────────────────────────▶│                         │                          │
-   │                          │                         │                          │
-   │                          │ 2. GET /api/validate/X  │                          │
+   │                          │ 6. POST /api/send-email │                          │
    │                          │────────────────────────▶│                          │
-   │                          │                         │                          │
-   │                          │                         │ 3. SELECT certificate    │
-   │                          │                         │────────────────────────▶│
-   │                          │                         │                          │
+   │                          │                         │ 7. Send email + PDF      │
+   │                          │                         │────────────────────────▶ │ (Resend)
    │                          │                         │◀────────────────────────│
-   │                          │                         │                          │
-   │                          │                         │ 4. INSERT validation log │
-   │                          │                         │────────────────────────▶│
-   │                          │                         │                          │
    │                          │◀────────────────────────│                          │
-   │ 5. Muestra resultado     │                         │                          │
+   │ 8. Confirmacion          │                         │                          │
    │◀────────────────────────│                         │                          │
 ```
 
@@ -158,9 +146,12 @@ Visitante                  Frontend                    API                     S
 | **Lenguaje** | TypeScript | 5.x | Tipado estatico |
 | **Estilos** | Tailwind CSS | 4.x | Utility-first CSS |
 | **Base de Datos** | Supabase (PostgreSQL) | - | Almacenamiento, Auth, RLS |
+| **Email** | Resend | - | Envio de correos transaccionales |
+| **Email Templates** | React Email | - | Plantillas de correo en React |
 | **Validacion** | Zod | 3.x | Schema validation |
 | **Formularios** | React Hook Form | 7.x | Form management |
 | **PDF** | jsPDF + html2canvas | - | Generacion de PDFs |
+| **ZIP** | JSZip | - | Empaquetado de multiples PDFs |
 | **QR Codes** | react-qr-code | - | Generacion de QR |
 | **Iconos** | Lucide React | - | Iconografia |
 | **Despliegue** | Vercel | - | Hosting, Edge Functions |
@@ -178,24 +169,28 @@ certigen/
 │   │   ├── (standalone)/       # Grupo de rutas standalone
 │   │   │   ├── admin/          # Panel de administracion
 │   │   │   │   └── page.tsx
+│   │   │   ├── batch/          # Generacion en lote (CSV)
+│   │   │   │   └── page.tsx
 │   │   │   ├── generate/       # Generador de certificados
 │   │   │   │   └── page.tsx
 │   │   │   └── validate/       # Validador de certificados
 │   │   │       ├── page.tsx
-│   │   │       └── [number]/   # Validacion por URL directa
+│   │   │       └── [number]/
 │   │   │           └── page.tsx
 │   │   ├── api/                # API Routes
 │   │   │   ├── certificates/
 │   │   │   │   ├── generate/
+│   │   │   │   │   └── route.ts
+│   │   │   │   ├── send-email/
 │   │   │   │   │   └── route.ts
 │   │   │   │   └── validate/
 │   │   │   │       └── [number]/
 │   │   │   │           └── route.ts
 │   │   │   └── integration/
 │   │   │       └── route.ts
-│   │   ├── layout.tsx          # Layout principal
-│   │   ├── page.tsx            # Pagina de inicio
-│   │   └── globals.css         # Estilos globales
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── globals.css
 │   ├── components/
 │   │   ├── certificate/        # Componentes de certificados
 │   │   │   ├── CertificateForm.tsx
@@ -203,7 +198,7 @@ certigen/
 │   │   │   ├── CertificatePDF.tsx
 │   │   │   ├── CertificateValidator.tsx
 │   │   │   └── index.ts
-│   │   ├── shared/             # Componentes compartidos
+│   │   ├── shared/
 │   │   │   ├── header.tsx
 │   │   │   └── footer.tsx
 │   │   └── ui/                 # Componentes UI base
@@ -215,20 +210,24 @@ certigen/
 │   │       ├── select.tsx
 │   │       └── index.ts
 │   ├── lib/
+│   │   ├── email/              # Configuracion de email
+│   │   │   ├── certificate-email.tsx  # Plantilla de email
+│   │   │   ├── resend.ts       # Cliente Resend
+│   │   │   └── index.ts
 │   │   ├── supabase/           # Cliente Supabase
-│   │   │   ├── client.ts       # Cliente browser
-│   │   │   ├── server.ts       # Cliente server
-│   │   │   └── certificates.ts # Funciones de certificados
+│   │   │   ├── client.ts
+│   │   │   ├── server.ts
+│   │   │   └── certificates.ts
 │   │   └── utils/
-│   │       └── index.ts        # Utilidades generales
+│   │       └── index.ts
 │   ├── types/
 │   │   ├── certificate.ts      # Tipos de certificados
-│   │   └── database.ts         # Tipos de Supabase
-│   └── middleware.ts           # Middleware de seguridad
+│   │   └── database.ts
+│   └── middleware.ts
 ├── supabase/
 │   └── migrations/
-│       └── 001_initial.sql     # Migracion inicial
-├── .env.local.example          # Ejemplo de variables
+│       └── 001_initial.sql
+├── .env.local.example
 ├── .gitignore
 ├── LICENSE
 ├── next.config.ts
@@ -247,6 +246,7 @@ certigen/
 - Node.js 18.x o superior
 - npm, yarn, o pnpm
 - Cuenta en Supabase
+- Cuenta en Resend (para emails)
 - Cuenta en Vercel (para despliegue)
 
 ### Pasos
@@ -287,22 +287,165 @@ NEXT_PUBLIC_VALIDATION_BASE_URL=https://tu-dominio.vercel.app/validate
 
 # API Security
 CERTIGEN_API_SECRET=tu-api-secret-seguro
+
+# Resend Email (opcional - requerido para envio de emails)
+RESEND_API_KEY=re_xxxxxxxxxxxx
+FROM_EMAIL=CertiGen <onboarding@resend.dev>
 ```
 
 ### Configurar Supabase
 
 1. Crear proyecto en [supabase.com](https://supabase.com)
 2. Ir a **Settings > API** y copiar las keys
-3. Ejecutar la migracion SQL:
+3. Ejecutar la migracion SQL en **SQL Editor**
 
-```bash
-# Con Supabase CLI
-supabase login
-supabase link --project-ref tu-project-ref
-supabase db push
+### Configurar Resend (para emails)
+
+1. Crear cuenta en [resend.com](https://resend.com)
+2. Obtener API key desde el dashboard
+3. Agregar `RESEND_API_KEY` a las variables de entorno
+4. (Opcional) Verificar dominio propio para usar email personalizado
+
+**Nota:** Sin verificar dominio, usa `onboarding@resend.dev` como remitente.
+
+---
+
+## Uso
+
+### Generacion Individual
+
+1. Ir a `/generate`
+2. Completar el formulario:
+   - Nombre de la organizacion (opcional)
+   - Logo (opcional, PNG/JPG hasta 2MB)
+   - Datos del estudiante
+   - Datos del curso
+   - Seleccionar plantilla
+3. Click en "Generar Certificado"
+4. Descargar PDF o Enviar por Email
+
+### Generacion en Lote (CSV)
+
+1. Ir a `/batch` o click en "Generar en lote (CSV)" desde `/generate`
+2. Preparar archivo CSV con columnas:
+   ```csv
+   nombre,email,calificacion,horas
+   Juan Perez,juan@email.com,95,40
+   Maria Garcia,maria@email.com,88,40
+   Ana Lopez,ana@email.com,92,40
+   ```
+3. Subir el archivo CSV
+4. Configurar datos comunes (curso, instructor, plantilla, logo)
+5. Click en "Generar Certificados"
+6. Descargar ZIP con todos los PDFs o Enviar por Email
+
+### Tamanos de Papel
+
+| Formato | Dimensiones | Uso Recomendado |
+|---------|-------------|-----------------|
+| **A4 Horizontal** | 297mm x 210mm | Estandar internacional |
+| **Legal Horizontal** | 355.6mm x 215.9mm | Estados Unidos |
+
+---
+
+## API Reference
+
+### Generar Certificado
+
+```http
+POST /api/certificates/generate
+Content-Type: application/json
 ```
 
-O manualmente en **SQL Editor** ejecutar el contenido de `supabase/migrations/001_initial.sql`
+**Request Body:**
+```json
+{
+  "student_name": "Juan Perez Garcia",
+  "student_email": "juan@ejemplo.com",
+  "course_name": "React Avanzado",
+  "certificate_type": "completion",
+  "instructor_name": "Maria Rodriguez",
+  "hours": 40,
+  "grade": 95,
+  "issue_date": "2024-01-15",
+  "organization_name": "Mi Empresa"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "certificate": {
+    "id": "uuid",
+    "certificate_number": "CER-20240115-847362",
+    "student_name": "Juan Perez Garcia",
+    "course_name": "React Avanzado",
+    "qr_code_url": "https://certigen.vercel.app/validate/CER-20240115-847362"
+  }
+}
+```
+
+### Enviar Certificado por Email
+
+```http
+POST /api/certificates/send-email
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "to": "juan@ejemplo.com",
+  "studentName": "Juan Perez Garcia",
+  "courseName": "React Avanzado",
+  "certificateNumber": "CER-20240115-847362",
+  "certificateType": "completion",
+  "issueDate": "2024-01-15",
+  "organizationName": "Mi Empresa",
+  "instructorName": "Maria Rodriguez",
+  "hours": 40,
+  "grade": 95,
+  "pdfBase64": "JVBERi0xLjQK..."
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "messageId": "msg_xxxxxx"
+}
+```
+
+### Validar Certificado
+
+```http
+GET /api/certificates/validate/{certificate_number}
+```
+
+**Response (Valido):**
+```json
+{
+  "is_valid": true,
+  "certificate": {
+    "certificate_number": "CER-20240115-847362",
+    "student_name": "Juan Perez Garcia",
+    "course_name": "React Avanzado",
+    "certificate_type": "completion",
+    "issue_date": "2024-01-15T00:00:00Z"
+  },
+  "validation_count": 5
+}
+```
+
+### API de Integracion (Requiere Autenticacion)
+
+```http
+POST /api/integration
+Authorization: Bearer {API_SECRET}
+Content-Type: application/json
+```
 
 ---
 
@@ -333,125 +476,6 @@ O manualmente en **SQL Editor** ejecutar el contenido de `supabase/migrations/00
                               └─────────────────────────┘
 ```
 
-### Tablas Principales
-
-| Tabla | Descripcion |
-|-------|-------------|
-| `certificates` | Almacena todos los certificados generados |
-| `certificate_templates` | Plantillas HTML/CSS para certificados |
-| `certificate_validations` | Log de todas las validaciones realizadas |
-| `eduplatform_integration` | Configuracion de integraciones externas |
-| `api_keys` | Claves API para acceso programatico |
-
-### Row Level Security (RLS)
-
-La base de datos implementa RLS para seguridad:
-
-- **Certificados**: Lectura publica (solo activos), escritura autenticada
-- **Validaciones**: Lectura y escritura publica
-- **Plantillas**: Solo lectura publica
-- **Integraciones**: Solo service_role
-
----
-
-## API Reference
-
-### Generar Certificado
-
-```http
-POST /api/certificates/generate
-Content-Type: application/json
-```
-
-**Request Body:**
-```json
-{
-  "student_name": "Juan Perez Garcia",
-  "student_email": "juan@ejemplo.com",
-  "course_name": "React Avanzado",
-  "certificate_type": "completion",
-  "instructor_name": "Maria Rodriguez",
-  "hours": 40,
-  "grade": 95,
-  "issue_date": "2024-01-15"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "certificate": {
-    "id": "uuid",
-    "certificate_number": "CER-20240115-847362",
-    "student_name": "Juan Perez Garcia",
-    "course_name": "React Avanzado",
-    "qr_code_url": "https://certigen.vercel.app/validate/CER-20240115-847362"
-  }
-}
-```
-
-### Validar Certificado
-
-```http
-GET /api/certificates/validate/{certificate_number}
-```
-
-**Response (Valido):**
-```json
-{
-  "is_valid": true,
-  "certificate": {
-    "certificate_number": "CER-20240115-847362",
-    "student_name": "Juan Perez Garcia",
-    "course_name": "React Avanzado",
-    "certificate_type": "completion",
-    "issue_date": "2024-01-15T00:00:00Z"
-  },
-  "validation_count": 5
-}
-```
-
-**Response (Invalido):**
-```json
-{
-  "is_valid": false,
-  "error": "Certificado no encontrado"
-}
-```
-
-### API de Integracion (Requiere Autenticacion)
-
-```http
-POST /api/integration
-Authorization: Bearer {API_SECRET}
-Content-Type: application/json
-```
-
-**Request:**
-```json
-{
-  "student_name": "Juan Perez",
-  "student_email": "juan@ejemplo.com",
-  "course_name": "React Avanzado",
-  "certificate_type": "completion",
-  "hours": 40,
-  "grade": 95
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "certificate": {
-    "id": "uuid",
-    "certificate_number": "CER-20240115-847362",
-    "validation_url": "https://certigen.vercel.app/validate/CER-20240115-847362"
-  }
-}
-```
-
 ---
 
 ## Seguridad
@@ -467,27 +491,7 @@ Content-Type: application/json
 | **Input Validation** | Zod schemas en todos los endpoints |
 | **SQL Injection** | Prevenido por Supabase ORM |
 | **XSS Protection** | CSP + sanitizacion de inputs |
-| **CSRF** | Proteccion nativa de Next.js |
 | **RLS** | Row Level Security en Supabase |
-
-### Headers de Seguridad
-
-```
-Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-X-Frame-Options: SAMEORIGIN
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=()
-Content-Security-Policy: default-src 'self'; ...
-```
-
-### Buenas Practicas
-
-1. **Variables de entorno**: Nunca commitear `.env.local`
-2. **API Keys**: Rotar regularmente
-3. **Service Role Key**: Solo usar en servidor, nunca exponer al cliente
-4. **Validacion**: Validar todos los inputs en frontend y backend
 
 ---
 
@@ -510,12 +514,16 @@ vercel --prod
 
 Configurar en **Project Settings > Environment Variables**:
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `NEXT_PUBLIC_APP_URL`
-- `NEXT_PUBLIC_VALIDATION_BASE_URL`
-- `CERTIGEN_API_SECRET`
+| Variable | Requerida | Descripcion |
+|----------|-----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Si | URL del proyecto Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Si | Anon key de Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Si | Service role key de Supabase |
+| `NEXT_PUBLIC_APP_URL` | Si | URL de la aplicacion |
+| `NEXT_PUBLIC_VALIDATION_BASE_URL` | Si | URL base para validacion |
+| `CERTIGEN_API_SECRET` | Si | Secret para API de integracion |
+| `RESEND_API_KEY` | No | API key de Resend (para emails) |
+| `FROM_EMAIL` | No | Email remitente |
 
 ---
 
@@ -538,13 +546,6 @@ npm run lint     # Ejecutar ESLint
 4. Push: `git push origin feature/nueva-funcionalidad`
 5. Crear Pull Request
 
-### Guia de Estilo
-
-- Usar TypeScript estricto
-- Seguir convenciones de Next.js App Router
-- Componentes funcionales con hooks
-- Nombres en ingles para codigo, espanol para UI
-
 ---
 
 ## Licencia
@@ -561,6 +562,19 @@ MIT License - ver [LICENSE](LICENSE)
 ---
 
 ## Changelog
+
+### v1.2.0 (2024-12-25)
+- Envio de certificados por email con PDF adjunto
+- Envio masivo de emails en generacion por lote
+- Integracion con Resend para delivery de emails
+- Plantilla de email profesional con React Email
+
+### v1.1.0 (2024-12-25)
+- Generacion en lote desde archivos CSV
+- Soporte para logo personalizado
+- Seleccion de tamano de papel (A4/Legal)
+- Descarga de multiples certificados como ZIP
+- Mejoras en responsive design
 
 ### v1.0.0 (2024-12-24)
 - Lanzamiento inicial
