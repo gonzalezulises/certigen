@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import QRCode from 'qrcode';
 
 interface CertificateData {
@@ -134,7 +134,7 @@ async function generatePDF(
       height: ornamentSize,
       borderColor: rgb(accentColor.r, accentColor.g, accentColor.b),
       borderWidth: 1,
-      rotate: { angle: 45, type: 'degrees' },
+      rotate: degrees(45),
     });
   });
 
