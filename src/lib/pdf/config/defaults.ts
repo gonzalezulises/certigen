@@ -32,7 +32,7 @@ export const classicDefaults: TemplateConfig = {
   },
   ornaments: {
     dividerStyle: 'ornate',
-    showSeal: true,
+    showSeal: false,
     sealStyle: 'classic',
     sealPosition: 'bottom-center',
     backgroundPattern: 'none',
@@ -168,7 +168,7 @@ export const creativeDefaults: TemplateConfig = {
   },
   ornaments: {
     dividerStyle: 'ornate',
-    showSeal: true,
+    showSeal: false,
     sealStyle: 'ribbon',
     sealPosition: 'bottom-center',
     backgroundPattern: 'watermark',
