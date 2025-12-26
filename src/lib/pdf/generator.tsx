@@ -25,22 +25,26 @@ export interface GeneratePDFResult {
  * Helper para hacer merge seguro de objetos
  * Evita errores cuando el objeto es undefined o null
  */
-const safeObjectMerge = <T extends Record<string, unknown>>(
+function safeObjectMerge<T>(
   base: T,
   overrides: Partial<T> | undefined | null
-): T => {
+): T {
   if (!overrides || typeof overrides !== 'object') {
     return base;
   }
   try {
-    const filtered = Object.fromEntries(
-      Object.entries(overrides).filter(([, v]) => v !== undefined && v !== null)
-    );
-    return { ...base, ...filtered } as T;
+    const result = { ...base };
+    for (const key in overrides) {
+      const value = overrides[key];
+      if (value !== undefined && value !== null) {
+        (result as Record<string, unknown>)[key] = value;
+      }
+    }
+    return result;
   } catch {
     return base;
   }
-};
+}
 
 /**
  * Deep merge config con valores por defecto garantizados
