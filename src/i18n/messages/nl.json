@@ -1,0 +1,534 @@
+{
+  "common": {
+    "appName": "CertiGen",
+    "tagline": "QR Certificaat Generatie- en Validatiesysteem",
+    "loading": "Laden...",
+    "error": "Er is een fout opgetreden",
+    "success": "Succes",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "download": "Downloaden",
+    "send": "Verzenden",
+    "submit": "Versturen",
+    "close": "Sluiten",
+    "optional": "optioneel",
+    "required": "verplicht"
+  },
+  "navigation": {
+    "home": "Home",
+    "generate": "Genereren",
+    "batch": "Batch",
+    "validate": "Valideren",
+    "admin": "Admin",
+    "login": "Inloggen",
+    "logout": "Uitloggen",
+    "main": "Hoofdnavigatie"
+  },
+  "home": {
+    "hero": {
+      "title": "Certificaat Generator",
+      "subtitle": "Maak verifieerbare certificaten met QR-codes in seconden",
+      "cta": "Start met Genereren"
+    },
+    "features": {
+      "title": "Functies",
+      "qrVerification": {
+        "title": "QR Verificatie",
+        "description": "Elk certificaat bevat een unieke QR-code voor directe verificatie"
+      },
+      "templates": {
+        "title": "Professionele Sjablonen",
+        "description": "Kies uit elegante, minimalistische of zakelijke ontwerpen"
+      },
+      "batch": {
+        "title": "Batch Generatie",
+        "description": "Genereer honderden certificaten uit CSV-bestanden"
+      },
+      "email": {
+        "title": "E-mail Verzending",
+        "description": "Verstuur certificaten direct naar ontvangers"
+      }
+    }
+  },
+  "generate": {
+    "title": "Certificaat Genereren",
+    "subtitle": "Vul het formulier in om een verifieerbaar certificaat met QR-code te genereren",
+    "batchLink": "Genereer in batch (CSV)",
+    "organization": {
+      "title": "Organisatie",
+      "name": "Organisatienaam",
+      "namePlaceholder": "Mijn Bedrijf / Universiteit",
+      "logo": "Logo",
+      "logoOptional": "Logo (optioneel)",
+      "logoHint": "PNG, JPG tot 2MB",
+      "uploadLogo": "Upload logo"
+    },
+    "student": {
+      "title": "Studentgegevens",
+      "name": "Volledige Naam",
+      "namePlaceholder": "Jan Jansen",
+      "nameRequired": "Naam moet minimaal 2 tekens bevatten",
+      "email": "E-mail",
+      "emailPlaceholder": "jan@voorbeeld.nl",
+      "emailInvalid": "Ongeldig e-mailformaat",
+      "emailHint": "Alleen nodig als u het certificaat per e-mail wilt versturen"
+    },
+    "course": {
+      "title": "Cursusgegevens",
+      "name": "Cursusnaam",
+      "namePlaceholder": "Gevorderd React: Hooks en Patronen",
+      "nameRequired": "Cursusnaam moet minimaal 2 tekens bevatten",
+      "type": "Certificaattype",
+      "typeParticipation": "Deelname",
+      "typeCompletion": "Voltooiing",
+      "hours": "Cursusuren",
+      "hoursPlaceholder": "40",
+      "grade": "Cijfer (0-100)",
+      "gradePlaceholder": "85",
+      "instructor": "Naam Instructeur",
+      "instructorPlaceholder": "Maria de Vries",
+      "issueDate": "Uitgiftedatum"
+    },
+    "template": {
+      "title": "Certificaatsjabloon",
+      "elegant": "Elegant",
+      "elegantDesc": "Professioneel ontwerp met blauw verloop en gouden randen",
+      "minimal": "Minimalistisch",
+      "minimalDesc": "Schoon en modern ontwerp met eenvoudige lijnen",
+      "corporate": "Zakelijk",
+      "corporateDesc": "Formeel ontwerp met ruimte voor institutioneel logo"
+    },
+    "preview": {
+      "title": "Voorbeeld",
+      "paperSize": "Papierformaat"
+    },
+    "actions": {
+      "generate": "Genereer Certificaat",
+      "downloadPdf": "Download PDF",
+      "sendEmail": "Verstuur per E-mail",
+      "sending": "Verzenden...",
+      "sent": "Verzonden"
+    },
+    "success": {
+      "title": "Certificaat Succesvol Gegenereerd",
+      "number": "Certificaatnummer",
+      "persisted": "Het certificaat is opgeslagen in uw account en kan worden gevalideerd.",
+      "anonymous": "Anonieme modus: Het certificaat wordt niet opgeslagen. Download de PDF of log in om op te slaan."
+    }
+  },
+  "validate": {
+    "title": "Certificaat Valideren",
+    "subtitle": "Voer het certificaatnummer in om de authenticiteit te verifieren",
+    "placeholder": "Voer certificaatnummer in (bijv. CER-20240115-847362)",
+    "button": "Valideren",
+    "validating": "Valideren...",
+    "results": {
+      "valid": "Geldig Certificaat",
+      "invalid": "Ongeldig Certificaat",
+      "notFound": "Certificaat niet gevonden",
+      "notFoundHint": "Als het in anonieme modus is gegenereerd, kan het niet online worden gevalideerd.",
+      "studentName": "Student",
+      "courseName": "Cursus",
+      "type": "Type",
+      "issueDate": "Uitgiftedatum",
+      "instructor": "Instructeur",
+      "hours": "Uren",
+      "grade": "Cijfer",
+      "validationCount": "Aantal validaties"
+    },
+    "scan": {
+      "title": "Of Scan QR-code",
+      "description": "Gebruik de camera van uw apparaat om de QR-code van het certificaat te scannen"
+    }
+  },
+  "batch": {
+    "title": "Batch Generatie",
+    "subtitle": "Genereer meerdere certificaten tegelijk vanuit een CSV-bestand",
+    "requiresAuth": "U moet inloggen om certificaten in batch te genereren",
+    "login": "Inloggen",
+    "register": "Registreren",
+    "upload": {
+      "title": "Upload CSV-bestand",
+      "dragDrop": "Klik om te uploaden of sleep en zet neer",
+      "hint": "CSV-bestand met kolommen: naam, e-mail, cijfer (optioneel), uren (optioneel)",
+      "selected": "Geselecteerd bestand"
+    },
+    "settings": {
+      "title": "Generatie-instellingen",
+      "courseName": "Cursusnaam",
+      "courseNamePlaceholder": "Webontwikkeling Bootcamp",
+      "instructor": "Instructeur",
+      "instructorPlaceholder": "Maria de Vries",
+      "type": "Certificaattype",
+      "template": "Sjabloon",
+      "issueDate": "Uitgiftedatum"
+    },
+    "preview": {
+      "title": "Data Voorbeeld",
+      "rows": "{count} rijen gevonden",
+      "name": "Naam",
+      "email": "E-mail",
+      "grade": "Cijfer",
+      "hours": "Uren"
+    },
+    "progress": {
+      "generating": "Certificaten genereren...",
+      "processing": "Verwerken {current} van {total}",
+      "complete": "Generatie voltooid",
+      "success": "{count} certificaten succesvol gegenereerd",
+      "errors": "{count} fouten opgetreden"
+    },
+    "actions": {
+      "generate": "Genereer {count} Certificaten",
+      "downloadAll": "Download Alles (ZIP)",
+      "sendEmails": "Verstuur Alles per E-mail",
+      "clear": "Wissen"
+    },
+    "csvFormat": {
+      "title": "CSV Formaat",
+      "required": "Verplichte kolommen",
+      "optional": "Optionele kolommen",
+      "example": "Voorbeeld"
+    }
+  },
+  "admin": {
+    "title": "Admin Paneel",
+    "subtitle": "Beheer en monitor gegenereerde certificaten",
+    "session": "Sessie",
+    "logout": "Uitloggen",
+    "stats": {
+      "total": "Totaal Certificaten",
+      "thisMonth": "Deze Maand",
+      "completions": "Voltooiingen",
+      "participations": "Deelnames"
+    },
+    "recent": {
+      "title": "Recente Certificaten",
+      "empty": "Nog geen certificaten gegenereerd",
+      "generateFirst": "Genereer Eerste Certificaat",
+      "number": "Nummer",
+      "student": "Student",
+      "course": "Cursus",
+      "type": "Type",
+      "date": "Datum",
+      "status": "Status",
+      "active": "Actief",
+      "inactive": "Inactief"
+    },
+    "api": {
+      "title": "API Integratie",
+      "description": "Gebruik de CertiGen API om automatisch certificaten te genereren vanuit uw platform"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Inloggen",
+      "subtitle": "Toegang tot uw admin paneel",
+      "email": "E-mail",
+      "emailPlaceholder": "u@email.nl",
+      "password": "Wachtwoord",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Inloggen",
+      "noAccount": "Geen account?",
+      "register": "Registreren"
+    },
+    "register": {
+      "title": "Registreren",
+      "subtitle": "Maak uw account aan om certificaten op te slaan",
+      "email": "E-mail",
+      "emailPlaceholder": "u@email.nl",
+      "password": "Wachtwoord",
+      "passwordPlaceholder": "Minimaal 6 tekens",
+      "confirmPassword": "Bevestig Wachtwoord",
+      "confirmPasswordPlaceholder": "Herhaal wachtwoord",
+      "submit": "Registreren",
+      "hasAccount": "Heeft u al een account?",
+      "login": "Inloggen",
+      "success": "Account succesvol aangemaakt. Controleer uw e-mail om te bevestigen."
+    },
+    "anonymous": {
+      "title": "Doorgaan zonder account",
+      "button": "Genereer Anoniem Certificaat",
+      "hint": "Anonieme certificaten worden niet opgeslagen en vereisen het e-mailadres van de ontvanger voor verzending."
+    },
+    "errors": {
+      "invalidCredentials": "Ongeldige e-mail of wachtwoord",
+      "emailNotConfirmed": "E-mail niet bevestigd. Controleer uw inbox.",
+      "userExists": "Er bestaat al een account met dit e-mailadres",
+      "weakPassword": "Wachtwoord moet minimaal 6 tekens bevatten",
+      "passwordMismatch": "Wachtwoorden komen niet overeen",
+      "generic": "Er is een fout opgetreden. Probeer het opnieuw."
+    }
+  },
+  "footer": {
+    "tagline": "QR Certificaat Generatie- en Validatiesysteem",
+    "validate": "Valideer Certificaat",
+    "github": "GitHub",
+    "developedBy": "Ontwikkeld door",
+    "rights": "MIT Licentie"
+  },
+  "accessibility": {
+    "skipToContent": "Ga naar hoofdinhoud",
+    "openMenu": "Open navigatiemenu",
+    "closeMenu": "Sluit navigatiemenu",
+    "toggleTheme": "Wissel donker/licht thema",
+    "currentTheme": "Huidig thema: {theme}",
+    "selectLanguage": "Selecteer taal",
+    "currentLanguage": "Huidige taal: {language}",
+    "certificatePreview": "Certificaat voorbeeld voor {name}",
+    "qrCode": "QR-code voor certificaat validatie",
+    "logoPreview": "Logo voorbeeld",
+    "removeLogo": "Verwijder logo",
+    "loading": "Inhoud laden",
+    "error": "Foutmelding",
+    "success": "Succesmelding",
+    "formError": "Formulier heeft {count} fouten"
+  },
+  "errors": {
+    "required": "Dit veld is verplicht",
+    "minLength": "Moet minimaal {min} tekens bevatten",
+    "maxLength": "Moet maximaal {max} tekens bevatten",
+    "email": "Ongeldig e-mailformaat",
+    "number": "Moet een geldig nummer zijn",
+    "min": "Moet minimaal {min} zijn",
+    "max": "Moet maximaal {max} zijn",
+    "fileTooLarge": "Bestand overschrijdt maximale grootte van {max}",
+    "invalidFormat": "Ongeldig bestandsformaat. Toegestaan: {formats}",
+    "networkError": "Netwerkfout. Probeer het opnieuw.",
+    "serverError": "Serverfout. Probeer het later opnieuw.",
+    "notFound": "Niet gevonden",
+    "unauthorized": "Log in om door te gaan"
+  },
+  "theme": {
+    "light": "Licht",
+    "dark": "Donker",
+    "system": "Systeem"
+  },
+  "certificate": {
+    "title": "CERTIFICAAT",
+    "ofParticipation": "VAN DEELNAME",
+    "ofCompletion": "VAN VOLTOOIING",
+    "certifies": "Dit certificeert dat",
+    "hasParticipated": "heeft succesvol deelgenomen aan de cursus",
+    "hasCompleted": "heeft de cursus succesvol voltooid",
+    "issueDate": "Uitgiftedatum",
+    "certificateNumber": "Certificaatnummer",
+    "hours": "uren",
+    "grade": "Cijfer",
+    "verify": "Verifieren"
+  },
+  "configurator": {
+    "title": "Configureer Certificaat",
+    "back": "Terug",
+    "preview": "Voorbeeld",
+    "downloadPdf": "Download PDF",
+    "saveConfig": "Configuratie Opslaan",
+    "reset": "Herstellen",
+    "generating": "Genereren...",
+    "templates": {
+      "title": "Basis Sjabloon",
+      "classic": {
+        "name": "Klassiek Academisch",
+        "description": "Formeel ontwerp met sierlijke randen, ideaal voor onderwijsinstellingen"
+      },
+      "minimal": {
+        "name": "Minimalistisch",
+        "description": "Ruime opmaak met typografie als hoofdrol, elegantie in eenvoud"
+      },
+      "creative": {
+        "name": "Creatief",
+        "description": "Expressief ontwerp met gedurfde decoratieve elementen, voor speciale erkenningen"
+      }
+    },
+    "panels": {
+      "colors": "Kleuren",
+      "typography": "Typografie",
+      "layout": "Indeling",
+      "elements": "Elementen",
+      "content": "Inhoud",
+      "branding": "Huisstijl"
+    },
+    "colors": {
+      "title": "Kleuren",
+      "palettes": "Voorgedefinieerde paletten",
+      "primary": "Primaire kleur",
+      "secondary": "Secundaire kleur",
+      "accent": "Accentkleur",
+      "background": "Achtergrond",
+      "text": "Hoofdtekst",
+      "textMuted": "Secundaire tekst",
+      "border": "Randen"
+    },
+    "typography": {
+      "title": "Typografie",
+      "fonts": "Lettertypen",
+      "titleFont": "Titels",
+      "bodyFont": "Tekst",
+      "nameFont": "Naam",
+      "style": "Stijl",
+      "scale": "Algemene schaal",
+      "alignment": "Uitlijning",
+      "titleWeight": "Titel gewicht",
+      "nameWeight": "Naam gewicht",
+      "titleTransform": "Titel transformatie",
+      "fontOptions": {
+        "serif": "Serif (Formeel)",
+        "sans": "Sans-serif (Modern)",
+        "script": "Script (Elegant)",
+        "slab": "Slab (Tech)",
+        "display": "Display (Decoratief)"
+      },
+      "scaleOptions": {
+        "compact": "Compact",
+        "normal": "Normaal",
+        "spacious": "Ruim"
+      },
+      "alignmentOptions": {
+        "left": "Links",
+        "center": "Midden",
+        "right": "Rechts"
+      },
+      "weightOptions": {
+        "normal": "Normaal",
+        "medium": "Medium",
+        "bold": "Vet",
+        "black": "Zwart"
+      },
+      "transformOptions": {
+        "none": "Normaal",
+        "uppercase": "HOOFDLETTERS",
+        "capitalize": "Kapitaliseren"
+      }
+    },
+    "layout": {
+      "page": "Pagina",
+      "paperSize": "Formaat",
+      "orientation": "Orientatie",
+      "borders": "Randen",
+      "borderStyle": "Stijl",
+      "borderWidth": "Breedte",
+      "corners": "Hoeken",
+      "padding": "Opvulling",
+      "positions": "Posities",
+      "logoPosition": "Logo",
+      "logoSize": "Logo grootte",
+      "qrPosition": "QR-code",
+      "signaturePosition": "Handtekening",
+      "showSignatureLine": "Toon handtekeninglijn",
+      "paperSizeOptions": {
+        "a4": "A4",
+        "letter": "Letter",
+        "legal": "Legal"
+      },
+      "orientationOptions": {
+        "landscape": "Liggend",
+        "portrait": "Staand"
+      },
+      "borderStyleOptions": {
+        "none": "Geen rand",
+        "simple": "Eenvoudig",
+        "double": "Dubbel",
+        "certificate": "Certificaat",
+        "ornate": "Sierlijk"
+      },
+      "widthOptions": {
+        "thin": "Dun",
+        "medium": "Medium",
+        "thick": "Dik"
+      },
+      "cornerOptions": {
+        "none": "Geen decoratie",
+        "simple": "Eenvoudig",
+        "ornate": "Sierlijk",
+        "flourish": "Krullend"
+      },
+      "radius": "Hoekradius",
+      "radiusOptions": {
+        "none": "Geen",
+        "small": "Klein",
+        "medium": "Medium",
+        "large": "Groot"
+      },
+      "paddingOptions": {
+        "compact": "Compact",
+        "normal": "Normaal",
+        "spacious": "Ruim"
+      },
+      "positionOptions": {
+        "topLeft": "Linksboven",
+        "topCenter": "Midden boven",
+        "topRight": "Rechtsboven",
+        "bottomLeft": "Linksonder",
+        "bottomCenter": "Midden onder",
+        "bottomRight": "Rechtsonder"
+      },
+      "sizeOptions": {
+        "small": "Klein",
+        "medium": "Medium",
+        "large": "Groot"
+      },
+      "signatureOptions": {
+        "left": "Links",
+        "center": "Midden",
+        "right": "Rechts",
+        "dual": "Dubbel"
+      }
+    },
+    "elements": {
+      "dividers": "Scheidingslijnen",
+      "dividerStyle": "Stijl scheidingslijn",
+      "seal": "Zegel",
+      "sealStyle": "Stijl",
+      "sealPosition": "Positie",
+      "background": "Achtergrond",
+      "backgroundPattern": "Achtergrondpatroon",
+      "backgroundOpacity": "Patroon transparantie",
+      "dividerOptions": {
+        "none": "Geen scheidingslijn",
+        "simple": "Eenvoudige lijn",
+        "ornate": "Sierlijk",
+        "dots": "Stippen",
+        "gradient": "Verloop"
+      },
+      "sealStyleOptions": {
+        "classic": "Klassiek",
+        "modern": "Modern",
+        "ribbon": "Lint",
+        "badge": "Badge"
+      },
+      "patternOptions": {
+        "none": "Geen patroon",
+        "subtleGrid": "Subtiel raster",
+        "diagonalLines": "Diagonale lijnen",
+        "watermark": "Watermerk"
+      }
+    },
+    "content": {
+      "texts": "Teksten",
+      "headerText": "Certificaat titel",
+      "subtitleTemplate": "Ondertitel",
+      "footerText": "Voettekst (optioneel)",
+      "fieldsToShow": "Weer te geven velden",
+      "showSubtitle": "Ondertitel",
+      "showOrganizationName": "Organisatienaam",
+      "showDate": "Datum",
+      "showInstructor": "Instructeur",
+      "showHours": "Uren",
+      "showGrade": "Cijfer",
+      "showCertificateNumber": "Certificaatnummer",
+      "showQR": "QR-code"
+    },
+    "branding": {
+      "organization": "Organisatie",
+      "organizationName": "Organisatienaam",
+      "organizationSubtitle": "Ondertitel (optioneel)",
+      "logo": "Logo",
+      "uploadLogo": "Upload logo",
+      "signature": "Handtekening",
+      "signatureLabel": "Titel/Functie",
+      "uploadSignature": "Upload handtekeningafbeelding",
+      "secondSignature": "Tweede handtekening (optioneel)",
+      "secondSignatureLabel": "Titel/Functie"
+    }
+  }
+}
