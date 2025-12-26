@@ -287,11 +287,11 @@ async function generatePDF(
     const qrBytes = Uint8Array.from(atob(qrBase64), c => c.charCodeAt(0));
     const qrImage = await pdfDoc.embedPng(qrBytes);
 
-    // Draw QR code (bottom right)
-    const qrSize = 60;
+    // Draw QR code (bottom right) - doubled size for better visibility
+    const qrSize = 120;
     page.drawImage(qrImage, {
       x: pageWidth - margin - qrSize - 20,
-      y: margin + 20,
+      y: margin + 15,
       width: qrSize,
       height: qrSize,
     });

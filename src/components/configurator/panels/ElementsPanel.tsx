@@ -34,48 +34,6 @@ export function ElementsPanel({ config, onChange }: ElementsPanelProps) {
         </div>
       </div>
 
-      {/* Sello */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-sm text-gray-900 dark:text-white">{t('seal')}</h4>
-          <Switch
-            checked={config.showSeal}
-            onCheckedChange={(checked) => onChange({ showSeal: checked })}
-          />
-        </div>
-
-        {config.showSeal && (
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-xs">{t('sealStyle')}</Label>
-              <Select
-                value={config.sealStyle}
-                onChange={(e) => onChange({ sealStyle: e.target.value as OrnamentConfig['sealStyle'] })}
-                className="dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-              >
-                <option value="classic">{t('sealStyleOptions.classic')}</option>
-                <option value="modern">{t('sealStyleOptions.modern')}</option>
-                <option value="ribbon">{t('sealStyleOptions.ribbon')}</option>
-                <option value="badge">{t('sealStyleOptions.badge')}</option>
-              </Select>
-            </div>
-
-            <div>
-              <Label className="text-xs">{t('sealPosition')}</Label>
-              <Select
-                value={config.sealPosition}
-                onChange={(e) => onChange({ sealPosition: e.target.value as OrnamentConfig['sealPosition'] })}
-                className="dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-              >
-                <option value="bottom-center">Abajo centro</option>
-                <option value="bottom-right">Abajo derecha</option>
-                <option value="top-right">Arriba derecha</option>
-              </Select>
-            </div>
-          </div>
-        )}
-      </div>
-
       {/* Fondo */}
       <div>
         <h4 className="font-medium text-sm mb-3 text-gray-900 dark:text-white">{t('background')}</h4>

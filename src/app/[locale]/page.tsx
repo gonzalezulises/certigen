@@ -22,7 +22,6 @@ export default function HomePage() {
 
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               {t('home.hero.title')}
-              <span className="text-yellow-400"> {t('common.tagline')}</span>
             </h1>
 
             <p className="text-xl text-blue-100 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
