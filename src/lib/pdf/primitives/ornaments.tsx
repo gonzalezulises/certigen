@@ -1,5 +1,5 @@
 import React from 'react';
-import { Svg, Path, G, Circle, Line } from '@react-pdf/renderer';
+import { Svg, Path, G, Circle, Line } from '@alexandernanberg/react-pdf-renderer';
 
 interface OrnamentProps {
   color: string;

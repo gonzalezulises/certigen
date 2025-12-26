@@ -4,7 +4,6 @@ import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { TemplateConfigurator } from '@/components/configurator/TemplateConfigurator';
-import { generateCertificatePDF } from '@/lib/pdf/generator';
 import { TemplateConfig, TemplateId, CertificateData } from '@/lib/pdf/config/schema';
 import { Alert, AlertTitle, AlertDescription, Card, CardContent, CardHeader, CardTitle, Button, Input, Label } from '@/components/ui';
 import { CheckCircle2, FileSpreadsheet, Mail, Loader2, Info, User, BookOpen, GraduationCap } from 'lucide-react';
@@ -76,17 +75,37 @@ export default function GeneratePage() {
         certificate_number: result.certificate.certificate_number,
       };
 
-      // Generate the PDF using the new system
-      const pdfResult = await generateCertificatePDF({
-        templateId,
-        data: fullData,
-        config,
+      // Generate the PDF using server-side API (avoids React 19 compatibility issues)
+      const pdfResponse = await fetch('/api/certificates/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: fullData,
+          templateId,
+          config: {
+            colors: config.colors,
+          },
+        }),
       });
+
+      const pdfResult = await pdfResponse.json();
+
+      if (!pdfResponse.ok) {
+        throw new Error(pdfResult.error || 'Error generating PDF');
+      }
+
+      // Convert base64 to Blob for download
+      const binaryString = atob(pdfResult.pdfBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const pdfBlob = new Blob([bytes], { type: 'application/pdf' });
 
       setGeneratedCertificate({
         certificate_number: result.certificate.certificate_number,
-        pdfDataUrl: pdfResult.dataUrl,
-        pdfBlob: pdfResult.blob,
+        pdfDataUrl: pdfResult.pdfDataUrl,
+        pdfBlob: pdfBlob,
       });
       setIsPersisted(result.persisted || false);
     } catch (err) {

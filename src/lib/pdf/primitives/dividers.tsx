@@ -1,5 +1,5 @@
 import React from 'react';
-import { Svg, Path, Line, Circle, Rect } from '@react-pdf/renderer';
+import { Svg, Path, Line, Circle, Rect } from '@alexandernanberg/react-pdf-renderer';
 
 interface DividerProps {
   color: string;

@@ -1,4 +1,4 @@
-import { StyleSheet } from '@react-pdf/renderer';
+import { StyleSheet } from '@alexandernanberg/react-pdf-renderer';
 import { TemplateConfig } from '../config/schema';
 import { fontFamilyMap, fontWeightMap } from '../fonts/register';
 
@@ -76,23 +76,28 @@ const getRadiusValue = (radius: string | undefined | null): number => {
 
 // Generador de estilos dinámicos
 export const generateStyles = (config: TemplateConfig) => {
-  // Garantizar que config.border existe
-  const borderConfig = config.border ?? {
-    style: 'none',
-    width: DEFAULT_BORDER_WIDTH,
-    radius: DEFAULT_RADIUS,
-    padding: DEFAULT_PADDING,
-    cornerStyle: 'none',
+  // Garantizar que config existe y tiene todas las propiedades requeridas
+  if (!config) {
+    console.error('generateStyles: config is undefined, using defaults');
+  }
+
+  // Garantizar que config.border existe con todos los campos
+  const borderConfig = {
+    style: config?.border?.style ?? 'none',
+    width: config?.border?.width ?? DEFAULT_BORDER_WIDTH,
+    radius: config?.border?.radius ?? DEFAULT_RADIUS,
+    padding: config?.border?.padding ?? DEFAULT_PADDING,
+    cornerStyle: config?.border?.cornerStyle ?? 'none',
   };
 
   // Aplicar valores por defecto para evitar undefined
-  const scale = scaleMap[config.typography?.scale ?? DEFAULT_SCALE] ?? scaleMap[DEFAULT_SCALE];
-  const padding = paddingMap[borderConfig.padding ?? DEFAULT_PADDING] ?? paddingMap[DEFAULT_PADDING];
-  const borderWidth = (borderConfig.style ?? 'none') !== 'none'
-    ? (borderWidthMap[borderConfig.width ?? DEFAULT_BORDER_WIDTH] ?? borderWidthMap[DEFAULT_BORDER_WIDTH])
+  const scale = scaleMap[config?.typography?.scale ?? DEFAULT_SCALE] ?? scaleMap[DEFAULT_SCALE];
+  const padding = paddingMap[borderConfig.padding] ?? paddingMap[DEFAULT_PADDING];
+  const borderWidth = borderConfig.style !== 'none'
+    ? (borderWidthMap[borderConfig.width] ?? borderWidthMap[DEFAULT_BORDER_WIDTH])
     : 0;
-  // Asegurar que borderRadius siempre tenga un valor numérico válido
-  const borderRadius = getRadiusValue(borderConfig.radius);
+  // Asegurar que borderRadius siempre tenga un valor numérico válido - usar 0 como fallback absoluto
+  const borderRadius = getRadiusValue(borderConfig.radius) ?? 0;
 
   // Valores de tipografía con defaults
   const bodyFont = fontFamilyMap[config.typography?.bodyFont ?? DEFAULT_FONT] ?? fontFamilyMap[DEFAULT_FONT];
@@ -133,7 +138,8 @@ export const generateStyles = (config: TemplateConfig) => {
       flex: 1,
       borderWidth: borderWidth,
       borderColor: colors.border,
-      borderRadius: borderRadius,
+      // Solo incluir borderRadius si es > 0, ya que @react-pdf trata 0 como falsy
+      ...(borderRadius > 0 ? { borderRadius: borderRadius } : {}),
       borderStyle: 'solid',
       padding: padding * 0.6,
       position: 'relative',

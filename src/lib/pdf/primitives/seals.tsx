@@ -1,5 +1,5 @@
 import React from 'react';
-import { Svg, Path, Circle, G, Line } from '@react-pdf/renderer';
+import { Svg, Path, Circle, G, Line } from '@alexandernanberg/react-pdf-renderer';
 
 interface SealProps {
   primaryColor: string;

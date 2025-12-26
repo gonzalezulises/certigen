@@ -5,16 +5,14 @@ import {
   View,
   Text,
   Image,
-} from '@react-pdf/renderer';
+} from '@alexandernanberg/react-pdf-renderer';
 import { CertificateTemplateProps, formatDate, getPageDimensions } from './base';
 import { generateStyles, paddingMap } from '../utils/styles';
-import { registerFonts } from '../fonts/register';
 import { CornerOrnament } from '../primitives/ornaments';
 import { Divider } from '../primitives/dividers';
 import { Seal } from '../primitives/seals';
 
-// Registrar fuentes
-registerFonts();
+// NOTE: Fonts are registered lazily in generator.tsx via loadFonts()
 
 export const ClassicTemplate: React.FC<CertificateTemplateProps> = ({
   data,

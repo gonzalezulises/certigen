@@ -1,13 +1,13 @@
 import React from 'react';
-import { pdf } from '@react-pdf/renderer';
+import { pdf } from '@alexandernanberg/react-pdf-renderer';
 import { TemplateConfig, TemplateId, CertificateData } from './config/schema';
 import { templateDefinitions, getDefaultConfig } from './config/defaults';
 import { getTemplate } from './templates';
 import { generateQRDataURL, generateValidationURL } from './utils/qr-generator';
-import { registerFonts } from './fonts/register';
+import { loadFonts } from './fonts/register';
 
-// Registrar fuentes al cargar el módulo
-registerFonts();
+// NOTE: Using @alexandernanberg/react-pdf-renderer for React 19 compatibility
+// Fonts are registered lazily when loadFonts() is called
 
 export interface GeneratePDFOptions {
   templateId: TemplateId;
@@ -22,6 +22,27 @@ export interface GeneratePDFResult {
 }
 
 /**
+ * Helper para hacer merge seguro de objetos
+ * Evita errores cuando el objeto es undefined o null
+ */
+const safeObjectMerge = <T extends Record<string, unknown>>(
+  base: T,
+  overrides: Partial<T> | undefined | null
+): T => {
+  if (!overrides || typeof overrides !== 'object') {
+    return base;
+  }
+  try {
+    const filtered = Object.fromEntries(
+      Object.entries(overrides).filter(([, v]) => v !== undefined && v !== null)
+    );
+    return { ...base, ...filtered } as T;
+  } catch {
+    return base;
+  }
+};
+
+/**
  * Deep merge config con valores por defecto garantizados
  * Esto asegura que ningún valor sea undefined
  */
@@ -30,53 +51,18 @@ const mergeConfig = (
   overrides: Partial<TemplateConfig> | TemplateConfig | undefined
 ): TemplateConfig => {
   // Si no hay overrides, retornar base
-  if (!overrides) {
+  if (!overrides || typeof overrides !== 'object') {
     return base;
   }
 
   return {
-    colors: {
-      ...base.colors,
-      ...(overrides.colors ? Object.fromEntries(
-        Object.entries(overrides.colors).filter(([, v]) => v !== undefined)
-      ) : {}),
-    },
-    typography: {
-      ...base.typography,
-      ...(overrides.typography ? Object.fromEntries(
-        Object.entries(overrides.typography).filter(([, v]) => v !== undefined)
-      ) : {}),
-    },
-    border: {
-      ...base.border,
-      ...(overrides.border ? Object.fromEntries(
-        Object.entries(overrides.border).filter(([, v]) => v !== undefined)
-      ) : {}),
-    },
-    ornaments: {
-      ...base.ornaments,
-      ...(overrides.ornaments ? Object.fromEntries(
-        Object.entries(overrides.ornaments).filter(([, v]) => v !== undefined)
-      ) : {}),
-    },
-    layout: {
-      ...base.layout,
-      ...(overrides.layout ? Object.fromEntries(
-        Object.entries(overrides.layout).filter(([, v]) => v !== undefined)
-      ) : {}),
-    },
-    content: {
-      ...base.content,
-      ...(overrides.content ? Object.fromEntries(
-        Object.entries(overrides.content).filter(([, v]) => v !== undefined)
-      ) : {}),
-    },
-    branding: {
-      ...base.branding,
-      ...(overrides.branding ? Object.fromEntries(
-        Object.entries(overrides.branding).filter(([, v]) => v !== undefined)
-      ) : {}),
-    },
+    colors: safeObjectMerge(base.colors, overrides.colors),
+    typography: safeObjectMerge(base.typography, overrides.typography),
+    border: safeObjectMerge(base.border, overrides.border),
+    ornaments: safeObjectMerge(base.ornaments, overrides.ornaments),
+    layout: safeObjectMerge(base.layout, overrides.layout),
+    content: safeObjectMerge(base.content, overrides.content),
+    branding: safeObjectMerge(base.branding, overrides.branding),
   };
 };
 
@@ -92,6 +78,9 @@ export const generateCertificatePDF = async (
     config: configOverrides = {},
     validationBaseUrl = process.env.NEXT_PUBLIC_VALIDATION_BASE_URL || '',
   } = options;
+
+  // Preload fonts before generating PDF
+  await loadFonts();
 
   // Obtener configuración base y aplicar overrides
   const baseConfig = getDefaultConfig(templateId);
@@ -122,10 +111,15 @@ export const generateCertificatePDF = async (
     />
   );
 
-  const blob = await pdf(document).toBlob();
-  const dataUrl = await blobToDataUrl(blob);
-
-  return { blob, dataUrl };
+  try {
+    const blob = await pdf(document).toBlob();
+    const dataUrl = await blobToDataUrl(blob);
+    return { blob, dataUrl };
+  } catch (error) {
+    console.error('PDF generation failed:', error);
+    console.error('Template ID:', templateId);
+    throw error;
+  }
 };
 
 /**

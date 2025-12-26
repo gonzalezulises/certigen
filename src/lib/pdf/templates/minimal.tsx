@@ -5,14 +5,12 @@ import {
   View,
   Text,
   Image,
-} from '@react-pdf/renderer';
+} from '@alexandernanberg/react-pdf-renderer';
 import { CertificateTemplateProps, formatDate, getPageDimensions } from './base';
 import { generateStyles } from '../utils/styles';
-import { registerFonts } from '../fonts/register';
 import { Divider } from '../primitives/dividers';
 
-// Registrar fuentes
-registerFonts();
+// NOTE: Fonts are registered lazily in generator.tsx via loadFonts()
 
 export const MinimalTemplate: React.FC<CertificateTemplateProps> = ({
   data,

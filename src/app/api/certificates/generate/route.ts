@@ -33,7 +33,14 @@ export async function POST(request: NextRequest) {
     );
 
     // Check if user is authenticated BEFORE validation
-    const { data: { user } } = await supabase.auth.getUser();
+    let user = null;
+    try {
+      const { data } = await supabase.auth.getUser();
+      user = data?.user;
+    } catch (authError) {
+      console.log('Auth check failed, proceeding as anonymous:', authError);
+      // Continue as anonymous user
+    }
 
     // Use appropriate schema based on auth status
     const schema = user ? authenticatedCertificateFormSchema : certificateFormSchema;
