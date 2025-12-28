@@ -77,20 +77,27 @@ export default function GeneratePage() {
       };
 
       // Generate the PDF using server-side API (avoids React 19 compatibility issues)
+      const pdfConfig = {
+        colors: config.colors,
+        content: config.content,
+        layout: config.layout,
+        border: config.border,
+        ornaments: config.ornaments,
+        branding: config.branding,
+      };
+
+      // Debug: log config being sent
+      console.log('=== SENDING TO PDF API ===');
+      console.log('Border config:', JSON.stringify(pdfConfig.border));
+      console.log('Layout config:', JSON.stringify(pdfConfig.layout));
+
       const pdfResponse = await fetch('/api/certificates/generate-pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           data: fullData,
           templateId,
-          config: {
-            colors: config.colors,
-            content: config.content,
-            layout: config.layout,
-            border: config.border,
-            ornaments: config.ornaments,
-            branding: config.branding,
-          },
+          config: pdfConfig,
         }),
       });
 

@@ -700,6 +700,12 @@ export async function POST(request: NextRequest) {
     const body: GeneratePDFRequest = await request.json();
     const { data, config } = body;
 
+    // Debug: log what config is received
+    console.log('=== PDF GENERATION REQUEST ===');
+    console.log('Border config received:', JSON.stringify(config?.border));
+    console.log('Layout config received:', JSON.stringify(config?.layout));
+    console.log('Full config keys:', config ? Object.keys(config) : 'no config');
+
     if (!data.student_name || !data.course_name || !data.certificate_number) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
