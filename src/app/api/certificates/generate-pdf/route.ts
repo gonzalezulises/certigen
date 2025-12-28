@@ -184,6 +184,8 @@ function drawBorder(
   const padding = PADDINGS[border?.padding || 'normal'];
   const cornerStyle = border?.cornerStyle || 'simple';
 
+  console.log('drawBorder - style:', style, 'width:', width, 'padding:', padding, 'cornerStyle:', cornerStyle);
+
   if (style === 'none') return padding;
 
   const borderColor = colors.border;
@@ -682,6 +684,10 @@ export async function POST(request: NextRequest) {
 }
 
 async function generatePDF(data: CertificateData, config?: PDFConfig): Promise<Uint8Array> {
+  // Debug: log received config
+  console.log('PDF Generation - Border Config:', JSON.stringify(config?.border, null, 2));
+  console.log('PDF Generation - Layout Config:', JSON.stringify(config?.layout, null, 2));
+
   const pdfDoc = await PDFDocument.create();
 
   // Get page dimensions based on layout config
@@ -872,19 +878,10 @@ async function generatePDF(data: CertificateData, config?: PDFConfig): Promise<U
     });
   }
 
-  // Certificate number
-  if (content.showCertificateNumber) {
-    const certNumText = `N° ${data.certificate_number}`;
-    page.drawText(certNumText, {
-      x: margin + 30,
-      y: margin + 30,
-      size: 9,
-      font: helveticaFont,
-      color: rgb(colors.textMuted.r, colors.textMuted.g, colors.textMuted.b),
-    });
-  }
+  // QR Code - draw first to know its position
+  const qrPosition = config?.layout?.qrPosition || 'bottom-right';
+  const qrSize = QR_SIZES[config?.layout?.qrSize || 'medium'];
 
-  // QR Code
   if (content.showQR) {
     await drawQRCode(
       page,
@@ -897,6 +894,34 @@ async function generatePDF(data: CertificateData, config?: PDFConfig): Promise<U
       helveticaFont,
       colors.text
     );
+  }
+
+  // Certificate number - position opposite to QR to avoid overlap
+  if (content.showCertificateNumber) {
+    const certNumText = `N° ${data.certificate_number}`;
+    const certNumWidth = helveticaFont.widthOfTextAtSize(certNumText, 9);
+
+    let certNumX: number;
+
+    // Position certificate number on opposite side of QR
+    if (qrPosition === 'bottom-left') {
+      // QR is left, put number on right
+      certNumX = pageWidth - margin - certNumWidth - 30;
+    } else if (qrPosition === 'bottom-center') {
+      // QR is center, put number on left
+      certNumX = margin + 30;
+    } else {
+      // QR is right (default), put number on left
+      certNumX = margin + 30;
+    }
+
+    page.drawText(certNumText, {
+      x: certNumX,
+      y: margin + 30,
+      size: 9,
+      font: helveticaFont,
+      color: rgb(colors.textMuted.r, colors.textMuted.g, colors.textMuted.b),
+    });
   }
 
   return await pdfDoc.save();
