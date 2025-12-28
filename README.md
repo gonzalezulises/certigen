@@ -46,6 +46,7 @@
 - [Configuracion](#configuracion)
 - [API Reference](#api-reference)
 - [Despliegue](#despliegue)
+- [Configuracion Post-Despliegue](#configuracion-post-despliegue)
 - [Seguridad](#seguridad)
 - [Changelog](#changelog)
 
@@ -628,6 +629,52 @@ npm run dev      # Desarrollo con hot reload
 npm run build    # Build de produccion
 npm run start    # Iniciar servidor de produccion
 npm run lint     # Ejecutar ESLint
+```
+
+---
+
+## Configuracion Post-Despliegue
+
+### 1. Migracion Supabase (Requerido para revocacion)
+
+Ejecuta en **Supabase Dashboard > SQL Editor**:
+
+```sql
+-- Agregar columnas de revocacion
+ALTER TABLE certificates
+ADD COLUMN IF NOT EXISTS revoked_at TIMESTAMP WITH TIME ZONE,
+ADD COLUMN IF NOT EXISTS revocation_reason TEXT;
+
+-- Indice para busquedas rapidas
+CREATE INDEX IF NOT EXISTS idx_certificates_revoked_at
+ON certificates(revoked_at) WHERE revoked_at IS NOT NULL;
+```
+
+### 2. Upstash Redis (Recomendado para rate limiting)
+
+1. Crear cuenta en [https://console.upstash.com/](https://console.upstash.com/)
+2. **Create Database**:
+   - Nombre: `certigen-ratelimit`
+   - Region: `us-east-1` (cercana a Vercel)
+   - Tipo: Regional
+3. Copiar credenciales REST
+4. Agregar en **Vercel > Project Settings > Environment Variables**:
+
+| Variable | Valor |
+|----------|-------|
+| `UPSTASH_REDIS_REST_URL` | `https://xxx.upstash.io` |
+| `UPSTASH_REDIS_REST_TOKEN` | `AXxxxx...` |
+
+5. Redesplegar: `vercel --prod`
+
+### 3. Verificar Rate Limiting
+
+```bash
+# Debe retornar 429 despues de 10 requests en 1 minuto
+for i in {1..12}; do
+  curl -s -o /dev/null -w "%{http_code} " \
+    https://certigen-sandy.vercel.app/api/certificates/validate/CER-TEST
+done
 ```
 
 ---
