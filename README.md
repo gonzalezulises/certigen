@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![CertiGen Logo](https://img.shields.io/badge/CertiGen-v3.2.0-blue?style=for-the-badge)
+![CertiGen Logo](https://img.shields.io/badge/CertiGen-v3.3.0-blue?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-16.x-black?style=for-the-badge&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)
@@ -16,13 +16,15 @@
 
 ---
 
-## Novedades v3.2.0
+## Novedades v3.3.0
 
-- **Generacion PDF Server-Side** - Migrado a `pdf-lib` para compatibilidad con React 19
-- **Compatibilidad React 19** - Solucionado error "Cannot read properties of undefined (reading 'map')"
-- **Rendimiento mejorado** - PDFs generados en el servidor en ~400ms
-- **Codigo QR integrado** - QR de validacion embebido en cada certificado
-- **API REST robusta** - Endpoint `/api/certificates/generate-pdf` para integraciones
+- **Configuracion PDF Completa** - Todas las opciones del configurador ahora se aplican al PDF
+- **7 Estilos de Borde** - none, simple, double, certificate, ornate, geometric, gradient
+- **4 Estilos de Esquinas** - none, simple, ornate, flourish
+- **Branding Completo** - Logo, firmas (simple/dual), nombre de organizacion
+- **Layout Configurable** - Orientacion, tamano de pagina, posiciones de QR y firma
+- **OAuth Preparado** - Google y GitHub OAuth listo (requiere configuracion en Supabase)
+- **Node.js 20+** - Actualizado para usar Node.js 20 con nvm
 
 ---
 
@@ -337,7 +339,7 @@ Usuario                    Frontend                    API
 
 ### Prerrequisitos
 
-- Node.js 18.x o superior
+- Node.js 20.x o superior (recomendado usar nvm)
 - npm, yarn, o pnpm
 - Cuenta en Supabase
 - Cuenta en Resend (para emails)
@@ -447,8 +449,44 @@ Content-Type: application/json
   "config": {
     "colors": {
       "primary": "#1e3a5f",
+      "secondary": "#2c5282",
       "accent": "#d4af37",
-      "text": "#1a1a2e"
+      "background": "#ffffff",
+      "text": "#1a1a2e",
+      "textMuted": "#4a5568",
+      "border": "#1e3a5f"
+    },
+    "border": {
+      "style": "certificate",
+      "width": "medium",
+      "cornerStyle": "ornate",
+      "padding": "normal"
+    },
+    "layout": {
+      "orientation": "landscape",
+      "paperSize": "A4",
+      "qrPosition": "bottom-right",
+      "qrSize": "medium",
+      "signaturePosition": "center",
+      "showSignatureLine": true
+    },
+    "content": {
+      "showSubtitle": true,
+      "showHours": true,
+      "showGrade": true,
+      "showDate": true,
+      "showInstructor": true,
+      "showCertificateNumber": true,
+      "showQR": true,
+      "headerText": "CERTIFICADO DE",
+      "subtitleTemplate": "COMPLETACION"
+    },
+    "ornaments": {
+      "dividerStyle": "ornate"
+    },
+    "branding": {
+      "organizationName": "Mi Organizacion",
+      "signatureLabel": "Director Academico"
     }
   }
 }
@@ -600,6 +638,18 @@ npm run lint     # Ejecutar ESLint
 ---
 
 ## Changelog
+
+### v3.3.0 (2025-12-28)
+- **Configuracion PDF completa** - Todas las opciones del configurador visual se aplican al PDF generado
+- **Estilos de borde** - 7 estilos: none, simple, double, certificate, ornate, geometric, gradient
+- **Estilos de esquinas** - 4 estilos: none, simple, ornate, flourish
+- **Branding** - Soporte para logo, firmas (simple/dual), nombre de organizacion
+- **Layout configurable** - Orientacion, tamano de pagina (A4/Letter/Legal), posiciones
+- **Posicion QR** - 3 posiciones (bottom-left, bottom-center, bottom-right) y 3 tamanos
+- **Divisores** - 4 estilos: none, simple, ornate, dots
+- **OAuth preparado** - Componentes para Google/GitHub OAuth (requiere config en Supabase)
+- **Node.js 20** - Actualizado requisito minimo a Node.js 20.x
+- **Auto-descarga** - PDF se descarga automaticamente en modo anonimo
 
 ### v3.2.0 (2024-12-26)
 - **Generacion PDF server-side** - Migrado de `@react-pdf/renderer` a `pdf-lib` para compatibilidad con React 19
