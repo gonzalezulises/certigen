@@ -85,11 +85,11 @@ export default function GeneratePage() {
           templateId,
           config: {
             colors: config.colors,
-            content: {
-              headerText: config.content?.headerText,
-              subtitleTemplate: config.content?.subtitleTemplate,
-              footerText: config.content?.footerText,
-            },
+            content: config.content,
+            layout: config.layout,
+            border: config.border,
+            ornaments: config.ornaments,
+            branding: config.branding,
           },
         }),
       });

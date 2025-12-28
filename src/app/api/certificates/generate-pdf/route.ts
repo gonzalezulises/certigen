@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts, degrees, PDFPage, PDFFont } from 'pdf-lib';
 import QRCode from 'qrcode';
+
+// ============================================
+// INTERFACES
+// ============================================
 
 interface CertificateData {
   certificate_number: string;
@@ -13,27 +17,113 @@ interface CertificateData {
   grade?: number;
 }
 
+interface ColorConfig {
+  primary?: string;
+  secondary?: string;
+  accent?: string;
+  background?: string;
+  text?: string;
+  textMuted?: string;
+  border?: string;
+}
+
+interface ContentConfig {
+  headerText?: string;
+  subtitleTemplate?: string;
+  footerText?: string;
+  showSubtitle?: boolean;
+  showHours?: boolean;
+  showGrade?: boolean;
+  showDate?: boolean;
+  showInstructor?: boolean;
+  showCertificateNumber?: boolean;
+  showQR?: boolean;
+  showOrganizationName?: boolean;
+}
+
+interface LayoutConfig {
+  orientation?: 'landscape' | 'portrait';
+  paperSize?: 'A4' | 'LETTER' | 'LEGAL';
+  qrPosition?: 'bottom-left' | 'bottom-center' | 'bottom-right';
+  qrSize?: 'small' | 'medium' | 'large';
+  signaturePosition?: 'left' | 'center' | 'right' | 'dual';
+  showSignatureLine?: boolean;
+  logoPosition?: 'top-left' | 'top-center' | 'top-right';
+  logoSize?: 'small' | 'medium' | 'large';
+}
+
+interface BorderConfig {
+  style?: 'none' | 'simple' | 'double' | 'certificate' | 'ornate';
+  width?: 'thin' | 'medium' | 'thick';
+  cornerStyle?: 'none' | 'simple' | 'ornate' | 'flourish';
+  padding?: 'compact' | 'normal' | 'spacious';
+}
+
+interface OrnamentConfig {
+  dividerStyle?: 'none' | 'simple' | 'ornate' | 'dots' | 'gradient';
+}
+
+interface BrandingConfig {
+  logoUrl?: string;
+  signatureImage?: string;
+  signatureLabel?: string;
+  secondSignatureImage?: string;
+  secondSignatureLabel?: string;
+  organizationName?: string;
+  organizationSubtitle?: string;
+}
+
+interface PDFConfig {
+  colors?: ColorConfig;
+  content?: ContentConfig;
+  layout?: LayoutConfig;
+  border?: BorderConfig;
+  ornaments?: OrnamentConfig;
+  branding?: BrandingConfig;
+}
+
 interface GeneratePDFRequest {
   data: CertificateData;
   templateId?: string;
-  config?: {
-    colors?: {
-      primary?: string;
-      secondary?: string;
-      accent?: string;
-      background?: string;
-      text?: string;
-    };
-    content?: {
-      headerText?: string;
-      subtitleTemplate?: string;
-      footerText?: string;
-    };
-  };
+  config?: PDFConfig;
 }
 
-// Helper to convert hex to RGB
-function hexToRgb(hex: string): { r: number; g: number; b: number } {
+interface RGB {
+  r: number;
+  g: number;
+  b: number;
+}
+
+// ============================================
+// CONSTANTS
+// ============================================
+
+const PAGE_SIZES = {
+  A4: { width: 595.28, height: 841.89 },
+  LETTER: { width: 612, height: 792 },
+  LEGAL: { width: 612, height: 1008 },
+};
+
+const BORDER_WIDTHS = { thin: 1, medium: 2, thick: 4 };
+const QR_SIZES = { small: 80, medium: 120, large: 160 };
+const LOGO_SIZES = { small: 60, medium: 80, large: 100 };
+const PADDINGS = { compact: 30, normal: 50, spacious: 70 };
+
+const DEFAULT_COLORS = {
+  primary: { r: 0.10, g: 0.21, b: 0.36 },
+  secondary: { r: 0.17, g: 0.32, b: 0.51 },
+  accent: { r: 0.79, g: 0.64, b: 0.15 },
+  background: { r: 1, g: 1, b: 1 },
+  text: { r: 0.10, g: 0.13, b: 0.17 },
+  textMuted: { r: 0.29, g: 0.33, b: 0.42 },
+  border: { r: 0.10, g: 0.21, b: 0.36 },
+};
+
+// ============================================
+// HELPERS
+// ============================================
+
+function hexToRgb(hex: string): RGB {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
@@ -44,30 +134,273 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
     : { r: 0, g: 0, b: 0 };
 }
 
+function getColor(config: ColorConfig | undefined, key: keyof typeof DEFAULT_COLORS): RGB {
+  const colorValue = config?.[key as keyof ColorConfig];
+  if (colorValue) return hexToRgb(colorValue);
+  return DEFAULT_COLORS[key];
+}
+
+function getPageDimensions(layout?: LayoutConfig): { width: number; height: number } {
+  const paperSize = layout?.paperSize || 'A4';
+  const orientation = layout?.orientation || 'landscape';
+  const size = PAGE_SIZES[paperSize];
+
+  if (orientation === 'landscape') {
+    return { width: size.height, height: size.width };
+  }
+  return size;
+}
+
+// ============================================
+// DRAWING FUNCTIONS
+// ============================================
+
+function drawBackground(
+  page: PDFPage,
+  pageWidth: number,
+  pageHeight: number,
+  colors: { background: RGB }
+) {
+  if (colors.background.r !== 1 || colors.background.g !== 1 || colors.background.b !== 1) {
+    page.drawRectangle({
+      x: 0,
+      y: 0,
+      width: pageWidth,
+      height: pageHeight,
+      color: rgb(colors.background.r, colors.background.g, colors.background.b),
+    });
+  }
+}
+
+function drawBorder(
+  page: PDFPage,
+  pageWidth: number,
+  pageHeight: number,
+  border: BorderConfig | undefined,
+  colors: { primary: RGB; accent: RGB; border: RGB }
+) {
+  const style = border?.style || 'certificate';
+  const width = BORDER_WIDTHS[border?.width || 'medium'];
+  const padding = PADDINGS[border?.padding || 'normal'];
+  const cornerStyle = border?.cornerStyle || 'simple';
+
+  if (style === 'none') return padding;
+
+  const borderColor = colors.border;
+  const accentColor = colors.accent;
+
+  // Outer border
+  if (style === 'simple' || style === 'certificate' || style === 'double' || style === 'ornate') {
+    page.drawRectangle({
+      x: padding,
+      y: padding,
+      width: pageWidth - 2 * padding,
+      height: pageHeight - 2 * padding,
+      borderColor: rgb(borderColor.r, borderColor.g, borderColor.b),
+      borderWidth: width,
+    });
+  }
+
+  // Inner border for double/certificate/ornate
+  if (style === 'double' || style === 'certificate' || style === 'ornate') {
+    const innerOffset = style === 'ornate' ? 15 : 10;
+    page.drawRectangle({
+      x: padding + innerOffset,
+      y: padding + innerOffset,
+      width: pageWidth - 2 * padding - 2 * innerOffset,
+      height: pageHeight - 2 * padding - 2 * innerOffset,
+      borderColor: rgb(accentColor.r, accentColor.g, accentColor.b),
+      borderWidth: 1,
+    });
+  }
+
+  // Corner ornaments
+  if (cornerStyle !== 'none') {
+    const ornamentSize = cornerStyle === 'flourish' ? 25 : cornerStyle === 'ornate' ? 20 : 15;
+    const corners = [
+      { x: padding + 20, y: pageHeight - padding - 20 },
+      { x: pageWidth - padding - 20, y: pageHeight - padding - 20 },
+      { x: padding + 20, y: padding + 20 },
+      { x: pageWidth - padding - 20, y: padding + 20 },
+    ];
+
+    corners.forEach(corner => {
+      if (cornerStyle === 'simple') {
+        page.drawRectangle({
+          x: corner.x - ornamentSize / 2,
+          y: corner.y - ornamentSize / 2,
+          width: ornamentSize,
+          height: ornamentSize,
+          borderColor: rgb(accentColor.r, accentColor.g, accentColor.b),
+          borderWidth: 1,
+          rotate: degrees(45),
+        });
+      } else if (cornerStyle === 'ornate' || cornerStyle === 'flourish') {
+        // Double diamond for ornate/flourish
+        page.drawRectangle({
+          x: corner.x - ornamentSize / 2,
+          y: corner.y - ornamentSize / 2,
+          width: ornamentSize,
+          height: ornamentSize,
+          borderColor: rgb(accentColor.r, accentColor.g, accentColor.b),
+          borderWidth: 1,
+          rotate: degrees(45),
+        });
+        page.drawRectangle({
+          x: corner.x - ornamentSize / 3,
+          y: corner.y - ornamentSize / 3,
+          width: ornamentSize * 0.66,
+          height: ornamentSize * 0.66,
+          borderColor: rgb(borderColor.r, borderColor.g, borderColor.b),
+          borderWidth: 1,
+          rotate: degrees(45),
+        });
+      }
+    });
+  }
+
+  return padding;
+}
+
+function drawDivider(
+  page: PDFPage,
+  pageWidth: number,
+  y: number,
+  style: string,
+  colors: { accent: RGB }
+) {
+  const lineWidth = 200;
+  const centerX = pageWidth / 2;
+
+  if (style === 'none') return;
+
+  if (style === 'simple') {
+    page.drawLine({
+      start: { x: centerX - lineWidth / 2, y },
+      end: { x: centerX + lineWidth / 2, y },
+      thickness: 2,
+      color: rgb(colors.accent.r, colors.accent.g, colors.accent.b),
+    });
+  } else if (style === 'ornate') {
+    // Three lines with dots
+    page.drawLine({
+      start: { x: centerX - lineWidth / 2, y },
+      end: { x: centerX - 20, y },
+      thickness: 1,
+      color: rgb(colors.accent.r, colors.accent.g, colors.accent.b),
+    });
+    page.drawLine({
+      start: { x: centerX + 20, y },
+      end: { x: centerX + lineWidth / 2, y },
+      thickness: 1,
+      color: rgb(colors.accent.r, colors.accent.g, colors.accent.b),
+    });
+    // Center diamond
+    page.drawRectangle({
+      x: centerX - 5,
+      y: y - 5,
+      width: 10,
+      height: 10,
+      color: rgb(colors.accent.r, colors.accent.g, colors.accent.b),
+      rotate: degrees(45),
+    });
+  } else if (style === 'dots') {
+    const dotSpacing = 15;
+    const numDots = Math.floor(lineWidth / dotSpacing);
+    for (let i = 0; i < numDots; i++) {
+      const x = centerX - lineWidth / 2 + i * dotSpacing + dotSpacing / 2;
+      page.drawCircle({
+        x,
+        y,
+        size: 2,
+        color: rgb(colors.accent.r, colors.accent.g, colors.accent.b),
+      });
+    }
+  } else {
+    // Default to simple
+    page.drawLine({
+      start: { x: centerX - lineWidth / 2, y },
+      end: { x: centerX + lineWidth / 2, y },
+      thickness: 2,
+      color: rgb(colors.accent.r, colors.accent.g, colors.accent.b),
+    });
+  }
+}
+
+async function drawQRCode(
+  page: PDFPage,
+  pdfDoc: PDFDocument,
+  pageWidth: number,
+  pageHeight: number,
+  margin: number,
+  layout: LayoutConfig | undefined,
+  certificateNumber: string,
+  font: PDFFont,
+  textColor: RGB
+) {
+  const showQR = true; // Will be controlled by content config
+  if (!showQR) return;
+
+  try {
+    const validationUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/validate/${certificateNumber}`;
+    const qrDataUrl = await QRCode.toDataURL(validationUrl, {
+      width: 150,
+      margin: 1,
+      color: { dark: '#1a1a2e', light: '#ffffff' },
+    });
+
+    const qrBase64 = qrDataUrl.split(',')[1];
+    const qrBytes = Uint8Array.from(atob(qrBase64), c => c.charCodeAt(0));
+    const qrImage = await pdfDoc.embedPng(qrBytes);
+
+    const qrSize = QR_SIZES[layout?.qrSize || 'medium'];
+    const position = layout?.qrPosition || 'bottom-right';
+
+    let qrX: number;
+    const qrY = margin + 15;
+
+    if (position === 'bottom-left') {
+      qrX = margin + 20;
+    } else if (position === 'bottom-center') {
+      qrX = (pageWidth - qrSize) / 2;
+    } else {
+      qrX = pageWidth - margin - qrSize - 20;
+    }
+
+    page.drawImage(qrImage, { x: qrX, y: qrY, width: qrSize, height: qrSize });
+
+    const qrLabel = 'Escanea para verificar';
+    const qrLabelWidth = font.widthOfTextAtSize(qrLabel, 7);
+    page.drawText(qrLabel, {
+      x: qrX + qrSize / 2 - qrLabelWidth / 2,
+      y: qrY - 5,
+      size: 7,
+      font,
+      color: rgb(textColor.r, textColor.g, textColor.b),
+    });
+  } catch (error) {
+    console.error('QR code generation failed:', error);
+  }
+}
+
+// ============================================
+// MAIN EXPORT
+// ============================================
+
 export async function POST(request: NextRequest) {
   try {
     const body: GeneratePDFRequest = await request.json();
     const { data, config } = body;
 
     if (!data.student_name || !data.course_name || !data.certificate_number) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Generate PDF using pdf-lib
     const pdfBytes = await generatePDF(data, config);
-
-    // Return PDF as base64
     const base64 = Buffer.from(pdfBytes).toString('base64');
     const dataUrl = `data:application/pdf;base64,${base64}`;
 
-    return NextResponse.json({
-      success: true,
-      pdfDataUrl: dataUrl,
-      pdfBase64: base64,
-    });
+    return NextResponse.json({ success: true, pdfDataUrl: dataUrl, pdfBase64: base64 });
   } catch (error) {
     console.error('PDF generation error:', error);
     return NextResponse.json(
@@ -77,16 +410,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function generatePDF(
-  data: CertificateData,
-  config?: GeneratePDFRequest['config']
-): Promise<Uint8Array> {
-  // Create a new PDF document
+async function generatePDF(data: CertificateData, config?: PDFConfig): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.create();
 
-  // Add a page (A4 landscape: 841.89 x 595.28 points)
-  const pageWidth = 841.89;
-  const pageHeight = 595.28;
+  // Get page dimensions based on layout config
+  const { width: pageWidth, height: pageHeight } = getPageDimensions(config?.layout);
   const page = pdfDoc.addPage([pageWidth, pageHeight]);
 
   // Embed fonts
@@ -95,80 +423,59 @@ async function generatePDF(
   const timesRoman = await pdfDoc.embedFont(StandardFonts.TimesRoman);
   const timesItalic = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
 
-  // Colors
-  const primaryColor = config?.colors?.primary ? hexToRgb(config.colors.primary) : { r: 0.12, g: 0.23, b: 0.37 };
-  const accentColor = config?.colors?.accent ? hexToRgb(config.colors.accent) : { r: 0.83, g: 0.69, b: 0.22 };
-  const textColor = config?.colors?.text ? hexToRgb(config.colors.text) : { r: 0.1, g: 0.1, b: 0.18 };
+  // Get colors
+  const colors = {
+    primary: getColor(config?.colors, 'primary'),
+    secondary: getColor(config?.colors, 'secondary'),
+    accent: getColor(config?.colors, 'accent'),
+    background: getColor(config?.colors, 'background'),
+    text: getColor(config?.colors, 'text'),
+    textMuted: getColor(config?.colors, 'textMuted'),
+    border: getColor(config?.colors, 'border'),
+  };
 
-  const margin = 50;
+  // Content config with defaults
+  const content = {
+    showSubtitle: config?.content?.showSubtitle ?? true,
+    showHours: config?.content?.showHours ?? true,
+    showGrade: config?.content?.showGrade ?? true,
+    showDate: config?.content?.showDate ?? true,
+    showInstructor: config?.content?.showInstructor ?? true,
+    showCertificateNumber: config?.content?.showCertificateNumber ?? true,
+    showQR: config?.content?.showQR ?? true,
+    headerText: config?.content?.headerText || 'CERTIFICADO DE',
+    subtitleTemplate: config?.content?.subtitleTemplate || (data.certificate_type === 'completion' ? 'COMPLETACION' : 'PARTICIPACION'),
+  };
 
-  // Draw outer border
-  page.drawRectangle({
-    x: margin,
-    y: margin,
-    width: pageWidth - 2 * margin,
-    height: pageHeight - 2 * margin,
-    borderColor: rgb(primaryColor.r, primaryColor.g, primaryColor.b),
-    borderWidth: 3,
-  });
+  // Draw background
+  drawBackground(page, pageWidth, pageHeight, colors);
 
-  // Draw inner border
-  page.drawRectangle({
-    x: margin + 10,
-    y: margin + 10,
-    width: pageWidth - 2 * margin - 20,
-    height: pageHeight - 2 * margin - 20,
-    borderColor: rgb(accentColor.r, accentColor.g, accentColor.b),
-    borderWidth: 1,
-  });
+  // Draw border and get margin
+  const margin = drawBorder(page, pageWidth, pageHeight, config?.border, colors);
 
-  // Draw corner ornaments
-  const ornamentSize = 20;
-  const corners = [
-    { x: margin + 20, y: pageHeight - margin - 20 }, // top-left
-    { x: pageWidth - margin - 20, y: pageHeight - margin - 20 }, // top-right
-    { x: margin + 20, y: margin + 20 }, // bottom-left
-    { x: pageWidth - margin - 20, y: margin + 20 }, // bottom-right
-  ];
-
-  corners.forEach(corner => {
-    page.drawRectangle({
-      x: corner.x - ornamentSize / 2,
-      y: corner.y - ornamentSize / 2,
-      width: ornamentSize,
-      height: ornamentSize,
-      borderColor: rgb(accentColor.r, accentColor.g, accentColor.b),
-      borderWidth: 1,
-      rotate: degrees(45),
-    });
-  });
-
-  // Title: Use custom headerText or default
-  let currentY = pageHeight - 130;
-  const defaultTitle = 'CERTIFICADO DE';
-  const defaultSubtitle = data.certificate_type === 'completion' ? 'COMPLETACION' : 'PARTICIPACION';
-
-  const titleText = config?.content?.headerText || defaultTitle;
-  const titleWidth = helveticaBold.widthOfTextAtSize(titleText, 28);
-  page.drawText(titleText, {
+  // Title
+  let currentY = pageHeight - margin - 80;
+  const titleWidth = helveticaBold.widthOfTextAtSize(content.headerText, 28);
+  page.drawText(content.headerText, {
     x: (pageWidth - titleWidth) / 2,
     y: currentY,
     size: 28,
     font: helveticaBold,
-    color: rgb(primaryColor.r, primaryColor.g, primaryColor.b),
+    color: rgb(colors.primary.r, colors.primary.g, colors.primary.b),
   });
 
-  // Certificate type: Use custom subtitleTemplate or default
-  currentY -= 35;
-  const typeText = config?.content?.subtitleTemplate || defaultSubtitle;
-  const typeWidth = helveticaBold.widthOfTextAtSize(typeText, 24);
-  page.drawText(typeText, {
-    x: (pageWidth - typeWidth) / 2,
-    y: currentY,
-    size: 24,
-    font: helveticaBold,
-    color: rgb(primaryColor.r, primaryColor.g, primaryColor.b),
-  });
+  // Subtitle
+  if (content.showSubtitle) {
+    currentY -= 35;
+    const subtitleWidth = helveticaBold.widthOfTextAtSize(content.subtitleTemplate, 24);
+    page.drawText(content.subtitleTemplate, {
+      x: (pageWidth - subtitleWidth) / 2,
+      y: currentY,
+      size: 24,
+      font: helveticaBold,
+      color: rgb(colors.primary.r, colors.primary.g, colors.primary.b),
+    });
+  }
 
   // "Se certifica que"
   currentY -= 50;
@@ -179,83 +486,83 @@ async function generatePDF(
     y: currentY,
     size: 14,
     font: timesItalic,
-    color: rgb(textColor.r, textColor.g, textColor.b),
+    color: rgb(colors.text.r, colors.text.g, colors.text.b),
   });
 
   // Student name
   currentY -= 45;
-  const nameSize = 32;
-  const nameWidth = timesRoman.widthOfTextAtSize(data.student_name, nameSize);
+  const nameWidth = timesRoman.widthOfTextAtSize(data.student_name, 32);
   page.drawText(data.student_name, {
     x: (pageWidth - nameWidth) / 2,
     y: currentY,
-    size: nameSize,
+    size: 32,
     font: timesRoman,
-    color: rgb(primaryColor.r, primaryColor.g, primaryColor.b),
+    color: rgb(colors.primary.r, colors.primary.g, colors.primary.b),
   });
 
-  // Divider line
+  // Divider
   currentY -= 30;
-  const lineWidth = 200;
-  page.drawLine({
-    start: { x: (pageWidth - lineWidth) / 2, y: currentY },
-    end: { x: (pageWidth + lineWidth) / 2, y: currentY },
-    thickness: 2,
-    color: rgb(accentColor.r, accentColor.g, accentColor.b),
-  });
+  drawDivider(page, pageWidth, currentY, config?.ornaments?.dividerStyle || 'simple', colors);
 
   // Course name
   currentY -= 35;
-  const courseSize = 16;
-  const courseWidth = helveticaFont.widthOfTextAtSize(data.course_name, courseSize);
+  const courseWidth = helveticaFont.widthOfTextAtSize(data.course_name, 16);
   page.drawText(data.course_name, {
     x: (pageWidth - courseWidth) / 2,
     y: currentY,
-    size: courseSize,
+    size: 16,
     font: helveticaFont,
-    color: rgb(textColor.r, textColor.g, textColor.b),
+    color: rgb(colors.text.r, colors.text.g, colors.text.b),
   });
 
-  // Details row (date, hours, grade)
+  // Details row (conditionally show date, hours, grade)
   currentY -= 40;
   const detailsText: string[] = [];
 
-  // Format date
-  const issueDate = new Date(data.issue_date);
-  const formattedDate = issueDate.toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-  detailsText.push(formattedDate);
+  if (content.showDate) {
+    const issueDate = new Date(data.issue_date);
+    const formattedDate = issueDate.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    detailsText.push(formattedDate);
+  }
 
-  if (data.hours) {
+  if (content.showHours && data.hours) {
     detailsText.push(`${data.hours} horas`);
   }
-  if (data.grade) {
+
+  if (content.showGrade && data.grade) {
     detailsText.push(`${data.grade}%`);
   }
 
-  const detailsString = detailsText.join('     •     ');
-  const detailsWidth = helveticaFont.widthOfTextAtSize(detailsString, 11);
-  page.drawText(detailsString, {
-    x: (pageWidth - detailsWidth) / 2,
-    y: currentY,
-    size: 11,
-    font: helveticaFont,
-    color: rgb(textColor.r, textColor.g, textColor.b),
-  });
+  if (detailsText.length > 0) {
+    const detailsString = detailsText.join('     •     ');
+    const detailsWidth = helveticaFont.widthOfTextAtSize(detailsString, 11);
+    page.drawText(detailsString, {
+      x: (pageWidth - detailsWidth) / 2,
+      y: currentY,
+      size: 11,
+      font: helveticaFont,
+      color: rgb(colors.textMuted.r, colors.textMuted.g, colors.textMuted.b),
+    });
+  }
 
   // Instructor signature
-  if (data.instructor_name) {
+  if (content.showInstructor && data.instructor_name) {
+    const showLine = config?.layout?.showSignatureLine ?? true;
     currentY -= 50;
-    const sigLineWidth = 150;
-    page.drawLine({
-      start: { x: (pageWidth - sigLineWidth) / 2, y: currentY },
-      end: { x: (pageWidth + sigLineWidth) / 2, y: currentY },
-      thickness: 1,
-      color: rgb(textColor.r, textColor.g, textColor.b),
-    });
+
+    if (showLine) {
+      const sigLineWidth = 150;
+      page.drawLine({
+        start: { x: (pageWidth - sigLineWidth) / 2, y: currentY },
+        end: { x: (pageWidth + sigLineWidth) / 2, y: currentY },
+        thickness: 1,
+        color: rgb(colors.text.r, colors.text.g, colors.text.b),
+      });
+    }
 
     currentY -= 15;
     const instructorWidth = helveticaFont.widthOfTextAtSize(data.instructor_name, 11);
@@ -264,62 +571,36 @@ async function generatePDF(
       y: currentY,
       size: 11,
       font: helveticaFont,
-      color: rgb(textColor.r, textColor.g, textColor.b),
+      color: rgb(colors.text.r, colors.text.g, colors.text.b),
     });
   }
 
-  // Certificate number (bottom left)
-  const certNumText = `N° ${data.certificate_number}`;
-  page.drawText(certNumText, {
-    x: margin + 30,
-    y: margin + 30,
-    size: 9,
-    font: helveticaFont,
-    color: rgb(textColor.r, textColor.g, textColor.b),
-  });
-
-  // Generate QR code and embed it
-  try {
-    const validationUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/validate/${data.certificate_number}`;
-    const qrDataUrl = await QRCode.toDataURL(validationUrl, {
-      width: 100,
-      margin: 1,
-      color: {
-        dark: '#1a1a2e',
-        light: '#ffffff',
-      },
-    });
-
-    // Convert data URL to bytes
-    const qrBase64 = qrDataUrl.split(',')[1];
-    const qrBytes = Uint8Array.from(atob(qrBase64), c => c.charCodeAt(0));
-    const qrImage = await pdfDoc.embedPng(qrBytes);
-
-    // Draw QR code (bottom right) - doubled size for better visibility
-    const qrSize = 120;
-    page.drawImage(qrImage, {
-      x: pageWidth - margin - qrSize - 20,
-      y: margin + 15,
-      width: qrSize,
-      height: qrSize,
-    });
-
-    // QR label
-    const qrLabel = 'Escanea para verificar';
-    const qrLabelWidth = helveticaFont.widthOfTextAtSize(qrLabel, 7);
-    page.drawText(qrLabel, {
-      x: pageWidth - margin - qrSize / 2 - qrLabelWidth / 2 - 20,
-      y: margin + 10,
-      size: 7,
+  // Certificate number
+  if (content.showCertificateNumber) {
+    const certNumText = `N° ${data.certificate_number}`;
+    page.drawText(certNumText, {
+      x: margin + 30,
+      y: margin + 30,
+      size: 9,
       font: helveticaFont,
-      color: rgb(textColor.r, textColor.g, textColor.b),
+      color: rgb(colors.textMuted.r, colors.textMuted.g, colors.textMuted.b),
     });
-  } catch (qrError) {
-    console.error('QR code generation failed:', qrError);
-    // Continue without QR code
   }
 
-  // Serialize the PDF to bytes
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  // QR Code
+  if (content.showQR) {
+    await drawQRCode(
+      page,
+      pdfDoc,
+      pageWidth,
+      pageHeight,
+      margin,
+      config?.layout,
+      data.certificate_number,
+      helveticaFont,
+      colors.text
+    );
+  }
+
+  return await pdfDoc.save();
 }
