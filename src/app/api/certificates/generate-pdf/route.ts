@@ -185,8 +185,6 @@ function drawBorder(
   const padding = PADDINGS[border?.padding || 'normal'];
   const cornerStyle = border?.cornerStyle || 'simple';
 
-  console.log('drawBorder - style:', style, 'width:', width, 'padding:', padding, 'cornerStyle:', cornerStyle);
-
   if (style === 'none') return padding;
 
   const borderColor = colors.border;
@@ -721,10 +719,6 @@ export async function POST(request: NextRequest) {
 }
 
 async function generatePDF(data: CertificateData, config?: PDFConfig): Promise<Uint8Array> {
-  // Debug: log received config
-  console.log('PDF Generation - Border Config:', JSON.stringify(config?.border, null, 2));
-  console.log('PDF Generation - Layout Config:', JSON.stringify(config?.layout, null, 2));
-
   const pdfDoc = await PDFDocument.create();
 
   // Get page dimensions based on layout config
