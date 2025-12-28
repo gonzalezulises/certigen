@@ -338,9 +338,6 @@ async function drawQRCode(
   font: PDFFont,
   textColor: RGB
 ) {
-  const showQR = true; // Will be controlled by content config
-  if (!showQR) return;
-
   try {
     const validationUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/validate/${certificateNumber}`;
     const qrDataUrl = await QRCode.toDataURL(validationUrl, {
@@ -380,6 +377,280 @@ async function drawQRCode(
     });
   } catch (error) {
     console.error('QR code generation failed:', error);
+  }
+}
+
+async function embedImage(
+  pdfDoc: PDFDocument,
+  imageData: string
+): Promise<{ image: Awaited<ReturnType<typeof pdfDoc.embedPng>>; type: 'png' | 'jpg' } | null> {
+  try {
+    // Handle data URL format
+    let base64Data = imageData;
+    let isPng = true;
+
+    if (imageData.startsWith('data:')) {
+      const match = imageData.match(/^data:image\/(png|jpe?g);base64,(.+)$/i);
+      if (!match) return null;
+      isPng = match[1].toLowerCase() === 'png';
+      base64Data = match[2];
+    }
+
+    const bytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+    if (isPng) {
+      const image = await pdfDoc.embedPng(bytes);
+      return { image, type: 'png' };
+    } else {
+      const image = await pdfDoc.embedJpg(bytes);
+      return { image, type: 'jpg' };
+    }
+  } catch (error) {
+    console.error('Image embedding failed:', error);
+    return null;
+  }
+}
+
+async function drawLogo(
+  page: PDFPage,
+  pdfDoc: PDFDocument,
+  pageWidth: number,
+  pageHeight: number,
+  margin: number,
+  layout: LayoutConfig | undefined,
+  branding: BrandingConfig | undefined
+) {
+  if (!branding?.logoUrl) return;
+
+  const embedded = await embedImage(pdfDoc, branding.logoUrl);
+  if (!embedded) return;
+
+  const { image } = embedded;
+  const logoSizeValue = LOGO_SIZES[layout?.logoSize || 'medium'];
+
+  // Calculate dimensions maintaining aspect ratio
+  const aspectRatio = image.width / image.height;
+  let logoWidth = logoSizeValue;
+  let logoHeight = logoSizeValue / aspectRatio;
+
+  if (logoHeight > logoSizeValue) {
+    logoHeight = logoSizeValue;
+    logoWidth = logoSizeValue * aspectRatio;
+  }
+
+  const position = layout?.logoPosition || 'top-center';
+  let logoX: number;
+  let logoY: number;
+
+  // Calculate X position
+  if (position.includes('left')) {
+    logoX = margin + 20;
+  } else if (position.includes('right')) {
+    logoX = pageWidth - margin - logoWidth - 20;
+  } else {
+    logoX = (pageWidth - logoWidth) / 2;
+  }
+
+  // Calculate Y position
+  if (position.includes('top')) {
+    logoY = pageHeight - margin - logoHeight - 20;
+  } else {
+    logoY = margin + 20;
+  }
+
+  page.drawImage(image, {
+    x: logoX,
+    y: logoY,
+    width: logoWidth,
+    height: logoHeight,
+  });
+}
+
+async function drawSignatures(
+  page: PDFPage,
+  pdfDoc: PDFDocument,
+  pageWidth: number,
+  margin: number,
+  currentY: number,
+  layout: LayoutConfig | undefined,
+  branding: BrandingConfig | undefined,
+  font: PDFFont,
+  textColor: RGB
+): Promise<number> {
+  const position = layout?.signaturePosition || 'center';
+  const showLine = layout?.showSignatureLine ?? true;
+  const sigLineWidth = 150;
+  const sigImageHeight = 50;
+
+  let newY = currentY;
+
+  if (position === 'dual') {
+    // Dual signatures - left and right
+    const leftX = pageWidth / 4;
+    const rightX = (pageWidth * 3) / 4;
+
+    // Left signature
+    if (branding?.signatureImage) {
+      const embedded = await embedImage(pdfDoc, branding.signatureImage);
+      if (embedded) {
+        const { image } = embedded;
+        const aspectRatio = image.width / image.height;
+        const sigWidth = sigImageHeight * aspectRatio;
+        page.drawImage(image, {
+          x: leftX - sigWidth / 2,
+          y: newY,
+          width: sigWidth,
+          height: sigImageHeight,
+        });
+      }
+    }
+
+    // Right signature
+    if (branding?.secondSignatureImage) {
+      const embedded = await embedImage(pdfDoc, branding.secondSignatureImage);
+      if (embedded) {
+        const { image } = embedded;
+        const aspectRatio = image.width / image.height;
+        const sigWidth = sigImageHeight * aspectRatio;
+        page.drawImage(image, {
+          x: rightX - sigWidth / 2,
+          y: newY,
+          width: sigWidth,
+          height: sigImageHeight,
+        });
+      }
+    }
+
+    newY -= sigImageHeight + 10;
+
+    // Signature lines
+    if (showLine) {
+      page.drawLine({
+        start: { x: leftX - sigLineWidth / 2, y: newY },
+        end: { x: leftX + sigLineWidth / 2, y: newY },
+        thickness: 1,
+        color: rgb(textColor.r, textColor.g, textColor.b),
+      });
+      page.drawLine({
+        start: { x: rightX - sigLineWidth / 2, y: newY },
+        end: { x: rightX + sigLineWidth / 2, y: newY },
+        thickness: 1,
+        color: rgb(textColor.r, textColor.g, textColor.b),
+      });
+    }
+
+    newY -= 15;
+
+    // Signature labels
+    if (branding?.signatureLabel) {
+      const labelWidth = font.widthOfTextAtSize(branding.signatureLabel, 10);
+      page.drawText(branding.signatureLabel, {
+        x: leftX - labelWidth / 2,
+        y: newY,
+        size: 10,
+        font,
+        color: rgb(textColor.r, textColor.g, textColor.b),
+      });
+    }
+
+    if (branding?.secondSignatureLabel) {
+      const labelWidth = font.widthOfTextAtSize(branding.secondSignatureLabel, 10);
+      page.drawText(branding.secondSignatureLabel, {
+        x: rightX - labelWidth / 2,
+        y: newY,
+        size: 10,
+        font,
+        color: rgb(textColor.r, textColor.g, textColor.b),
+      });
+    }
+  } else {
+    // Single signature - left, center, or right
+    let sigX: number;
+    if (position === 'left') {
+      sigX = pageWidth / 4;
+    } else if (position === 'right') {
+      sigX = (pageWidth * 3) / 4;
+    } else {
+      sigX = pageWidth / 2;
+    }
+
+    // Signature image
+    if (branding?.signatureImage) {
+      const embedded = await embedImage(pdfDoc, branding.signatureImage);
+      if (embedded) {
+        const { image } = embedded;
+        const aspectRatio = image.width / image.height;
+        const sigWidth = sigImageHeight * aspectRatio;
+        page.drawImage(image, {
+          x: sigX - sigWidth / 2,
+          y: newY,
+          width: sigWidth,
+          height: sigImageHeight,
+        });
+        newY -= sigImageHeight + 10;
+      }
+    }
+
+    // Signature line
+    if (showLine) {
+      page.drawLine({
+        start: { x: sigX - sigLineWidth / 2, y: newY },
+        end: { x: sigX + sigLineWidth / 2, y: newY },
+        thickness: 1,
+        color: rgb(textColor.r, textColor.g, textColor.b),
+      });
+      newY -= 15;
+    }
+
+    // Signature label
+    if (branding?.signatureLabel) {
+      const labelWidth = font.widthOfTextAtSize(branding.signatureLabel, 10);
+      page.drawText(branding.signatureLabel, {
+        x: sigX - labelWidth / 2,
+        y: newY,
+        size: 10,
+        font,
+        color: rgb(textColor.r, textColor.g, textColor.b),
+      });
+    }
+  }
+
+  return newY - 20;
+}
+
+function drawOrganizationName(
+  page: PDFPage,
+  pageWidth: number,
+  pageHeight: number,
+  margin: number,
+  branding: BrandingConfig | undefined,
+  content: { showOrganizationName: boolean },
+  font: PDFFont,
+  boldFont: PDFFont,
+  colors: { primary: RGB; textMuted: RGB }
+) {
+  if (!content.showOrganizationName || !branding?.organizationName) return;
+
+  const orgY = pageHeight - margin - 30;
+  const orgNameWidth = boldFont.widthOfTextAtSize(branding.organizationName, 14);
+
+  page.drawText(branding.organizationName, {
+    x: (pageWidth - orgNameWidth) / 2,
+    y: orgY,
+    size: 14,
+    font: boldFont,
+    color: rgb(colors.primary.r, colors.primary.g, colors.primary.b),
+  });
+
+  if (branding.organizationSubtitle) {
+    const subtitleWidth = font.widthOfTextAtSize(branding.organizationSubtitle, 10);
+    page.drawText(branding.organizationSubtitle, {
+      x: (pageWidth - subtitleWidth) / 2,
+      y: orgY - 15,
+      size: 10,
+      font,
+      color: rgb(colors.textMuted.r, colors.textMuted.g, colors.textMuted.b),
+    });
   }
 }
 
@@ -443,6 +714,7 @@ async function generatePDF(data: CertificateData, config?: PDFConfig): Promise<U
     showInstructor: config?.content?.showInstructor ?? true,
     showCertificateNumber: config?.content?.showCertificateNumber ?? true,
     showQR: config?.content?.showQR ?? true,
+    showOrganizationName: config?.content?.showOrganizationName ?? true,
     headerText: config?.content?.headerText || 'CERTIFICADO DE',
     subtitleTemplate: config?.content?.subtitleTemplate || (data.certificate_type === 'completion' ? 'COMPLETACION' : 'PARTICIPACION'),
   };
@@ -453,8 +725,16 @@ async function generatePDF(data: CertificateData, config?: PDFConfig): Promise<U
   // Draw border and get margin
   const margin = drawBorder(page, pageWidth, pageHeight, config?.border, colors);
 
-  // Title
-  let currentY = pageHeight - margin - 80;
+  // Draw logo
+  await drawLogo(page, pdfDoc, pageWidth, pageHeight, margin, config?.layout, config?.branding);
+
+  // Draw organization name
+  drawOrganizationName(page, pageWidth, pageHeight, margin, config?.branding, content, helveticaFont, helveticaBold, colors);
+
+  // Title - adjust Y if organization name is shown
+  const hasOrgName = content.showOrganizationName && config?.branding?.organizationName;
+  const hasOrgSubtitle = hasOrgName && config?.branding?.organizationSubtitle;
+  let currentY = pageHeight - margin - (hasOrgSubtitle ? 100 : hasOrgName ? 85 : 80);
   const titleWidth = helveticaBold.widthOfTextAtSize(content.headerText, 28);
   page.drawText(content.headerText, {
     x: (pageWidth - titleWidth) / 2,
@@ -549,10 +829,27 @@ async function generatePDF(data: CertificateData, config?: PDFConfig): Promise<U
     });
   }
 
-  // Instructor signature
-  if (content.showInstructor && data.instructor_name) {
+  // Signatures section - use branding signatures if available, otherwise use instructor name
+  currentY -= 50;
+
+  const hasBrandingSignature = config?.branding?.signatureImage || config?.branding?.signatureLabel;
+
+  if (hasBrandingSignature) {
+    // Use branding signature(s) with image support
+    currentY = await drawSignatures(
+      page,
+      pdfDoc,
+      pageWidth,
+      margin,
+      currentY,
+      config?.layout,
+      config?.branding,
+      helveticaFont,
+      colors.text
+    );
+  } else if (content.showInstructor && data.instructor_name) {
+    // Fallback to instructor name without image
     const showLine = config?.layout?.showSignatureLine ?? true;
-    currentY -= 50;
 
     if (showLine) {
       const sigLineWidth = 150;
