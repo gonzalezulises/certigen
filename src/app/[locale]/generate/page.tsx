@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { TemplateConfigurator } from '@/components/configurator/TemplateConfigurator';
@@ -24,6 +24,7 @@ export default function GeneratePage() {
   const [error, setError] = useState<string | null>(null);
   const [showConfigurator, setShowConfigurator] = useState(false);
   const [savedConfig, setSavedConfig] = useState<{ templateId: TemplateId; config: TemplateConfig } | null>(null);
+  const hasAutoDownloaded = useRef(false);
 
   // Certificate data form
   const [certificateData, setCertificateData] = useState<Partial<CertificateData>>({
@@ -175,6 +176,25 @@ export default function GeneratePage() {
       setIsSendingEmail(false);
     }
   };
+
+  // Auto-download PDF for anonymous users
+  useEffect(() => {
+    if (generatedCertificate && !isPersisted && !hasAutoDownloaded.current) {
+      hasAutoDownloaded.current = true;
+      // Small delay to let the user see the success message
+      const timer = setTimeout(() => {
+        handleDownloadPDF();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [generatedCertificate, isPersisted, handleDownloadPDF]);
+
+  // Reset auto-download flag when generating a new certificate
+  useEffect(() => {
+    if (!generatedCertificate) {
+      hasAutoDownloaded.current = false;
+    }
+  }, [generatedCertificate]);
 
   // If showing the configurator, render it full-screen
   if (showConfigurator) {
