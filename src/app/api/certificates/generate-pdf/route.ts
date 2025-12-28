@@ -180,10 +180,15 @@ function drawBorder(
   border: BorderConfig | undefined,
   colors: { primary: RGB; accent: RGB; border: RGB }
 ) {
+  // Debug logging
+  console.log('drawBorder input:', JSON.stringify(border));
+
   const style = border?.style || 'certificate';
   const width = BORDER_WIDTHS[border?.width || 'medium'];
   const padding = PADDINGS[border?.padding || 'normal'];
   const cornerStyle = border?.cornerStyle || 'simple';
+
+  console.log('drawBorder resolved:', { style, width, padding, cornerStyle });
 
   if (style === 'none') return padding;
 
