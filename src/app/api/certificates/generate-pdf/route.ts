@@ -24,6 +24,11 @@ interface GeneratePDFRequest {
       background?: string;
       text?: string;
     };
+    content?: {
+      headerText?: string;
+      subtitleTemplate?: string;
+      footerText?: string;
+    };
   };
 }
 
@@ -138,9 +143,12 @@ async function generatePDF(
     });
   });
 
-  // Title: CERTIFICADO DE
+  // Title: Use custom headerText or default
   let currentY = pageHeight - 130;
-  const titleText = 'CERTIFICADO DE';
+  const defaultTitle = 'CERTIFICADO DE';
+  const defaultSubtitle = data.certificate_type === 'completion' ? 'COMPLETACION' : 'PARTICIPACION';
+
+  const titleText = config?.content?.headerText || defaultTitle;
   const titleWidth = helveticaBold.widthOfTextAtSize(titleText, 28);
   page.drawText(titleText, {
     x: (pageWidth - titleWidth) / 2,
@@ -150,9 +158,9 @@ async function generatePDF(
     color: rgb(primaryColor.r, primaryColor.g, primaryColor.b),
   });
 
-  // Certificate type
+  // Certificate type: Use custom subtitleTemplate or default
   currentY -= 35;
-  const typeText = data.certificate_type === 'completion' ? 'COMPLETACION' : 'PARTICIPACION';
+  const typeText = config?.content?.subtitleTemplate || defaultSubtitle;
   const typeWidth = helveticaBold.widthOfTextAtSize(typeText, 24);
   page.drawText(typeText, {
     x: (pageWidth - typeWidth) / 2,
