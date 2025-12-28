@@ -53,10 +53,11 @@ interface LayoutConfig {
 }
 
 interface BorderConfig {
-  style?: 'none' | 'simple' | 'double' | 'certificate' | 'ornate';
+  style?: 'none' | 'simple' | 'double' | 'certificate' | 'ornate' | 'geometric' | 'gradient';
   width?: 'thin' | 'medium' | 'thick';
   cornerStyle?: 'none' | 'simple' | 'ornate' | 'flourish';
   padding?: 'compact' | 'normal' | 'spacious';
+  radius?: 'none' | 'small' | 'medium' | 'large';
 }
 
 interface OrnamentConfig {
@@ -191,21 +192,19 @@ function drawBorder(
   const borderColor = colors.border;
   const accentColor = colors.accent;
 
-  // Outer border
-  if (style === 'simple' || style === 'certificate' || style === 'double' || style === 'ornate') {
-    page.drawRectangle({
-      x: padding,
-      y: padding,
-      width: pageWidth - 2 * padding,
-      height: pageHeight - 2 * padding,
-      borderColor: rgb(borderColor.r, borderColor.g, borderColor.b),
-      borderWidth: width,
-    });
-  }
+  // Outer border - applies to all styles except 'none'
+  page.drawRectangle({
+    x: padding,
+    y: padding,
+    width: pageWidth - 2 * padding,
+    height: pageHeight - 2 * padding,
+    borderColor: rgb(borderColor.r, borderColor.g, borderColor.b),
+    borderWidth: width,
+  });
 
-  // Inner border for double/certificate/ornate
-  if (style === 'double' || style === 'certificate' || style === 'ornate') {
-    const innerOffset = style === 'ornate' ? 15 : 10;
+  // Inner border for double/certificate/ornate/geometric
+  if (style === 'double' || style === 'certificate' || style === 'ornate' || style === 'geometric') {
+    const innerOffset = style === 'ornate' ? 15 : style === 'geometric' ? 12 : 10;
     page.drawRectangle({
       x: padding + innerOffset,
       y: padding + innerOffset,
@@ -214,6 +213,44 @@ function drawBorder(
       borderColor: rgb(accentColor.r, accentColor.g, accentColor.b),
       borderWidth: 1,
     });
+  }
+
+  // Additional decorations for geometric style
+  if (style === 'geometric') {
+    // Draw corner squares
+    const squareSize = 20;
+    const corners = [
+      { x: padding, y: pageHeight - padding - squareSize },
+      { x: pageWidth - padding - squareSize, y: pageHeight - padding - squareSize },
+      { x: padding, y: padding },
+      { x: pageWidth - padding - squareSize, y: padding },
+    ];
+    corners.forEach(corner => {
+      page.drawRectangle({
+        x: corner.x,
+        y: corner.y,
+        width: squareSize,
+        height: squareSize,
+        borderColor: rgb(accentColor.r, accentColor.g, accentColor.b),
+        borderWidth: 1,
+      });
+    });
+  }
+
+  // Gradient style - multiple nested rectangles with decreasing opacity
+  if (style === 'gradient') {
+    for (let i = 1; i <= 3; i++) {
+      const offset = padding + i * 5;
+      const opacity = 1 - i * 0.25;
+      page.drawRectangle({
+        x: offset,
+        y: offset,
+        width: pageWidth - 2 * offset,
+        height: pageHeight - 2 * offset,
+        borderColor: rgb(borderColor.r * opacity, borderColor.g * opacity, borderColor.b * opacity),
+        borderWidth: 1,
+      });
+    }
   }
 
   // Corner ornaments
