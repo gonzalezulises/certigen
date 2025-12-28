@@ -180,15 +180,10 @@ function drawBorder(
   border: BorderConfig | undefined,
   colors: { primary: RGB; accent: RGB; border: RGB }
 ) {
-  // Debug logging
-  console.log('drawBorder input:', JSON.stringify(border));
-
   const style = border?.style || 'certificate';
   const width = BORDER_WIDTHS[border?.width || 'medium'];
   const padding = PADDINGS[border?.padding || 'normal'];
   const cornerStyle = border?.cornerStyle || 'simple';
-
-  console.log('drawBorder resolved:', { style, width, padding, cornerStyle });
 
   if (style === 'none') return padding;
 
@@ -704,12 +699,6 @@ export async function POST(request: NextRequest) {
   try {
     const body: GeneratePDFRequest = await request.json();
     const { data, config } = body;
-
-    // Debug: log what config is received
-    console.log('=== PDF GENERATION REQUEST ===');
-    console.log('Border config received:', JSON.stringify(config?.border));
-    console.log('Layout config received:', JSON.stringify(config?.layout));
-    console.log('Full config keys:', config ? Object.keys(config) : 'no config');
 
     if (!data.student_name || !data.course_name || !data.certificate_number) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
