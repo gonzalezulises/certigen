@@ -1,21 +1,30 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { randomBytes } from 'crypto';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 /**
- * Generate a unique certificate number
- * Format: CER-{YYYYMMDD}-{RANDOM6DIGITS}
- * Example: CER-20240115-847362
+ * Generate a unique certificate number with high entropy
+ * Format: CER-{YYYYMMDD}-{RANDOM10CHARS}
+ * Example: CER-20251228-A7X9K2M4NP
+ *
+ * Uses crypto.randomBytes for ~60 bits of entropy (vs ~20 bits before)
+ * This makes certificate numbers practically impossible to enumerate
  */
 export function generateCertificateNumber(): string {
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const day = String(now.getDate()).padStart(2, '0');
-  const random = Math.floor(100000 + Math.random() * 900000);
+
+  // Generate 10 characters from base64url (60 bits of entropy)
+  const random = randomBytes(8)
+    .toString('base64url')
+    .slice(0, 10)
+    .toUpperCase();
 
   return `CER-${year}${month}${day}-${random}`;
 }
@@ -54,10 +63,17 @@ export function getValidationUrl(certificateNumber: string): string {
 
 /**
  * Validate certificate number format
+ * Accepts both legacy (6 digits) and new format (10 alphanumeric)
+ * Legacy: CER-YYYYMMDD-NNNNNN (e.g., CER-20240115-847362)
+ * New: CER-YYYYMMDD-XXXXXXXXXX (e.g., CER-20251228-A7X9K2M4NP)
  */
 export function isValidCertificateNumber(number: string): boolean {
-  const pattern = /^CER-\d{8}-\d{6}$/;
-  return pattern.test(number);
+  // Legacy format: 6 digits
+  const legacyPattern = /^CER-\d{8}-\d{6}$/;
+  // New format: 10 alphanumeric characters (base64url uppercase)
+  const newPattern = /^CER-\d{8}-[A-Z0-9_-]{10}$/;
+
+  return legacyPattern.test(number) || newPattern.test(number);
 }
 
 /**

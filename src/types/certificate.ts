@@ -107,8 +107,14 @@ export interface BatchGenerateResult {
   errors: { row: number; error: string }[];
 }
 
+// Regex for certificate number validation (supports legacy and new format)
+const certificateNumberRegex = /^CER-\d{8}-(\d{6}|[A-Z0-9_-]{10})$/;
+
 export const validateCertificateSchema = z.object({
-  certificate_number: z.string().min(1, 'El número de certificado es requerido'),
+  certificate_number: z
+    .string()
+    .min(1, 'El número de certificado es requerido')
+    .regex(certificateNumberRegex, 'Formato de certificado inválido'),
 });
 
 export type ValidateCertificateData = z.infer<typeof validateCertificateSchema>;

@@ -18,6 +18,7 @@
 
 ## Novedades v3.3.0
 
+- **Security Hardening** - IDs alta entropia, rate limiting, CSP con nonce, revocacion
 - **Configuracion PDF Completa** - Todas las opciones del configurador ahora se aplican al PDF
 - **7 Estilos de Borde** - none, simple, double, certificate, ornate, geometric, gradient
 - **4 Estilos de Esquinas** - none, simple, ornate, flourish
@@ -45,6 +46,7 @@
 - [Configuracion](#configuracion)
 - [API Reference](#api-reference)
 - [Despliegue](#despliegue)
+- [Seguridad](#seguridad)
 - [Changelog](#changelog)
 
 ---
@@ -382,6 +384,10 @@ NEXT_PUBLIC_VALIDATION_BASE_URL=https://tu-dominio.vercel.app/validate
 # API Security
 CERTIGEN_API_SECRET=tu-api-secret-seguro
 
+# Rate Limiting (opcional, recomendado)
+UPSTASH_REDIS_REST_URL=https://tu-instancia.upstash.io
+UPSTASH_REDIS_REST_TOKEN=tu-upstash-token
+
 # Resend Email (opcional)
 RESEND_API_KEY=re_xxxxxxxxxxxx
 FROM_EMAIL=CertiGen <certificados@tu-dominio.com>
@@ -570,6 +576,8 @@ Configurar en **Project Settings > Environment Variables**:
 | `NEXT_PUBLIC_BASE_URL` | Si |
 | `NEXT_PUBLIC_VALIDATION_BASE_URL` | Si |
 | `CERTIGEN_API_SECRET` | Si |
+| `UPSTASH_REDIS_REST_URL` | No (recomendado) |
+| `UPSTASH_REDIS_REST_TOKEN` | No (recomendado) |
 | `RESEND_API_KEY` | No |
 | `FROM_EMAIL` | No |
 
@@ -626,10 +634,17 @@ npm run lint     # Ejecutar ESLint
 
 ## Seguridad
 
+Para documentacion completa de seguridad, ver [SECURITY.md](SECURITY.md).
+
 | Medida | Implementacion |
 |--------|----------------|
+| **IDs Alta Entropia** | ~60 bits con `crypto.randomBytes` |
+| **Rate Limiting** | Upstash Redis (10/5/20 req/min) |
+| **CSP con Nonce** | Script loading con nonce + strict-dynamic |
+| **Revocacion** | Endpoint admin para revocar certificados |
+| **Privacidad** | PII minimo en validacion, X-Robots-Tag |
 | **HTTPS** | Forzado via Vercel |
-| **Security Headers** | X-Frame-Options, CSP |
+| **Security Headers** | HSTS, X-Frame-Options, CSP |
 | **Input Validation** | Zod schemas |
 | **SQL Injection** | Prevenido por Supabase ORM |
 | **XSS Protection** | CSP + sanitizacion |
@@ -640,6 +655,9 @@ npm run lint     # Ejecutar ESLint
 ## Changelog
 
 ### v3.3.0 (2025-12-28)
+- **Security Hardening** - IDs alta entropia (~60 bits), rate limiting Upstash, CSP con nonce
+- **Revocacion de certificados** - Endpoint admin para revocar certificados fraudulentos
+- **Proteccion de privacidad** - PII minimo en validacion, X-Robots-Tag header
 - **Configuracion PDF completa** - Todas las opciones del configurador visual se aplican al PDF generado
 - **Estilos de borde** - 7 estilos: none, simple, double, certificate, ornate, geometric, gradient
 - **Estilos de esquinas** - 4 estilos: none, simple, ornate, flourish

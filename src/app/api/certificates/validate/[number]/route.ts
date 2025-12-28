@@ -2,29 +2,41 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { isValidCertificateNumber } from '@/lib/utils';
+import { generalRatelimit, getClientIp, checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
+
+// Helper to create response with security headers
+function createSecureResponse(data: object, status: number = 200) {
+  const response = NextResponse.json(data, { status });
+  // Prevent search engine indexing of validation responses
+  response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  return response;
+}
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ number: string }> }
 ) {
   try {
+    // Rate limiting check
+    const clientIp = getClientIp(request);
+    const rateLimitResult = await checkRateLimit(generalRatelimit, clientIp);
+    if (rateLimitResult && !rateLimitResult.success) {
+      return rateLimitExceededResponse(rateLimitResult.reset);
+    }
+
     const resolvedParams = await params;
     const certificateNumber = resolvedParams.number;
 
     // Validate certificate number format
     if (!isValidCertificateNumber(certificateNumber)) {
-      return NextResponse.json(
+      return createSecureResponse(
         {
           is_valid: false,
           error: 'Formato de numero de certificado invalido',
         },
-        { status: 400 }
+        400
       );
     }
-
-    // Get client IP for logging
-    const forwardedFor = request.headers.get('x-forwarded-for');
-    const clientIp = forwardedFor ? forwardedFor.split(',')[0] : request.headers.get('x-real-ip') || null;
 
     // Create Supabase client
     const cookieStore = await cookies();
@@ -49,20 +61,40 @@ export async function GET(
       }
     );
 
-    // Find certificate
+    // Find certificate - select only needed fields
     const { data: certificate, error: certError } = await supabase
       .from('certificates')
-      .select('*')
+      .select('id, certificate_number, student_name, course_name, certificate_type, issue_date, is_active, revoked_at, revocation_reason')
       .eq('certificate_number', certificateNumber)
-      .eq('is_active', true)
       .single();
 
     if (certError || !certificate) {
       // Certificate not found - could be invalid or ephemeral (anonymous)
-      return NextResponse.json({
+      return createSecureResponse({
         is_valid: false,
         error: 'Certificado no encontrado. Si fue generado en modo anonimo, no puede ser validado en linea.',
         message_type: 'not_found',
+      });
+    }
+
+    // Check if certificate is active
+    if (!certificate.is_active) {
+      return createSecureResponse({
+        is_valid: false,
+        error: 'Este certificado ha sido desactivado.',
+        message_type: 'inactive',
+      });
+    }
+
+    // Check if certificate is revoked
+    if (certificate.revoked_at) {
+      return createSecureResponse({
+        is_valid: false,
+        revoked: true,
+        revoked_at: certificate.revoked_at,
+        reason: certificate.revocation_reason,
+        error: 'Este certificado ha sido revocado.',
+        message_type: 'revoked',
       });
     }
 
@@ -80,19 +112,26 @@ export async function GET(
       .select('*', { count: 'exact', head: true })
       .eq('certificate_id', certificate.id);
 
-    return NextResponse.json({
+    // Return minimal data for validation (no PII like email, grade, hours)
+    return createSecureResponse({
       is_valid: true,
-      certificate,
+      certificate: {
+        certificate_number: certificate.certificate_number,
+        student_name: certificate.student_name,
+        course_name: certificate.course_name,
+        certificate_type: certificate.certificate_type,
+        issue_date: certificate.issue_date,
+      },
       validation_count: count || 1,
     });
   } catch (error) {
     console.error('Validate certificate error:', error);
-    return NextResponse.json(
+    return createSecureResponse(
       {
         is_valid: false,
         error: 'Error interno del servidor',
       },
-      { status: 500 }
+      500
     );
   }
 }

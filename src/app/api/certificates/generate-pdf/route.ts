@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument, rgb, StandardFonts, degrees, PDFPage, PDFFont } from 'pdf-lib';
 import QRCode from 'qrcode';
+import { generateRatelimit, getClientIp, checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
 
 // ============================================
 // INTERFACES
@@ -697,6 +698,13 @@ function drawOrganizationName(
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting check (stricter for PDF generation: 5 req/min)
+    const clientIp = getClientIp(request);
+    const rateLimitResult = await checkRateLimit(generateRatelimit, clientIp);
+    if (rateLimitResult && !rateLimitResult.success) {
+      return rateLimitExceededResponse(rateLimitResult.reset);
+    }
+
     const body: GeneratePDFRequest = await request.json();
     const { data, config } = body;
 
