@@ -147,11 +147,10 @@ export default function AdminAuthPage() {
             </button>
           </div>
 
-          {/* OAuth Buttons */}
+          {/* OAuth Buttons - Temporarily disabled until providers are configured in Supabase
           <OAuthButtons disabled={loading} />
-
-          {/* Divider */}
           <OAuthDivider />
+          */}
 
           {/* Error Message */}
           {error && (
