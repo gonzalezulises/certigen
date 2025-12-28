@@ -246,6 +246,16 @@
       "login": "Iniciar Sesion",
       "success": "Cuenta creada exitosamente. Revisa tu email para confirmar."
     },
+    "oauth": {
+      "divider": "o continua con email",
+      "continueWithGoogle": "Continuar con Google",
+      "continueWithGitHub": "Continuar con GitHub",
+      "errors": {
+        "google": "Error al conectar con Google. Intenta de nuevo.",
+        "github": "Error al conectar con GitHub. Intenta de nuevo.",
+        "generic": "Error de autenticacion. Por favor, intenta de nuevo."
+      }
+    },
     "anonymous": {
       "title": "Continuar sin cuenta",
       "button": "Generar Certificado Anonimo",

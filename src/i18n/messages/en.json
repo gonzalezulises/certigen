@@ -246,6 +246,16 @@
       "login": "Login",
       "success": "Account created successfully. Please check your email to confirm."
     },
+    "oauth": {
+      "divider": "or continue with email",
+      "continueWithGoogle": "Continue with Google",
+      "continueWithGitHub": "Continue with GitHub",
+      "errors": {
+        "google": "Error connecting with Google. Please try again.",
+        "github": "Error connecting with GitHub. Please try again.",
+        "generic": "Authentication error. Please try again."
+      }
+    },
     "anonymous": {
       "title": "Continue without account",
       "button": "Generate Anonymous Certificate",

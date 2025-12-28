@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
+import { OAuthButtons, OAuthDivider } from '@/components/auth';
 import { Award, Mail, Lock, LogIn, UserPlus, AlertCircle, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -19,6 +20,22 @@ export default function AdminAuthPage() {
 
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Handle OAuth errors from URL params
+  useEffect(() => {
+    const errorParam = searchParams.get('error');
+    const errorDescription = searchParams.get('error_description');
+
+    if (errorParam) {
+      setError(errorDescription || t('auth.oauth.errors.generic'));
+      // Clean URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('error');
+      url.searchParams.delete('error_description');
+      window.history.replaceState({}, '', url);
+    }
+  }, [searchParams, t]);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -129,6 +146,12 @@ export default function AdminAuthPage() {
               {t('auth.register.title')}
             </button>
           </div>
+
+          {/* OAuth Buttons */}
+          <OAuthButtons disabled={loading} />
+
+          {/* Divider */}
+          <OAuthDivider />
 
           {/* Error Message */}
           {error && (
