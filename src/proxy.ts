@@ -79,20 +79,14 @@ function addSecurityHeaders(response: NextResponse, nonce: string): NextResponse
   return response;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const nonce = generateNonce();
 
-  // Skip i18n for API routes, auth callback, and static files
+  // Skip i18n for API routes and static files
   const shouldSkipIntl = pathname.startsWith('/api/') ||
-                         pathname.startsWith('/auth/callback') ||
                          pathname.startsWith('/_next/') ||
                          pathname.includes('.');
-
-  // Handle OAuth callback - allow through without i18n
-  if (pathname.startsWith('/auth/callback')) {
-    return NextResponse.next();
-  }
 
   // Handle API routes with rate limiting and security
   if (pathname.startsWith('/api/')) {
