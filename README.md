@@ -2,10 +2,11 @@
 
 <div align="center">
 
-![CertiGen Logo](https://img.shields.io/badge/CertiGen-v3.3.0-blue?style=for-the-badge)
+![CertiGen Logo](https://img.shields.io/badge/CertiGen-v3.4.0-blue?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-16.x-black?style=for-the-badge&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)
+![Neon](https://img.shields.io/badge/Neon-PostgreSQL-00E599?style=for-the-badge&logo=postgresql)
 ![pdf-lib](https://img.shields.io/badge/pdf--lib-Server--Side-green?style=for-the-badge)
 
 **Sistema de Generacion y Validacion de Certificados con QR**
@@ -16,16 +17,20 @@
 
 ---
 
-## Novedades v3.3.0
+## Novedades v3.4.0
 
+- **Neon PostgreSQL** - Migrado de Supabase a Neon serverless PostgreSQL
+- **Drizzle ORM** - ORM type-safe para consultas a la base de datos
+- **Edge Compatible** - Conexion HTTP serverless compatible con edge runtime
+- **Sin Autenticacion** - Operacion simplificada en modo anonimo
+- **Scripts de BD** - `npm run db:push`, `db:generate`, `db:studio`
+
+### v3.3.0
 - **Security Hardening** - IDs alta entropia, rate limiting, CSP con nonce, revocacion
 - **Configuracion PDF Completa** - Todas las opciones del configurador ahora se aplican al PDF
 - **7 Estilos de Borde** - none, simple, double, certificate, ornate, geometric, gradient
 - **4 Estilos de Esquinas** - none, simple, ornate, flourish
 - **Branding Completo** - Logo, firmas (simple/dual), nombre de organizacion
-- **Layout Configurable** - Orientacion, tamano de pagina, posiciones de QR y firma
-- **OAuth Preparado** - Google y GitHub OAuth listo (requiere configuracion en Supabase)
-- **Node.js 20+** - Actualizado para usar Node.js 20 con nvm
 
 ---
 
@@ -276,23 +281,27 @@ GET /api/certificates/validate/CER-20251226-123456
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
 │  │ /api/certificates│  │ /api/certificates│  │ /api/certificates│ │
 │  │    /generate    │  │  /generate-pdf  │  │   /send-email   │  │
-│  │   (Supabase)    │  │   (pdf-lib)     │  │    (Resend)     │  │
+│  │  (Drizzle ORM)  │  │   (pdf-lib)     │  │    (Resend)     │  │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
 └─────────────────────────────────────────────────────────────────┘
                               │
-              ┌───────────────┴───────────────┐
-              ▼                               ▼
-┌─────────────────────────┐     ┌─────────────────────────┐
-│        SUPABASE         │     │         RESEND          │
-│  ┌─────────────┐        │     │                         │
-│  │ PostgreSQL  │        │     │   Email Delivery API    │
-│  │  Database   │        │     │                         │
-│  └─────────────┘        │     │  • Certificados PDF     │
-│                         │     │  • Plantilla HTML       │
-│  Tablas:                │     │                         │
-│  • certificates         │     └─────────────────────────┘
-│  • certificate_validations
-└─────────────────────────┘
+              ┌───────────────┼───────────────┐
+              ▼               ▼               ▼
+┌──────────────────┐ ┌──────────────┐ ┌─────────────────┐
+│  NEON POSTGRES   │ │    UPSTASH   │ │     RESEND      │
+│  ┌────────────┐  │ │    REDIS     │ │                 │
+│  │ Drizzle    │  │ │              │ │ Email Delivery  │
+│  │   ORM      │  │ │ Rate Limit   │ │                 │
+│  └────────────┘  │ │ 10/5/20 rpm  │ │ • PDFs adjuntos │
+│                  │ │              │ │ • HTML template │
+│  Tablas:         │ └──────────────┘ └─────────────────┘
+│  • certificates  │
+│  • certificate_  │
+│    validations   │
+│  • certificate_  │
+│    templates     │
+│  • api_keys      │
+└──────────────────┘
 ```
 
 ### Flujo de Generacion PDF
@@ -304,7 +313,7 @@ Usuario                    Frontend                    API
    │────────────────────────▶│                         │
    │                          │ 2. POST /api/generate   │
    │                          │────────────────────────▶│
-   │                          │                         │ 3. Guarda en Supabase
+   │                          │                         │ 3. Drizzle → Neon
    │                          │◀────────────────────────│
    │                          │                         │
    │                          │ 4. POST /api/generate-pdf
@@ -328,11 +337,13 @@ Usuario                    Frontend                    API
 | **UI** | React | 19.2.3 | Interfaz de usuario |
 | **Lenguaje** | TypeScript | 5.x | Tipado estatico |
 | **Estilos** | Tailwind CSS | 4.x | Utility-first CSS |
+| **Base de Datos** | Neon PostgreSQL | 17 | Serverless PostgreSQL |
+| **ORM** | Drizzle ORM | 0.45.x | Type-safe SQL queries |
 | **PDF** | pdf-lib | 1.17.1 | Generacion server-side de PDFs |
 | **QR** | qrcode | 1.5.4 | Generacion de codigos QR |
 | **i18n** | next-intl | 4.x | Internacionalizacion |
 | **Temas** | next-themes | 0.4.x | Dark/Light mode |
-| **Base de Datos** | Supabase | - | PostgreSQL + Auth |
+| **Rate Limit** | Upstash Redis | - | Rate limiting distribuido |
 | **Email** | Resend | - | Envio de correos |
 | **Validacion** | Zod | 4.x | Schema validation |
 
