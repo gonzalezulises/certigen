@@ -355,8 +355,9 @@ Usuario                    Frontend                    API
 
 - Node.js 20.x o superior (recomendado usar nvm)
 - npm, yarn, o pnpm
-- Cuenta en Supabase
-- Cuenta en Resend (para emails)
+- Cuenta en [Neon](https://neon.tech) (PostgreSQL serverless)
+- Cuenta en Resend (para emails, opcional)
+- Cuenta en Upstash (para rate limiting, opcional)
 
 ### Pasos
 
@@ -370,9 +371,12 @@ npm install
 
 # 3. Configurar variables de entorno
 cp .env.local.example .env.local
-# Editar .env.local con tus credenciales
+# Editar .env.local con tu DATABASE_URL de Neon
 
-# 4. Ejecutar en desarrollo
+# 4. Crear tablas en la base de datos
+npm run db:push
+
+# 5. Ejecutar en desarrollo
 npm run dev
 ```
 
@@ -383,14 +387,11 @@ npm run dev
 ### Variables de Entorno
 
 ```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
-SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+# Neon PostgreSQL (requerido)
+DATABASE_URL=postgresql://user:pass@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
 
 # Application
 NEXT_PUBLIC_APP_URL=https://tu-dominio.vercel.app
-NEXT_PUBLIC_BASE_URL=https://tu-dominio.vercel.app
 NEXT_PUBLIC_VALIDATION_BASE_URL=https://tu-dominio.vercel.app/validate
 
 # API Security
@@ -579,19 +580,14 @@ vercel --prod
 
 Configurar en **Project Settings > Environment Variables**:
 
-| Variable | Requerida |
-|----------|-----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Si |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Si |
-| `SUPABASE_SERVICE_ROLE_KEY` | Si |
-| `NEXT_PUBLIC_APP_URL` | Si |
-| `NEXT_PUBLIC_BASE_URL` | Si |
-| `NEXT_PUBLIC_VALIDATION_BASE_URL` | Si |
-| `CERTIGEN_API_SECRET` | Si |
-| `UPSTASH_REDIS_REST_URL` | No (recomendado) |
-| `UPSTASH_REDIS_REST_TOKEN` | No (recomendado) |
-| `RESEND_API_KEY` | No |
-| `FROM_EMAIL` | No |
+| Variable | Requerida | Descripcion |
+|----------|-----------|-------------|
+| `DATABASE_URL` | Si | Connection string de Neon PostgreSQL |
+| `CERTIGEN_API_SECRET` | Si | Secret para API de integracion |
+| `UPSTASH_REDIS_REST_URL` | No (recomendado) | URL de Upstash Redis |
+| `UPSTASH_REDIS_REST_TOKEN` | No (recomendado) | Token de Upstash |
+| `RESEND_API_KEY` | No | API key de Resend |
+| `FROM_EMAIL` | No | Email remitente |
 
 ---
 
@@ -606,26 +602,33 @@ certigen/
 │   │   ├── [locale]/           # Rutas internacionalizadas
 │   │   │   ├── generate/       # Generador de certificados
 │   │   │   ├── batch/          # Generacion en lote
-│   │   │   ├── validate/       # Validador
-│   │   │   └── admin/          # Panel admin
+│   │   │   └── validate/       # Validador
 │   │   └── api/
 │   │       └── certificates/
 │   │           ├── generate/       # Registrar certificado
 │   │           ├── generate-pdf/   # Generar PDF (pdf-lib)
 │   │           ├── send-email/     # Enviar por email
-│   │           └── validate/       # Validar certificado
+│   │           ├── validate/       # Validar certificado
+│   │           └── revoke/         # Revocar certificado
 │   ├── components/
 │   │   ├── certificate/        # Componentes de certificados
 │   │   ├── configurator/       # Configurador visual
 │   │   ├── shared/             # Header, Footer
 │   │   └── ui/                 # Componentes UI base
+│   ├── db/
+│   │   ├── index.ts            # Cliente Neon + Drizzle
+│   │   ├── schema.ts           # Schema de tablas
+│   │   ├── operations.ts       # Operaciones CRUD
+│   │   └── migrate.ts          # Script de migracion
 │   ├── i18n/
 │   │   └── messages/           # Traducciones (9 idiomas)
 │   ├── lib/
 │   │   ├── email/              # Configuracion Resend
 │   │   ├── pdf/                # Generacion PDF
-│   │   └── supabase/           # Cliente Supabase
+│   │   ├── db.ts               # Re-export de db
+│   │   └── rate-limit.ts       # Rate limiting Upstash
 │   └── types/                  # Tipos TypeScript
+├── drizzle.config.ts           # Configuracion Drizzle Kit
 ├── .env.local.example
 ├── package.json
 └── README.md
@@ -636,30 +639,37 @@ certigen/
 ## Scripts
 
 ```bash
+# Desarrollo
 npm run dev      # Desarrollo con hot reload
 npm run build    # Build de produccion
 npm run start    # Iniciar servidor de produccion
 npm run lint     # Ejecutar ESLint
+
+# Base de Datos (Drizzle)
+npm run db:push      # Sincronizar schema con base de datos
+npm run db:generate  # Generar migraciones SQL
+npm run db:migrate   # Ejecutar migraciones
+npm run db:studio    # Abrir Drizzle Studio (GUI)
 ```
 
 ---
 
 ## Configuracion Post-Despliegue
 
-### 1. Migracion Supabase (Requerido para revocacion)
+### 1. Crear Tablas en Neon (Primera vez)
 
-Ejecuta en **Supabase Dashboard > SQL Editor**:
+Despues del primer despliegue, ejecuta localmente:
 
-```sql
--- Agregar columnas de revocacion
-ALTER TABLE certificates
-ADD COLUMN IF NOT EXISTS revoked_at TIMESTAMP WITH TIME ZONE,
-ADD COLUMN IF NOT EXISTS revocation_reason TEXT;
-
--- Indice para busquedas rapidas
-CREATE INDEX IF NOT EXISTS idx_certificates_revoked_at
-ON certificates(revoked_at) WHERE revoked_at IS NOT NULL;
+```bash
+# Configura DATABASE_URL en .env.local con tu connection string de Neon
+npm run db:push
 ```
+
+Esto creara automaticamente todas las tablas:
+- `certificates` - Certificados emitidos
+- `certificate_validations` - Log de validaciones
+- `certificate_templates` - Plantillas personalizadas
+- `api_keys` - API keys para integraciones
 
 ### 2. Upstash Redis (Recomendado para rate limiting)
 
@@ -704,13 +714,21 @@ Para documentacion completa de seguridad, ver [SECURITY.md](SECURITY.md).
 | **HTTPS** | Forzado via Vercel |
 | **Security Headers** | HSTS, X-Frame-Options, CSP |
 | **Input Validation** | Zod schemas |
-| **SQL Injection** | Prevenido por Supabase ORM |
+| **SQL Injection** | Prevenido por Drizzle ORM (queries parametrizadas) |
 | **XSS Protection** | CSP + sanitizacion |
-| **RLS** | Row Level Security en Supabase |
 
 ---
 
 ## Changelog
+
+### v3.4.0 (2026-01-01)
+- **Neon PostgreSQL** - Migrado de Supabase a Neon serverless PostgreSQL
+- **Drizzle ORM** - Type-safe SQL queries con schema TypeScript
+- **Edge Compatible** - Conexion HTTP serverless compatible con edge runtime
+- **Sin Autenticacion** - Operacion simplificada en modo anonimo (removido OAuth)
+- **Scripts de BD** - `npm run db:push`, `db:generate`, `db:migrate`, `db:studio`
+- **Lazy Connection** - Conexion diferida para evitar errores en build time
+- **Indices optimizados** - 10 indices para consultas rapidas
 
 ### v3.3.0 (2025-12-28)
 - **Security Hardening** - IDs alta entropia (~60 bits), rate limiting Upstash, CSP con nonce
