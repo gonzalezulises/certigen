@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { eq } from 'drizzle-orm';
 import { generateCertificateNumber, getValidationUrl } from '@/lib/utils';
+import { db, certificates } from '@/db';
 
 // Verify API key middleware
 async function verifyApiKey(request: NextRequest): Promise<boolean> {
@@ -40,61 +41,38 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create Supabase admin client
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return [];
-          },
-          setAll() {},
-        },
-      }
-    );
-
     // Generate certificate number
     const certificateNumber = generateCertificateNumber();
 
     // Create certificate
-    const { data: certificate, error } = await supabase
-      .from('certificates')
-      .insert({
-        certificate_number: certificateNumber,
-        student_name: body.student_name,
-        student_email: body.student_email,
-        course_name: body.course_name,
-        course_id: body.course_id || null,
-        user_id: body.user_id || null,
-        certificate_type: body.certificate_type || 'completion',
-        instructor_name: body.instructor_name || null,
+    const [certificate] = await db
+      .insert(certificates)
+      .values({
+        certificateNumber,
+        studentName: body.student_name,
+        studentEmail: body.student_email,
+        courseName: body.course_name,
+        courseId: body.course_id || null,
+        userId: body.user_id || null,
+        certificateType: body.certificate_type || 'completion',
+        instructorName: body.instructor_name || null,
         hours: body.hours || null,
-        grade: body.grade || null,
-        issue_date: body.issue_date || new Date().toISOString(),
-        qr_code_url: getValidationUrl(certificateNumber),
+        grade: body.grade?.toString() || null,
+        issueDate: body.issue_date ? new Date(body.issue_date) : new Date(),
+        qrCodeUrl: getValidationUrl(certificateNumber),
         metadata: body.metadata || {},
       })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Database error:', error);
-      return NextResponse.json(
-        { error: 'Error al crear el certificado', details: error.message },
-        { status: 500 }
-      );
-    }
+      .returning();
 
     return NextResponse.json({
       success: true,
       certificate: {
         id: certificate.id,
-        certificate_number: certificate.certificate_number,
-        student_name: certificate.student_name,
-        course_name: certificate.course_name,
-        issue_date: certificate.issue_date,
-        validation_url: getValidationUrl(certificate.certificate_number),
+        certificate_number: certificate.certificateNumber,
+        student_name: certificate.studentName,
+        course_name: certificate.courseName,
+        issue_date: certificate.issueDate,
+        validation_url: getValidationUrl(certificate.certificateNumber),
       },
     });
   } catch (error) {
@@ -128,39 +106,54 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return [];
-          },
-          setAll() {},
-        },
-      }
-    );
-
-    let query = supabase.from('certificates').select('*');
+    let certificate;
 
     if (certificateId) {
-      query = query.eq('id', certificateId);
+      [certificate] = await db
+        .select()
+        .from(certificates)
+        .where(eq(certificates.id, certificateId))
+        .limit(1);
     } else if (certificateNumber) {
-      query = query.eq('certificate_number', certificateNumber);
+      [certificate] = await db
+        .select()
+        .from(certificates)
+        .where(eq(certificates.certificateNumber, certificateNumber))
+        .limit(1);
     }
 
-    const { data: certificate, error } = await query.single();
-
-    if (error || !certificate) {
+    if (!certificate) {
       return NextResponse.json(
         { error: 'Certificado no encontrado' },
         { status: 404 }
       );
     }
 
+    // Transform to snake_case for API response compatibility
+    const responseData = {
+      id: certificate.id,
+      certificate_number: certificate.certificateNumber,
+      student_name: certificate.studentName,
+      student_email: certificate.studentEmail,
+      course_name: certificate.courseName,
+      certificate_type: certificate.certificateType,
+      instructor_name: certificate.instructorName,
+      hours: certificate.hours,
+      grade: certificate.grade,
+      issue_date: certificate.issueDate,
+      expiry_date: certificate.expiryDate,
+      qr_code_url: certificate.qrCodeUrl,
+      pdf_url: certificate.pdfUrl,
+      is_active: certificate.isActive,
+      revoked_at: certificate.revokedAt,
+      revocation_reason: certificate.revocationReason,
+      created_at: certificate.createdAt,
+      metadata: certificate.metadata,
+    };
+
     return NextResponse.json({
       success: true,
-      certificate,
+      certificate: responseData,
     });
   } catch (error) {
     console.error('Integration API error:', error);

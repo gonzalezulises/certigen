@@ -7,11 +7,9 @@ import { TemplateConfigurator } from '@/components/configurator/TemplateConfigur
 import { TemplateConfig, TemplateId, CertificateData } from '@/lib/pdf/config/schema';
 import { Alert, AlertTitle, AlertDescription, Card, CardContent, CardHeader, CardTitle, Button, Input, Label } from '@/components/ui';
 import { CheckCircle2, FileSpreadsheet, Mail, Loader2, Info, User, BookOpen, GraduationCap } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
 
 export default function GeneratePage() {
   const t = useTranslations();
-  const { user } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);

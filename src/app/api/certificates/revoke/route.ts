@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { adminRatelimit, getClientIp, checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
+import { db, certificates } from '@/db';
 
 const revokeSchema = z.object({
   certificate_number: z.string().min(1, 'Certificate number is required'),
@@ -39,33 +39,17 @@ export async function POST(request: NextRequest) {
 
     const { certificate_number, reason } = validationResult.data;
 
-    // Create Supabase client with service role for admin operations
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          },
-        },
-      }
-    );
-
     // Check if certificate exists
-    const { data: certificate, error: fetchError } = await supabase
-      .from('certificates')
-      .select('certificate_number, revoked_at')
-      .eq('certificate_number', certificate_number)
-      .single();
+    const [certificate] = await db
+      .select({
+        certificateNumber: certificates.certificateNumber,
+        revokedAt: certificates.revokedAt,
+      })
+      .from(certificates)
+      .where(eq(certificates.certificateNumber, certificate_number))
+      .limit(1);
 
-    if (fetchError || !certificate) {
+    if (!certificate) {
       return NextResponse.json(
         { error: 'Certificate not found' },
         { status: 404 }
@@ -73,34 +57,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if already revoked
-    if (certificate.revoked_at) {
+    if (certificate.revokedAt) {
       return NextResponse.json(
-        { error: 'Certificate is already revoked', revoked_at: certificate.revoked_at },
+        { error: 'Certificate is already revoked', revoked_at: certificate.revokedAt },
         { status: 409 }
       );
     }
 
     // Revoke the certificate
-    const { error: updateError } = await supabase
-      .from('certificates')
-      .update({
-        revoked_at: new Date().toISOString(),
-        revocation_reason: reason,
+    const revokedAt = new Date();
+    await db
+      .update(certificates)
+      .set({
+        revokedAt,
+        revocationReason: reason,
       })
-      .eq('certificate_number', certificate_number);
-
-    if (updateError) {
-      console.error('Revocation error:', updateError);
-      return NextResponse.json(
-        { error: 'Failed to revoke certificate' },
-        { status: 500 }
-      );
-    }
+      .where(eq(certificates.certificateNumber, certificate_number));
 
     return NextResponse.json({
       success: true,
       revoked: certificate_number,
-      revoked_at: new Date().toISOString(),
+      revoked_at: revokedAt.toISOString(),
       reason,
     });
   } catch (error) {

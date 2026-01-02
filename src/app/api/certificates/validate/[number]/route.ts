@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { eq, count } from 'drizzle-orm';
 import { isValidCertificateNumber } from '@/lib/utils';
 import { generalRatelimit, getClientIp, checkRateLimit, rateLimitExceededResponse } from '@/lib/rate-limit';
+import { db, certificates, certificateValidations } from '@/db';
 
 // Helper to create response with security headers
 function createSecureResponse(data: object, status: number = 200) {
@@ -38,47 +38,34 @@ export async function GET(
       );
     }
 
-    // Create Supabase client
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              );
-            } catch {
-              // Ignore errors from Server Components
-            }
-          },
-        },
-      }
-    );
-
     // Find certificate - select only needed fields
-    const { data: certificate, error: certError } = await supabase
-      .from('certificates')
-      .select('id, certificate_number, student_name, course_name, certificate_type, issue_date, is_active, revoked_at, revocation_reason')
-      .eq('certificate_number', certificateNumber)
-      .single();
+    const [certificate] = await db
+      .select({
+        id: certificates.id,
+        certificateNumber: certificates.certificateNumber,
+        studentName: certificates.studentName,
+        courseName: certificates.courseName,
+        certificateType: certificates.certificateType,
+        issueDate: certificates.issueDate,
+        isActive: certificates.isActive,
+        revokedAt: certificates.revokedAt,
+        revocationReason: certificates.revocationReason,
+      })
+      .from(certificates)
+      .where(eq(certificates.certificateNumber, certificateNumber))
+      .limit(1);
 
-    if (certError || !certificate) {
-      // Certificate not found - could be invalid or ephemeral (anonymous)
+    if (!certificate) {
+      // Certificate not found
       return createSecureResponse({
         is_valid: false,
-        error: 'Certificado no encontrado. Si fue generado en modo anonimo, no puede ser validado en linea.',
+        error: 'Certificado no encontrado.',
         message_type: 'not_found',
       });
     }
 
     // Check if certificate is active
-    if (!certificate.is_active) {
+    if (!certificate.isActive) {
       return createSecureResponse({
         is_valid: false,
         error: 'Este certificado ha sido desactivado.',
@@ -87,42 +74,42 @@ export async function GET(
     }
 
     // Check if certificate is revoked
-    if (certificate.revoked_at) {
+    if (certificate.revokedAt) {
       return createSecureResponse({
         is_valid: false,
         revoked: true,
-        revoked_at: certificate.revoked_at,
-        reason: certificate.revocation_reason,
+        revoked_at: certificate.revokedAt,
+        reason: certificate.revocationReason,
         error: 'Este certificado ha sido revocado.',
         message_type: 'revoked',
       });
     }
 
     // Record validation
-    await supabase.from('certificate_validations').insert({
-      certificate_id: certificate.id,
-      is_valid: true,
-      validation_method: 'number',
-      validated_by_ip: clientIp,
+    await db.insert(certificateValidations).values({
+      certificateId: certificate.id,
+      isValid: true,
+      validationMethod: 'number',
+      validatedByIp: clientIp,
     });
 
     // Get validation count
-    const { count } = await supabase
-      .from('certificate_validations')
-      .select('*', { count: 'exact', head: true })
-      .eq('certificate_id', certificate.id);
+    const [countResult] = await db
+      .select({ count: count() })
+      .from(certificateValidations)
+      .where(eq(certificateValidations.certificateId, certificate.id));
 
     // Return minimal data for validation (no PII like email, grade, hours)
     return createSecureResponse({
       is_valid: true,
       certificate: {
-        certificate_number: certificate.certificate_number,
-        student_name: certificate.student_name,
-        course_name: certificate.course_name,
-        certificate_type: certificate.certificate_type,
-        issue_date: certificate.issue_date,
+        certificate_number: certificate.certificateNumber,
+        student_name: certificate.studentName,
+        course_name: certificate.courseName,
+        certificate_type: certificate.certificateType,
+        issue_date: certificate.issueDate,
       },
-      validation_count: count || 1,
+      validation_count: countResult?.count || 1,
     });
   } catch (error) {
     console.error('Validate certificate error:', error);

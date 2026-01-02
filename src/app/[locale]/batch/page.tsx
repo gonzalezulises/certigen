@@ -10,7 +10,6 @@ import { Upload, FileSpreadsheet, Download, ArrowLeft, CheckCircle2, AlertCircle
 import JSZip from 'jszip';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { useAuth } from '@/context/AuthContext';
 
 interface CSVStudent {
   student_name: string;
@@ -21,7 +20,6 @@ interface CSVStudent {
 
 export default function BatchPage() {
   const t = useTranslations();
-  const { user } = useAuth();
 
   const [csvData, setCsvData] = useState<CSVStudent[]>([]);
   const [fileName, setFileName] = useState<string>('');
@@ -362,33 +360,6 @@ export default function BatchPage() {
     setEmailErrors(errorList);
     setIsSendingEmails(false);
   };
-
-  // Show login prompt if not authenticated
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <Card className="max-w-md w-full mx-4">
-          <CardContent className="p-8 text-center">
-            <FileSpreadsheet className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {t('batch.title')}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {t('batch.requiresAuth')}
-            </p>
-            <div className="flex gap-3 justify-center">
-              <Link href="/admin/auth">
-                <Button>{t('batch.login')}</Button>
-              </Link>
-              <Link href="/admin/auth">
-                <Button variant="outline">{t('batch.register')}</Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
