@@ -51,12 +51,7 @@ const nextConfig: NextConfig = {
 
   // Image optimization configuration
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*.supabase.co',
-      },
-    ],
+    remotePatterns: [],
   },
 
   // Redirect HTTP to HTTPS in production

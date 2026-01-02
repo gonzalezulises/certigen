@@ -741,7 +741,7 @@ Para documentacion completa de seguridad, ver [SECURITY.md](SECURITY.md).
 - **Layout configurable** - Orientacion, tamano de pagina (A4/Letter/Legal), posiciones
 - **Posicion QR** - 3 posiciones (bottom-left, bottom-center, bottom-right) y 3 tamanos
 - **Divisores** - 4 estilos: none, simple, ornate, dots
-- **OAuth preparado** - Componentes para Google/GitHub OAuth (requiere config en Supabase)
+- **Modo anonimo** - Operacion sin autenticacion requerida
 - **Node.js 20** - Actualizado requisito minimo a Node.js 20.x
 - **Auto-descarga** - PDF se descarga automaticamente en modo anonimo
 

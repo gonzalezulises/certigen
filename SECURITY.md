@@ -143,11 +143,12 @@ ADD COLUMN IF NOT EXISTS revoked_at TIMESTAMP WITH TIME ZONE,
 ADD COLUMN IF NOT EXISTS revocation_reason TEXT;
 ```
 
-### Row Level Security (RLS)
+### Database Security
 
-If using Supabase RLS, ensure policies allow:
-- Service role access for revocation operations
-- Anon key access for validation (read-only)
+Using Neon PostgreSQL with Drizzle ORM:
+- All queries use parameterized statements (SQL injection prevention)
+- Connection via HTTPS with SSL required
+- No exposed credentials in client-side code
 
 ## Changelog
 

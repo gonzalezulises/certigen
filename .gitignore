@@ -41,11 +41,6 @@ yarn-error.log*
 # Vercel
 .vercel
 
-# Supabase
-supabase/.temp/
-supabase/.branches/
-supabase/.gitignore
-
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
