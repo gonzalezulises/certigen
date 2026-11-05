@@ -1,0 +1,26 @@
+version: 2
+
+# Este repo no agrupaba las actualizaciones de seguridad, asi que recibia una por
+# vulnerabilidad: sin agrupar y sin nada que las cerrara.
+#
+# `applies-to: security-updates` las colapsa en un PR por tanda. El `cooldown` no sirve
+# aqui: por diseno de GitHub no aplica a las actualizaciones de seguridad.
+#
+# `open-pull-requests-limit: 0` apaga las actualizaciones de *version* y deja pasar las de
+# seguridad. Es deliberado hasta que el repo tenga una compuerta de CI que verifique un bump.
+#
+# Un solo manifiesto npm, en la raiz.
+# No hay entrada `github-actions`: el repo no tiene .github/workflows, y una entrada
+# para un ecosistema ausente aborta el job entero.
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 0
+    groups:
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
