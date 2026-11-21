@@ -11,7 +11,7 @@
 
 **Sistema de Generacion y Validacion de Certificados con QR**
 
-[Demo en Vivo](https://certigen-sandy.vercel.app) | [Reportar Bug](https://github.com/gonzalezulises/certigen/issues) | [Solicitar Feature](https://github.com/gonzalezulises/certigen/issues)
+[Demo en Vivo](https://certigen-ruby.vercel.app) | [Reportar Bug](https://github.com/gonzalezulises/certigen/issues) | [Solicitar Feature](https://github.com/gonzalezulises/certigen/issues)
 
 </div>
 
@@ -36,7 +36,7 @@
 
 ## Demo
 
-**Produccion:** https://certigen-sandy.vercel.app
+**Produccion:** https://certigen-ruby.vercel.app
 
 ---
 
@@ -149,7 +149,7 @@ Flujo:
 **Ejemplo de integracion:**
 ```javascript
 // Al completar curso
-const response = await fetch('https://certigen.vercel.app/api/certificates/generate', {
+const response = await fetch('https://certigen-ruby.vercel.app/api/certificates/generate', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -694,7 +694,7 @@ Esto creara automaticamente todas las tablas:
 # Debe retornar 429 despues de 10 requests en 1 minuto
 for i in {1..12}; do
   curl -s -o /dev/null -w "%{http_code} " \
-    https://certigen-sandy.vercel.app/api/certificates/validate/CER-TEST
+    https://certigen-ruby.vercel.app/api/certificates/validate/CER-TEST
 done
 ```
 
