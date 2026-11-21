@@ -32,6 +32,53 @@ const colors = {
   white: '#ffffff',
 };
 
+// Hoisted to module scope so it isn't re-created on every render
+function Logo({
+  size = 64,
+  light = false,
+  logoUrl,
+  organizationName,
+}: {
+  size?: number;
+  light?: boolean;
+  logoUrl?: string | null;
+  organizationName?: string;
+}) {
+  if (logoUrl) {
+    return (
+      <img
+        src={logoUrl}
+        alt="Logo"
+        style={{
+          width: size,
+          height: size,
+          objectFit: 'contain',
+          borderRadius: '4px',
+        }}
+      />
+    );
+  }
+  if (organizationName) {
+    return (
+      <div style={{
+        width: size,
+        height: size,
+        backgroundColor: light ? 'rgba(255,255,255,0.2)' : colors.gray200,
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: light ? colors.white : colors.gray600,
+        fontSize: size * 0.3,
+        fontWeight: 'bold',
+      }}>
+        {organizationName.substring(0, 2).toUpperCase()}
+      </div>
+    );
+  }
+  return null;
+}
+
 export function CertificatePreview({
   data,
   certificateNumber = 'CER-XXXXXXXX-XXXXXX',
@@ -47,43 +94,6 @@ export function CertificatePreview({
     aspectRatio: paper.cssAspect,
     width: '100%',
     maxWidth: '100%',
-  };
-
-  // Logo component
-  const Logo = ({ size = 64, light = false }: { size?: number; light?: boolean }) => {
-    if (logoUrl) {
-      return (
-        <img
-          src={logoUrl}
-          alt="Logo"
-          style={{
-            width: size,
-            height: size,
-            objectFit: 'contain',
-            borderRadius: '4px',
-          }}
-        />
-      );
-    }
-    if (data.organization_name) {
-      return (
-        <div style={{
-          width: size,
-          height: size,
-          backgroundColor: light ? 'rgba(255,255,255,0.2)' : colors.gray200,
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: light ? colors.white : colors.gray600,
-          fontSize: size * 0.3,
-          fontWeight: 'bold',
-        }}>
-          {data.organization_name.substring(0, 2).toUpperCase()}
-        </div>
-      );
-    }
-    return null;
   };
 
   if (template === 'elegant') {
@@ -127,7 +137,7 @@ export function CertificatePreview({
           <div style={{ textAlign: 'center' }}>
             {(logoUrl || data.organization_name) && (
               <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
-                <Logo size={50} light />
+                <Logo size={50} light logoUrl={logoUrl} organizationName={data.organization_name} />
                 {data.organization_name && (
                   <span style={{ fontSize: 'clamp(0.8rem, 2vw, 1.2rem)', color: colors.blue200 }}>
                     {data.organization_name}
@@ -280,7 +290,7 @@ export function CertificatePreview({
           <div>
             {(logoUrl || data.organization_name) && (
               <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
-                <Logo size={40} />
+                <Logo size={40} logoUrl={logoUrl} organizationName={data.organization_name} />
                 {data.organization_name && (
                   <span style={{ fontSize: 'clamp(0.7rem, 1.5vw, 1rem)', color: colors.gray600, fontWeight: 500 }}>
                     {data.organization_name}
@@ -394,7 +404,7 @@ export function CertificatePreview({
           paddingBottom: '3%',
         }}>
           <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
-            <Logo size={56} />
+            <Logo size={56} logoUrl={logoUrl} organizationName={data.organization_name} />
             {data.organization_name && !logoUrl && (
               <span style={{ fontSize: 'clamp(0.8rem, 1.8vw, 1.1rem)', color: colors.blue900, fontWeight: 600 }}>
                 {data.organization_name}

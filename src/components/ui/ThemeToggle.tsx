@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import { Sun, Moon, Monitor } from 'lucide-react';
@@ -8,12 +8,12 @@ import { Sun, Moon, Monitor } from 'lucide-react';
 export function ThemeToggle() {
   const t = useTranslations();
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  // Avoid hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Avoid hydration mismatch: false on server/first render, true after hydration
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   if (!mounted) {
     return (
