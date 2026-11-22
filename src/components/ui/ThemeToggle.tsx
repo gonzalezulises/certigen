@@ -19,7 +19,7 @@ export function ThemeToggle() {
     return (
       <button
         type="button"
-        className="p-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+        className="flex items-center justify-center h-11 w-11 text-muted-foreground bg-card border border-border rounded-lg"
         aria-label={t('accessibility.toggleTheme')}
       >
         <div className="h-5 w-5" />
@@ -57,7 +57,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={cycleTheme}
-      className="flex items-center gap-2 p-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+      className="flex items-center justify-center h-11 w-11 text-muted-foreground bg-card border border-border rounded-lg hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       aria-label={`${t('accessibility.toggleTheme')} - ${t('accessibility.currentTheme', { theme: getLabel() })}`}
       title={getLabel()}
     >

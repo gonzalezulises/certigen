@@ -30,13 +30,15 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-900/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href={`/${locale}`} className="flex items-center gap-2" aria-label={t('common.appName')}>
-            <Award className="h-8 w-8 text-blue-600 dark:text-blue-400" aria-hidden="true" />
-            <span className="text-xl font-bold text-gray-900 dark:text-white">{t('common.appName')}</span>
+          <Link href={`/${locale}`} className="flex items-center gap-2.5 min-h-11" aria-label={t('common.appName')}>
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+              <Award className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span className="text-lg font-bold tracking-tight text-foreground">{t('common.appName')}</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -50,8 +52,8 @@ export function Header() {
                   key={item.name}
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-2 text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400',
-                    isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+                    'flex items-center gap-2 text-sm font-medium transition-colors',
+                    isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
                   )}
                   aria-current={isActive ? 'page' : undefined}
                 >
@@ -62,7 +64,7 @@ export function Header() {
             })}
 
             {/* Divider */}
-            <div className="h-6 w-px bg-gray-200 dark:bg-gray-700" aria-hidden="true" />
+            <div className="h-6 w-px bg-border" aria-hidden="true" />
 
             {/* Language and Theme */}
             <div className="flex items-center gap-2">
@@ -77,7 +79,7 @@ export function Header() {
             <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center justify-center h-11 w-11 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
               aria-label={mobileMenuOpen ? t('accessibility.closeMenu') : t('accessibility.openMenu')}
@@ -95,7 +97,7 @@ export function Header() {
         {mobileMenuOpen && (
           <nav
             id="mobile-menu"
-            className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800"
+            className="md:hidden py-4 border-t border-border"
             role="navigation"
             aria-label={t('navigation.main')}
           >
@@ -112,8 +114,8 @@ export function Header() {
                     className={cn(
                       'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                       isActive
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                     )}
                     aria-current={isActive ? 'page' : undefined}
                   >

@@ -59,12 +59,11 @@ function addSecurityHeaders(response: NextResponse, nonce: string): NextResponse
   response.headers.set('X-Nonce', nonce);
 
   // CSP with nonce-based script loading
-  // Note: 'strict-dynamic' allows scripts loaded by trusted scripts (with nonce)
-  // 'unsafe-inline' is kept as fallback for older browsers that don't support nonces
-  // In CSP Level 3, presence of nonce causes 'unsafe-inline' to be ignored in modern browsers
+  // Note: 'unsafe-inline' is required for Next.js inline bootstrap scripts; a nonce in
+  // script-src would make browsers ignore 'unsafe-inline' and break hydration.
   const cspDirectives = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline'`,
+    "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: https:",

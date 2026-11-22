@@ -16,6 +16,7 @@
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
   --primary-light: #dbeafe;
+  --primary-foreground: #ffffff;
 
   /* Secondary colors */
   --secondary: #64748b;
@@ -93,6 +94,25 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--background-secondary);
+  --color-muted-foreground: var(--foreground-secondary);
+  --color-accent: var(--certificate-gold);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--error);
+  --color-destructive-foreground: #ffffff;
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--border-focus);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
 }
@@ -102,6 +122,13 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--primary-light);
+  color: var(--foreground);
 }
 
 /* Focus styles for accessibility */

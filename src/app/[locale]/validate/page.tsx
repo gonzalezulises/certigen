@@ -12,13 +12,13 @@ export default function ValidatePage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-4">
-            <FileCheck className="h-8 w-8 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
+            <FileCheck className="h-8 w-8 text-primary" aria-hidden="true" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             {t('validate.title')}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-muted-foreground mt-2">
             {t('validate.subtitle')}
           </p>
         </div>
@@ -26,44 +26,44 @@ export default function ValidatePage() {
         <CertificateValidator />
 
         {/* How it works */}
-        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+        <div className="mt-12 pt-8 border-t border-border">
+          <h2 className="text-xl font-semibold text-foreground mb-6 text-center">
             {t('validate.scan.title')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 mb-3">
-                <QrCode className="h-6 w-6 text-gray-600 dark:text-gray-400" aria-hidden="true" />
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-3">
+                <QrCode className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
               </div>
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="font-medium text-foreground mb-2">
                 {t('validate.scan.title')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {t('validate.scan.description')}
               </p>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 mb-3">
-                <Hash className="h-6 w-6 text-gray-600 dark:text-gray-400" aria-hidden="true" />
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-3">
+                <Hash className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
               </div>
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="font-medium text-foreground mb-2">
                 {t('validate.placeholder')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {t('validate.subtitle')}
               </p>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 mb-3">
-                <Shield className="h-6 w-6 text-gray-600 dark:text-gray-400" aria-hidden="true" />
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-3">
+                <Shield className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
               </div>
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="font-medium text-foreground mb-2">
                 {t('validate.button')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 {t('validate.results.valid')}
               </p>
             </div>

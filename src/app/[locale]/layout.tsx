@@ -103,7 +103,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={dir}>
-      <body className={`${inter.variable} ${getFontClass()} font-sans antialiased bg-white dark:bg-gray-900`}>
+      <body className={`${inter.variable} ${getFontClass()} font-sans antialiased bg-background text-foreground`}>
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <a

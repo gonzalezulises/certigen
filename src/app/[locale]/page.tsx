@@ -1,42 +1,60 @@
 'use client';
 
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
-import { Award, FileCheck, Shield, Zap, Code2, Globe } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
+import { Award, FileCheck, QrCode, Palette, FileSpreadsheet, Mail, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   const t = useTranslations();
+  const locale = useLocale();
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="container mx-auto px-4 py-24 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-blue-800/50 dark:bg-gray-700/50 px-4 py-2 rounded-full text-sm mb-6">
-              <Shield className="h-4 w-4" aria-hidden="true" />
-              <span>100% Open Source - MIT License</span>
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-slate-950 text-white">
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden="true"
+          style={{
+            backgroundImage:
+              'radial-gradient(ellipse 80% 60% at 50% -20%, rgba(37, 99, 235, 0.4), transparent)',
+          }}
+        />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.05]"
+          aria-hidden="true"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
+          }}
+        />
+        <div className="container relative z-10 mx-auto px-4 py-20 md:py-28">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-blue-100">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" />
+              100% Open Source · MIT License
+            </span>
+            <h1 className="mt-6 text-balance text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
               {t('home.hero.title')}
             </h1>
-
-            <p className="text-xl text-blue-100 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-blue-100/80 md:text-xl">
               {t('home.hero.subtitle')}
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/generate">
-                <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold gap-2">
+            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link href={`/${locale}/generate`}>
+                <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100">
                   <Award className="h-5 w-5" aria-hidden="true" />
                   {t('home.hero.cta')}
                 </Button>
               </Link>
-              <Link href="/validate">
-                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 gap-2">
+              <Link href={`/${locale}/validate`}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+                >
                   <FileCheck className="h-5 w-5" aria-hidden="true" />
                   {t('validate.title')}
                 </Button>
@@ -44,74 +62,59 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
-        {/* Wave Divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" className="fill-white dark:fill-gray-900"/>
-          </svg>
-        </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      {/* Features */}
+      <section className="bg-background py-20 md:py-24">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               {t('home.features.title')}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              {t('home.hero.subtitle')}
-            </p>
+            <p className="mt-4 text-lg text-muted-foreground">{t('home.hero.subtitle')}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <FeatureCard
-              icon={<Award className="h-8 w-8 text-blue-600 dark:text-blue-400" />}
+              icon={QrCode}
               title={t('home.features.qrVerification.title')}
               description={t('home.features.qrVerification.description')}
             />
             <FeatureCard
-              icon={<FileCheck className="h-8 w-8 text-blue-600 dark:text-blue-400" />}
+              icon={Palette}
               title={t('home.features.templates.title')}
               description={t('home.features.templates.description')}
             />
             <FeatureCard
-              icon={<Zap className="h-8 w-8 text-blue-600 dark:text-blue-400" />}
+              icon={FileSpreadsheet}
               title={t('home.features.batch.title')}
               description={t('home.features.batch.description')}
             />
             <FeatureCard
-              icon={<Globe className="h-8 w-8 text-blue-600 dark:text-blue-400" />}
+              icon={Mail}
               title={t('home.features.email.title')}
               description={t('home.features.email.description')}
-            />
-            <FeatureCard
-              icon={<Code2 className="h-8 w-8 text-blue-600 dark:text-blue-400" />}
-              title={t('admin.api.title')}
-              description={t('admin.api.description')}
-            />
-            <FeatureCard
-              icon={<Shield className="h-8 w-8 text-blue-600 dark:text-blue-400" />}
-              title={t('home.features.qrVerification.title')}
-              description={t('home.features.qrVerification.description')}
             />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-900 dark:bg-gray-800 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            {t('home.hero.cta')}
-          </h2>
-          <p className="text-blue-200 dark:text-gray-400 mb-8 max-w-xl mx-auto">
-            {t('home.hero.subtitle')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/generate">
-              <Button size="lg" className="bg-white text-blue-900 hover:bg-gray-100 gap-2">
+      {/* CTA */}
+      <section className="relative overflow-hidden bg-slate-950 text-white">
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden="true"
+          style={{
+            backgroundImage:
+              'radial-gradient(ellipse 60% 50% at 50% 120%, rgba(37, 99, 235, 0.35), transparent)',
+          }}
+        />
+        <div className="container relative z-10 mx-auto px-4 py-20 text-center md:py-24">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('home.hero.cta')}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-blue-100/70">{t('home.hero.subtitle')}</p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href={`/${locale}/generate`}>
+              <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100">
                 <Award className="h-5 w-5" aria-hidden="true" />
                 {t('home.hero.cta')}
               </Button>
@@ -121,8 +124,12 @@ export default function HomePage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 gap-2">
-                <Code2 className="h-5 w-5" aria-hidden="true" />
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white/20 bg-white/5 text-white hover:bg-white/10"
+              >
+                <Github className="h-5 w-5" aria-hidden="true" />
                 {t('footer.github')}
               </Button>
             </a>
@@ -134,19 +141,21 @@ export default function HomePage() {
 }
 
 function FeatureCard({
-  icon,
+  icon: Icon,
   title,
   description,
 }: {
-  icon: React.ReactNode;
+  icon: React.ComponentType<{ className?: string }>;
   title: string;
   description: string;
 }) {
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:shadow-lg transition-shadow">
-      <div className="mb-4" aria-hidden="true">{icon}</div>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
-      <p className="text-gray-600 dark:text-gray-400 text-sm">{description}</p>
+    <div className="group rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+      <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <Icon className="h-5 w-5" aria-hidden="true" />
+      </span>
+      <h3 className="mt-4 text-base font-semibold text-foreground">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
     </div>
   );
 }

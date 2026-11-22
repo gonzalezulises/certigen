@@ -55,7 +55,7 @@ export function LanguageSelector() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+        className="flex items-center gap-2 h-11 px-3 text-sm font-medium text-foreground bg-card border border-border rounded-lg hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         aria-label={t('accessibility.selectLanguage')}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
@@ -68,7 +68,7 @@ export function LanguageSelector() {
 
       {isOpen && (
         <div
-          className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 py-1"
+          className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-lg shadow-lg z-50 py-1"
           role="listbox"
           aria-label={t('accessibility.selectLanguage')}
         >
@@ -77,8 +77,8 @@ export function LanguageSelector() {
               key={l}
               type="button"
               onClick={() => handleLocaleChange(l)}
-              className={`w-full flex items-center justify-between px-4 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
-                l === locale ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
+              className={`w-full flex items-center justify-between px-4 py-2 text-sm text-left transition-colors ${
+                l === locale ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-muted'
               }`}
               role="option"
               aria-selected={l === locale}

@@ -30,9 +30,9 @@ export function Slider({
 
   return (
     <div className={cn('relative flex w-full touch-none select-none items-center', className)}>
-      <div className="relative h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+      <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
         <div
-          className="absolute h-full bg-blue-600 dark:bg-blue-500"
+          className="absolute h-full bg-primary"
           style={{ width: `${percentage}%` }}
         />
       </div>
@@ -47,7 +47,7 @@ export function Slider({
         className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
       />
       <div
-        className="absolute h-5 w-5 rounded-full border-2 border-blue-600 bg-white shadow transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 dark:border-blue-500 dark:bg-gray-900"
+        className="absolute h-5 w-5 rounded-full border-2 border-primary bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
         style={{ left: `calc(${percentage}% - 10px)` }}
       />
     </div>

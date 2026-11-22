@@ -2,11 +2,11 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Button, Input, Label, Select, Card, CardContent, CardHeader, CardTitle, Alert, AlertTitle, AlertDescription } from '@/components/ui';
 import { CertificatePreview } from '@/components/certificate';
 import { TemplateStyle, PaperSize, PAPER_SIZES, TEMPLATES, Certificate } from '@/types/certificate';
-import { Upload, FileSpreadsheet, Download, ArrowLeft, CheckCircle2, AlertCircle, X, Image as ImageIcon, Loader2, Mail, Info } from 'lucide-react';
+import { Upload, FileSpreadsheet, Download, ArrowLeft, CheckCircle2, AlertCircle, X, Image as ImageIcon, Loader2, Mail, Info, Palette, Sparkles, Building2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -20,6 +20,7 @@ interface CSVStudent {
 
 export default function BatchPage() {
   const t = useTranslations();
+  const locale = useLocale();
 
   const [csvData, setCsvData] = useState<CSVStudent[]>([]);
   const [fileName, setFileName] = useState<string>('');
@@ -362,21 +363,21 @@ export default function BatchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted">
       <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
-          <Link href="/generate">
+          <Link href={`/${locale}/generate`}>
             <Button variant="outline" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" aria-hidden="true" />
               {t('common.cancel')}
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               {t('batch.title')}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+            <p className="text-muted-foreground mt-1 text-sm">
               {t('batch.subtitle')}
             </p>
           </div>
@@ -401,7 +402,7 @@ export default function BatchPage() {
                     tabIndex={0}
                     role="button"
                     aria-label={t('batch.upload.dragDrop')}
-                    className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     <input
                       ref={fileInputRef}
@@ -411,11 +412,11 @@ export default function BatchPage() {
                       className="hidden"
                       aria-describedby="csv-hint"
                     />
-                    <Upload className="h-10 w-10 mx-auto text-gray-400 mb-3" aria-hidden="true" />
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" aria-hidden="true" />
+                    <p className="text-muted-foreground">
                       {fileName || t('batch.upload.dragDrop')}
                     </p>
-                    <p id="csv-hint" className="text-xs text-gray-400 mt-2">
+                    <p id="csv-hint" className="text-xs text-muted-foreground mt-2">
                       {t('batch.upload.hint')}
                     </p>
                   </div>
@@ -571,16 +572,16 @@ export default function BatchPage() {
                         aria-checked={selectedTemplate === template.id}
                         className={`p-3 rounded-lg border-2 text-center transition-all ${
                           selectedTemplate === template.id
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
+                            ? 'border-primary bg-primary/10'
+                            : 'border-border hover:border-primary/40'
                         }`}
                       >
-                        <span className="text-xl" aria-hidden="true">
-                          {template.id === 'elegant' && '🎨'}
-                          {template.id === 'minimal' && '✨'}
-                          {template.id === 'corporate' && '🏢'}
+                        <span className="text-xl text-primary" aria-hidden="true">
+                          {template.id === 'elegant' && <Palette className="h-5 w-5 mx-auto" />}
+                          {template.id === 'minimal' && <Sparkles className="h-5 w-5 mx-auto" />}
+                          {template.id === 'corporate' && <Building2 className="h-5 w-5 mx-auto" />}
                         </span>
-                        <p className="text-sm mt-1 text-gray-900 dark:text-white">{template.name}</p>
+                        <p className="text-sm mt-1 text-foreground">{template.name}</p>
                       </button>
                     ))}
                   </div>
@@ -726,7 +727,7 @@ export default function BatchPage() {
                 <CardTitle className="text-lg">{t('generate.preview.title')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2">
+                <div className="bg-muted rounded-lg p-2">
                   <CertificatePreview
                     data={{
                       student_name: csvData[0]?.student_name || t('batch.preview.name'),
@@ -745,7 +746,7 @@ export default function BatchPage() {
                     className="shadow-lg"
                   />
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+                <p className="text-xs text-muted-foreground mt-3 text-center">
                   {csvData.length > 0
                     ? t('batch.preview.rows', { count: 1 })
                     : t('batch.upload.hint')}

@@ -202,10 +202,10 @@ export default function GeneratePage() {
   // If showing the configurator, render it full-screen
   if (showConfigurator) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-muted">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               {t('configurator.title')}
             </h1>
             <Button variant="outline" onClick={() => setShowConfigurator(false)}>
@@ -234,10 +234,10 @@ export default function GeneratePage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               {t('generate.title')}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base">
               {t('generate.subtitle')}
             </p>
           </div>
@@ -312,7 +312,7 @@ export default function GeneratePage() {
                   placeholder={t('generate.student.emailPlaceholder')}
                   className="mt-1"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {t('generate.student.emailHint')}
                 </p>
               </div>
@@ -397,12 +397,12 @@ export default function GeneratePage() {
           </CardHeader>
           <CardContent>
             {savedConfig ? (
-              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-white">
+                  <p className="font-medium text-foreground">
                     {t(`configurator.templates.${savedConfig.templateId}.name`)}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {t(`configurator.templates.${savedConfig.templateId}.description`)}
                   </p>
                 </div>
@@ -412,8 +412,8 @@ export default function GeneratePage() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <GraduationCap className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground mb-4">
                   {t('generate.template.elegantDesc')}
                 </p>
                 <Button onClick={() => setShowConfigurator(true)} className="gap-2">
