@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import createIntlMiddleware from 'next-intl/middleware';
+import createMiddleware from 'next-intl/middleware';
+import { defineRouting } from 'next-intl/routing';
 import { locales, defaultLocale } from './i18n/config';
 
 // Generate a cryptographic nonce for CSP
@@ -11,12 +12,14 @@ function generateNonce(): string {
 }
 
 // Create the internationalization middleware
-const intlMiddleware = createIntlMiddleware({
-  locales,
-  defaultLocale,
-  localeDetection: true,
-  localePrefix: 'always'
-});
+const intlMiddleware = createMiddleware(
+  defineRouting({
+    locales,
+    defaultLocale,
+    localeDetection: true,
+    localePrefix: 'always'
+  })
+);
 
 // Rate limiting store (in production, use Redis or similar)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();

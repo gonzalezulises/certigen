@@ -108,7 +108,7 @@ export default async function LocaleLayout({
           <Providers>
             <a
               href="#main-content"
-              className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-md"
+              className="absolute left-4 top-4 z-50 flex min-h-11 -translate-y-24 items-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-transform focus:translate-y-0"
             >
               {locale === 'es' ? 'Saltar al contenido principal' : 'Skip to main content'}
             </a>

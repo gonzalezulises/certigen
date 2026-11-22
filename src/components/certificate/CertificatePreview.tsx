@@ -174,7 +174,7 @@ export function CertificatePreview({
             justifyContent: 'center',
             padding: '3% 0',
           }}>
-            <p style={{ fontSize: 'clamp(0.7rem, 2vw, 1rem)', color: colors.blue200, margin: 0 }}>
+            <p style={{ fontSize: 'clamp(0.75rem, 2vw, 1rem)', color: colors.blue200, margin: 0 }}>
               Se certifica que
             </p>
             <h2 style={{
@@ -189,7 +189,7 @@ export function CertificatePreview({
             }}>
               {data.student_name || 'Nombre del Estudiante'}
             </h2>
-            <p style={{ fontSize: 'clamp(0.7rem, 2vw, 1rem)', color: colors.blue200, marginTop: '2%' }}>
+            <p style={{ fontSize: 'clamp(0.75rem, 2vw, 1rem)', color: colors.blue200, marginTop: '2%' }}>
               ha {data.certificate_type === 'completion' ? 'completado' : 'participado en'} satisfactoriamente el curso
             </p>
             <h3 style={{
@@ -206,7 +206,7 @@ export function CertificatePreview({
               justifyContent: 'center',
               gap: '5%',
               marginTop: '3%',
-              fontSize: 'clamp(0.6rem, 1.5vw, 0.875rem)',
+              fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
               color: colors.blue200,
             }}>
               {data.hours && <span>Duracion: {data.hours} horas</span>}
@@ -222,29 +222,29 @@ export function CertificatePreview({
             gap: '8px',
           }}>
             <div style={{ textAlign: 'center', minWidth: 0 }}>
-              <p style={{ fontSize: 'clamp(0.5rem, 1.2vw, 0.75rem)', color: colors.blue200, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.75rem, 1.2vw, 0.875rem)', color: colors.blue200, margin: 0 }}>
                 Fecha de emision
               </p>
-              <p style={{ fontWeight: 600, fontSize: 'clamp(0.6rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
+              <p style={{ fontWeight: 600, fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
                 {data.issue_date ? formatDate(data.issue_date) : formatDate(new Date().toISOString())}
               </p>
             </div>
 
             <div style={{ textAlign: 'center', minWidth: 0 }}>
-              <p style={{ fontSize: 'clamp(0.5rem, 1.2vw, 0.75rem)', color: colors.blue200, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.75rem, 1.2vw, 0.875rem)', color: colors.blue200, margin: 0 }}>
                 Numero de certificado
               </p>
-              <p style={{ fontFamily: 'monospace', fontSize: 'clamp(0.5rem, 1.2vw, 0.75rem)', margin: '4px 0 0 0' }}>
+              <p style={{ fontFamily: 'monospace', fontSize: 'clamp(0.75rem, 1.2vw, 0.875rem)', margin: '4px 0 0 0' }}>
                 {certificateNumber}
               </p>
             </div>
 
             {data.instructor_name && (
               <div style={{ textAlign: 'center', minWidth: 0 }}>
-                <p style={{ fontSize: 'clamp(0.5rem, 1.2vw, 0.75rem)', color: colors.blue200, margin: 0 }}>
+                <p style={{ fontSize: 'clamp(0.75rem, 1.2vw, 0.875rem)', color: colors.blue200, margin: 0 }}>
                   Instructor
                 </p>
-                <p style={{ fontWeight: 600, fontSize: 'clamp(0.6rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
+                <p style={{ fontWeight: 600, fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
                   {data.instructor_name}
                 </p>
               </div>
@@ -254,7 +254,7 @@ export function CertificatePreview({
               <div style={{ backgroundColor: colors.white, padding: '8px', borderRadius: '4px' }}>
                 <QRCode value={validationUrl} size={48} />
               </div>
-              <p style={{ fontSize: 'clamp(0.4rem, 1vw, 0.625rem)', color: colors.blue200, marginTop: '4px' }}>
+              <p style={{ fontSize: 'clamp(0.75rem, 1vw, 0.875rem)', color: colors.blue200, marginTop: '4px' }}>
                 Verificar
               </p>
             </div>
@@ -292,14 +292,14 @@ export function CertificatePreview({
               <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
                 <Logo size={40} logoUrl={logoUrl} organizationName={data.organization_name} />
                 {data.organization_name && (
-                  <span style={{ fontSize: 'clamp(0.7rem, 1.5vw, 1rem)', color: colors.gray600, fontWeight: 500 }}>
+                  <span style={{ fontSize: 'clamp(0.75rem, 1.5vw, 1rem)', color: colors.gray600, fontWeight: 500 }}>
                     {data.organization_name}
                   </span>
                 )}
               </div>
             )}
             <p style={{
-              fontSize: 'clamp(0.5rem, 1.2vw, 0.75rem)',
+              fontSize: 'clamp(0.75rem, 1.2vw, 0.875rem)',
               letterSpacing: '0.3em',
               color: colors.gray400,
               textTransform: 'uppercase',
@@ -325,7 +325,7 @@ export function CertificatePreview({
 
           {/* Body */}
           <div style={{ padding: '4% 0' }}>
-            <p style={{ color: colors.gray500, fontSize: 'clamp(0.7rem, 1.8vw, 1rem)', margin: 0 }}>
+            <p style={{ color: colors.gray500, fontSize: 'clamp(0.75rem, 1.8vw, 1rem)', margin: 0 }}>
               Otorgado a
             </p>
             <h2 style={{
@@ -336,7 +336,7 @@ export function CertificatePreview({
             }}>
               {data.student_name || 'Nombre del Estudiante'}
             </h2>
-            <p style={{ color: colors.gray500, marginTop: '4%', fontSize: 'clamp(0.7rem, 1.8vw, 1rem)' }}>
+            <p style={{ color: colors.gray500, marginTop: '4%', fontSize: 'clamp(0.75rem, 1.8vw, 1rem)' }}>
               Por completar exitosamente
             </p>
             <h3 style={{
@@ -356,10 +356,10 @@ export function CertificatePreview({
             justifyContent: 'space-between',
           }}>
             <div style={{ textAlign: 'left' }}>
-              <p style={{ fontSize: 'clamp(0.5rem, 1.2vw, 0.75rem)', color: colors.gray400, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.75rem, 1.2vw, 0.875rem)', color: colors.gray400, margin: 0 }}>
                 {data.issue_date ? formatDate(data.issue_date) : formatDate(new Date().toISOString())}
               </p>
-              <p style={{ fontSize: 'clamp(0.5rem, 1.2vw, 0.75rem)', color: colors.gray400, fontFamily: 'monospace', margin: '4px 0 0 0' }}>
+              <p style={{ fontSize: 'clamp(0.75rem, 1.2vw, 0.875rem)', color: colors.gray400, fontFamily: 'monospace', margin: '4px 0 0 0' }}>
                 {certificateNumber}
               </p>
             </div>
@@ -412,7 +412,7 @@ export function CertificatePreview({
             )}
           </div>
           {data.organization_name && logoUrl && (
-            <p style={{ fontSize: 'clamp(0.7rem, 1.5vw, 1rem)', color: colors.gray600, margin: '8px 0 0 0' }}>
+            <p style={{ fontSize: 'clamp(0.75rem, 1.5vw, 1rem)', color: colors.gray600, margin: '8px 0 0 0' }}>
               {data.organization_name}
             </p>
           )}
@@ -436,7 +436,7 @@ export function CertificatePreview({
           textAlign: 'center',
           padding: '3% 0',
         }}>
-          <p style={{ color: colors.gray600, fontSize: 'clamp(0.6rem, 1.5vw, 1rem)', margin: 0 }}>
+          <p style={{ color: colors.gray600, fontSize: 'clamp(0.75rem, 1.5vw, 1rem)', margin: 0 }}>
             Por medio del presente se hace constar que
           </p>
           <h2 style={{
@@ -447,7 +447,7 @@ export function CertificatePreview({
           }}>
             {data.student_name || 'Nombre del Estudiante'}
           </h2>
-          <p style={{ color: colors.gray600, fontSize: 'clamp(0.6rem, 1.5vw, 1rem)', margin: 0 }}>
+          <p style={{ color: colors.gray600, fontSize: 'clamp(0.75rem, 1.5vw, 1rem)', margin: 0 }}>
             Ha {data.certificate_type === 'completion' ? 'aprobado' : 'participado en'} satisfactoriamente el programa de formacion
           </p>
           <h3 style={{
@@ -467,28 +467,28 @@ export function CertificatePreview({
           }}>
             {data.hours && (
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: 'clamp(0.4rem, 1vw, 0.625rem)', color: colors.gray400, textTransform: 'uppercase', margin: 0 }}>
+                <p style={{ fontSize: 'clamp(0.75rem, 1vw, 0.875rem)', color: colors.gray400, textTransform: 'uppercase', margin: 0 }}>
                   Duracion
                 </p>
-                <p style={{ fontWeight: 600, fontSize: 'clamp(0.6rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
+                <p style={{ fontWeight: 600, fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
                   {data.hours} horas
                 </p>
               </div>
             )}
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 'clamp(0.4rem, 1vw, 0.625rem)', color: colors.gray400, textTransform: 'uppercase', margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.75rem, 1vw, 0.875rem)', color: colors.gray400, textTransform: 'uppercase', margin: 0 }}>
                 Fecha
               </p>
-              <p style={{ fontWeight: 600, fontSize: 'clamp(0.6rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
+              <p style={{ fontWeight: 600, fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
                 {data.issue_date ? formatDate(data.issue_date) : formatDate(new Date().toISOString())}
               </p>
             </div>
             {data.grade && (
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: 'clamp(0.4rem, 1vw, 0.625rem)', color: colors.gray400, textTransform: 'uppercase', margin: 0 }}>
+                <p style={{ fontSize: 'clamp(0.75rem, 1vw, 0.875rem)', color: colors.gray400, textTransform: 'uppercase', margin: 0 }}>
                   Calificacion
                 </p>
-                <p style={{ fontWeight: 600, fontSize: 'clamp(0.6rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
+                <p style={{ fontWeight: 600, fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)', margin: '4px 0 0 0' }}>
                   {data.grade}/100
                 </p>
               </div>
@@ -506,10 +506,10 @@ export function CertificatePreview({
         }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ width: '160px', borderBottom: `1px solid ${colors.gray400}`, marginBottom: '8px' }} />
-            <p style={{ fontWeight: 600, fontSize: 'clamp(0.6rem, 1.5vw, 0.875rem)', margin: 0 }}>
+            <p style={{ fontWeight: 600, fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)', margin: 0 }}>
               {data.instructor_name || 'Instructor'}
             </p>
-            <p style={{ fontSize: 'clamp(0.4rem, 1vw, 0.625rem)', color: colors.gray400, margin: '4px 0 0 0' }}>
+            <p style={{ fontSize: 'clamp(0.75rem, 1vw, 0.875rem)', color: colors.gray400, margin: '4px 0 0 0' }}>
               Instructor / Director
             </p>
           </div>
@@ -518,7 +518,7 @@ export function CertificatePreview({
             <div style={{ border: `1px solid ${colors.gray200}`, padding: '8px', display: 'inline-block' }}>
               <QRCode value={validationUrl} size={40} />
             </div>
-            <p style={{ fontSize: 'clamp(0.4rem, 1vw, 0.625rem)', color: colors.gray400, marginTop: '4px', fontFamily: 'monospace' }}>
+            <p style={{ fontSize: 'clamp(0.75rem, 1vw, 0.875rem)', color: colors.gray400, marginTop: '4px', fontFamily: 'monospace' }}>
               {certificateNumber}
             </p>
           </div>
